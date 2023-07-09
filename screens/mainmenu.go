@@ -16,8 +16,10 @@ func ShowMenuScreen(window fyne.Window) {
 
 	// Create buttons
 	newGameButton := widget.NewButton("New Game", func() {
+		ShowNewGameScreen(window)
 	})
 	loadGameButton := widget.NewButton("Load Game", func() {
+		ShowLoadGameScreen(window)
 	})
 	quitButton := widget.NewButton("Quit", func() {
 		window.Close()

@@ -124,4 +124,6 @@ Add size and positions for the buttons
 
 Generate an castle image for the first screen with stable diffusion and add a background image
 
-Split code (create a special package to separate code for each screen)
+Split code (create a special package to separate code for each screen) and add some new screens (new game and load game, empty for now)
+
+Add a gitignore and move binary to bin/ directory
