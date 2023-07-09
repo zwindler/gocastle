@@ -124,6 +124,35 @@ Add size and positions for the buttons
 
 Generate an castle image for the first screen with stable diffusion and add a background image
 
+![](castle_back.png)
+
 Split code (create a special package to separate code for each screen) and add some new screens (new game and load game, empty for now)
 
+```
+screens/
+	loadgame.go
+	mainmenu.go
+	newgame.go
+```
+
 Add a gitignore and move binary to bin/ directory
+
+Added a lot of widgets in the new game screen, some logic is missing (number of points to allocate to personalize player)
+
+```go
+	firstLine := container.NewHBox(
+		characterNameLabel,
+		characterNameEntry,
+	)
+
+	slidersLine := container.New(layout.NewGridLayout(5),
+		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
+		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
+
+	lastLine := container.NewHBox(
+		backButton,
+		validateButton,
+	)
+```
+
+Also, "entry" with Character name is broken due to NewHBox. See https://github.com/fyne-io/fyne/issues/3337
