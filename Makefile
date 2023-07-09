@@ -1,7 +1,7 @@
 build:
-	go build
+	go build -o bin/gocastle
 
 run:
-	./gocastle
+	bin/gocastle
 
 buildrun: build run
