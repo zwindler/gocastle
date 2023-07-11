@@ -156,3 +156,48 @@ Added a lot of widgets in the new game screen, some logic is missing (number of 
 ```
 
 Also, "entry" with Character name is broken due to NewHBox. See https://github.com/fyne-io/fyne/issues/3337
+
+## 2023-07-11
+
+Still working on character creation menu. I'm looking into the issue I previously linked to fix entry for character name.
+
+Solution found in [FyneConf 2021 Session 3 - Layouts youtube video](https://www.youtube.com/watch?v=LWn1403gY9E)
+
+```go
+	firstLine := container.New(layout.NewFormLayout(),
+		characterNameLabel,
+		characterNameEntry,
+	)
+```
+
+Also interesting, I've found out about NewBorderLayout
+
+I created a nice function to factorize slider creation and "points to allocate" logic
+
+```
+[...]
+	strengthLabel := widget.NewLabel("Strength: 10")
+	strengthRange := createSliderWithCallback("Strength", 5, 30,
+		10, &StrengthValue, &PointsToSpend,
+		strengthLabel, pointsToSpendValue)
+[...]
+func createSliderWithCallback(characteristic string, min float64, max float64,
+	defaultValue float64, value *float64, pointsToSpend *float64,
+	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
+	slider := widget.NewSlider(min, max)
+	slider.Value = defaultValue
+	slider.OnChanged = func(v float64) {
+		if (*pointsToSpend - (v - *value)) >= 0 {
+			*pointsToSpend = *pointsToSpend - (v - *value)
+			*value = v
+		} else {
+			slider.Value = *value
+			slider.Refresh()
+		}
+		valueLabel.SetText(fmt.Sprintf("%s: %.0f", characteristic, *value))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%.0f", *pointsToSpend))
+		valueLabel.Refresh()
+	}
+	return slider
+}
+```

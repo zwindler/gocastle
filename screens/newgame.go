@@ -9,7 +9,21 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+var (
+	PointsToSpend     float64
+	StrengthValue     float64
+	ConstitutionValue float64
+	IntelligenceValue float64
+	DexterityValue    float64
+)
+
 func ShowNewGameScreen(window fyne.Window) {
+	PointsToSpend = 10
+	StrengthValue = 10
+	ConstitutionValue = 10
+	IntelligenceValue = 10
+	DexterityValue = 10
+
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
 
@@ -17,36 +31,24 @@ func ShowNewGameScreen(window fyne.Window) {
 	pointsToSpendValue := widget.NewLabel("10")
 
 	strengthLabel := widget.NewLabel("Strength: 10")
-	strengthRange := widget.NewSlider(5, 50)
-	strengthRange.Value = 10
-	strengthRange.OnChanged = func(v float64) {
-		strengthLabel.SetText(fmt.Sprintf("Strength: %.0f", v))
-		strengthLabel.Refresh()
-	}
+	strengthRange := createSliderWithCallback("Strength", 5, 30,
+		10, &StrengthValue, &PointsToSpend,
+		strengthLabel, pointsToSpendValue)
 
 	constitutionLabel := widget.NewLabel("Constitution: 10")
-	constitutionRange := widget.NewSlider(5, 50)
-	constitutionRange.Value = 10
-	constitutionRange.OnChanged = func(v float64) {
-		constitutionLabel.SetText(fmt.Sprintf("Constitution: %.0f", v))
-		constitutionLabel.Refresh()
-	}
+	constitutionRange := createSliderWithCallback("Constitution", 5, 30,
+		10, &ConstitutionValue, &PointsToSpend,
+		constitutionLabel, pointsToSpendValue)
 
 	intelligenceLabel := widget.NewLabel("Intelligence: 10")
-	intelligenceRange := widget.NewSlider(5, 50)
-	intelligenceRange.Value = 10
-	intelligenceRange.OnChanged = func(v float64) {
-		intelligenceLabel.SetText(fmt.Sprintf("Intelligence: %.0f", v))
-		intelligenceLabel.Refresh()
-	}
+	intelligenceRange := createSliderWithCallback("Intelligence", 5, 30,
+		10, &IntelligenceValue, &PointsToSpend,
+		intelligenceLabel, pointsToSpendValue)
 
 	dexterityLabel := widget.NewLabel("Dexterity: 10")
-	dexterityRange := widget.NewSlider(5, 50)
-	dexterityRange.Value = 10
-	dexterityRange.OnChanged = func(v float64) {
-		dexterityLabel.SetText(fmt.Sprintf("Dexterity: %.0f", v))
-		dexterityLabel.Refresh()
-	}
+	dexterityRange := createSliderWithCallback("Dexterity", 5, 30,
+		10, &DexterityValue, &PointsToSpend,
+		dexterityLabel, pointsToSpendValue)
 
 	backButton := widget.NewButton("Back", func() {
 		ShowMenuScreen(window)
@@ -54,7 +56,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	validateButton := widget.NewButton("Validate", func() {
 	})
 
-	firstLine := container.NewHBox(
+	firstLine := container.New(layout.NewFormLayout(),
 		characterNameLabel,
 		characterNameEntry,
 	)
@@ -75,4 +77,24 @@ func ShowNewGameScreen(window fyne.Window) {
 	)
 
 	window.SetContent(content)
+}
+
+func createSliderWithCallback(characteristic string, min float64, max float64,
+	defaultValue float64, value *float64, pointsToSpend *float64,
+	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
+	slider := widget.NewSlider(min, max)
+	slider.Value = defaultValue
+	slider.OnChanged = func(v float64) {
+		if (*pointsToSpend - (v - *value)) >= 0 {
+			*pointsToSpend = *pointsToSpend - (v - *value)
+			*value = v
+		} else {
+			slider.Value = *value
+			slider.Refresh()
+		}
+		valueLabel.SetText(fmt.Sprintf("%s: %.0f", characteristic, *value))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%.0f", *pointsToSpend))
+		valueLabel.Refresh()
+	}
+	return slider
 }
