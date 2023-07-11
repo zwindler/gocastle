@@ -31,22 +31,22 @@ func ShowNewGameScreen(window fyne.Window) {
 	pointsToSpendValue := widget.NewLabel("10")
 
 	strengthLabel := widget.NewLabel("Strength: 10")
-	strengthRange := createSliderWithCallback("Strength", 5, 30,
+	strengthRange := createSliderWithCallback("Strength", 5, 35,
 		10, &StrengthValue, &PointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
 	constitutionLabel := widget.NewLabel("Constitution: 10")
-	constitutionRange := createSliderWithCallback("Constitution", 5, 30,
+	constitutionRange := createSliderWithCallback("Constitution", 5, 35,
 		10, &ConstitutionValue, &PointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
 	intelligenceLabel := widget.NewLabel("Intelligence: 10")
-	intelligenceRange := createSliderWithCallback("Intelligence", 5, 30,
+	intelligenceRange := createSliderWithCallback("Intelligence", 5, 35,
 		10, &IntelligenceValue, &PointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
 	dexterityLabel := widget.NewLabel("Dexterity: 10")
-	dexterityRange := createSliderWithCallback("Dexterity", 5, 30,
+	dexterityRange := createSliderWithCallback("Dexterity", 5, 35,
 		10, &DexterityValue, &PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
