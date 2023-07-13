@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
@@ -27,7 +28,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
 
-	pointsToSpendLabel := widget.NewLabel("Points to spend")
+	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel("10")
 
 	strengthLabel := widget.NewLabel("Strength: 10")
@@ -54,6 +55,17 @@ func ShowNewGameScreen(window fyne.Window) {
 		ShowMenuScreen(window)
 	})
 	validateButton := widget.NewButton("Validate", func() {
+		if PointsToSpend > 0 {
+			content := widget.NewLabel("You still have available characteristics point to allocate!")
+			dialog.ShowCustom("Points still available", "Close", content, window)
+		}
+	})
+
+	characterGenderLabel := widget.NewLabel("Gender")
+	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
+	})
+
+	characterAspect := widget.NewRadioGroup([]string{"👩‍🌾", "🧑‍🌾", "👨‍🌾", "🧙‍♀️", "🧙", "🧙‍♂️", "🦹‍♂️", "🥷", "🧝‍♀️", "🧝", "🧝‍♂️"}, func(selected string) {
 	})
 
 	firstLine := container.New(layout.NewFormLayout(),
@@ -65,6 +77,14 @@ func ShowNewGameScreen(window fyne.Window) {
 		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 
+	characterGenderBox := container.New(layout.NewVBoxLayout(),
+		characterGenderLabel,
+		genderRadioButton,
+	)
+
+	characterAspectLine := container.New(layout.NewGridLayout(3),
+		characterGenderBox, characterAspect)
+
 	lastLine := container.NewHBox(
 		backButton,
 		validateButton,
@@ -73,6 +93,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	content := container.NewVBox(
 		firstLine,
 		slidersLine,
+		characterAspectLine,
 		lastLine,
 	)
 
