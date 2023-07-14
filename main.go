@@ -24,7 +24,7 @@ func (t CustomTheme) Font(style fyne.TextStyle) fyne.Resource {
 }
 
 func (t CustomTheme) Size(s fyne.ThemeSizeName) float32 {
-	return 15
+	return 14
 }
 
 func main() {
