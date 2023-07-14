@@ -225,3 +225,20 @@ Added my first popup to tell player he/she forgot to allocate some point in char
 Added gender selection radio buttons + aspect selection button. Discovered that fyne 2.3 doesn't support emoji yet...
 
 *[](https://github.com/fyne-io/fyne/issues/573)
+
+## 2023-07-14
+
+Reworked the characterAspect NewRadioGroup in 3 columns and added logic to support this
+
+```go
+	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
+		resetRadioGroups(characterAspect2, characterAspect3)
+		fmt.Println("Character Aspect 1:", selected)
+	})
+[...]
+func resetRadioGroups(groups ...*widget.RadioGroup) {
+	for _, group := range groups {
+		group.SetSelected("")
+	}
+}
+```

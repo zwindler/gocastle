@@ -70,17 +70,17 @@ func ShowNewGameScreen(window fyne.Window) {
 	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {})
 
 	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
-		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		resetRadioGroups(characterAspect2, characterAspect3)
 		fmt.Println("Character Aspect 1:", selected)
 	})
 
 	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
-		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		resetRadioGroups(characterAspect1, characterAspect3)
 		fmt.Println("Character Aspect 2:", selected)
 	})
 
 	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
-		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		resetRadioGroups(characterAspect1, characterAspect2)
 		fmt.Println("Character Aspect 3:", selected)
 	})
 
