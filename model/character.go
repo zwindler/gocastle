@@ -1,6 +1,7 @@
 package model
 
 type CharacterStats struct {
+	CharacterName     string
 	PointsToSpend     float64
 	StrengthValue     float64
 	ConstitutionValue float64

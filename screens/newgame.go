@@ -18,14 +18,22 @@ func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect3 *widget.RadioGroup
 
 	// set initial defaults
-	model.Player.PointsToSpend = 10
+	// model.Player.PointsToSpend = 10
 	model.Player.StrengthValue = 10
 	model.Player.ConstitutionValue = 10
 	model.Player.IntelligenceValue = 10
 	model.Player.DexterityValue = 10
 
+	// set other defaults for dev
+	model.Player.PointsToSpend = 0
+	model.Player.GenderValue = "Female"
+	model.Player.AspectValue = ":-)"
+
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
+
+	// set other defaults for dev
+	characterNameEntry.Text = "zwindler"
 
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel("10")
@@ -80,11 +88,12 @@ func ShowNewGameScreen(window fyne.Window) {
 			content := widget.NewLabel("You still have to choose a name for you character!")
 			dialog.ShowCustom("Character has no name", "Close", content, window)
 		} else {
+			model.Player.CharacterName = characterNameEntry.Text
 			if model.Player.PointsToSpend > 0 {
 				content := widget.NewLabel("You still have available characteristics point to allocate!")
 				dialog.ShowCustom("Points still available", "Close", content, window)
 			} else {
-				if genderRadioButton.Selected == "" {
+				if model.Player.GenderValue == "" {
 					content := widget.NewLabel("Character has no gender, please choose one")
 					dialog.ShowCustom("Gender not selected", "Close", content, window)
 				} else {
