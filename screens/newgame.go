@@ -11,11 +11,11 @@ import (
 )
 
 var (
-	PointsToSpend     float64
-	StrengthValue     float64
-	ConstitutionValue float64
-	IntelligenceValue float64
-	DexterityValue    float64
+	pointsToSpend     float64
+	strengthValue     float64
+	constitutionValue float64
+	intelligenceValue float64
+	dexterityValue    float64
 )
 
 func ShowNewGameScreen(window fyne.Window) {
@@ -24,11 +24,11 @@ func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect3 *widget.RadioGroup
 
 	// set initial defaults
-	PointsToSpend = 10
-	StrengthValue = 10
-	ConstitutionValue = 10
-	IntelligenceValue = 10
-	DexterityValue = 10
+	pointsToSpend = 10
+	strengthValue = 10
+	constitutionValue = 10
+	intelligenceValue = 10
+	dexterityValue = 10
 
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
@@ -38,29 +38,29 @@ func ShowNewGameScreen(window fyne.Window) {
 
 	strengthLabel := widget.NewLabel("Strength: 10")
 	strengthRange := createSliderWithCallback("Strength", 5, 35,
-		10, &StrengthValue, &PointsToSpend,
+		10, &strengthValue, &pointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
 	constitutionLabel := widget.NewLabel("Constitution: 10")
 	constitutionRange := createSliderWithCallback("Constitution", 5, 35,
-		10, &ConstitutionValue, &PointsToSpend,
+		10, &constitutionValue, &pointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
 	intelligenceLabel := widget.NewLabel("Intelligence: 10")
 	intelligenceRange := createSliderWithCallback("Intelligence", 5, 35,
-		10, &IntelligenceValue, &PointsToSpend,
+		10, &intelligenceValue, &pointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
 	dexterityLabel := widget.NewLabel("Dexterity: 10")
 	dexterityRange := createSliderWithCallback("Dexterity", 5, 35,
-		10, &DexterityValue, &PointsToSpend,
+		10, &dexterityValue, &pointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
 	backButton := widget.NewButton("Back", func() {
 		ShowMenuScreen(window)
 	})
 	validateButton := widget.NewButton("Validate", func() {
-		if PointsToSpend > 0 {
+		if pointsToSpend > 0 {
 			content := widget.NewLabel("You still have available characteristics point to allocate!")
 			dialog.ShowCustom("Points still available", "Close", content, window)
 		}
