@@ -19,6 +19,11 @@ var (
 )
 
 func ShowNewGameScreen(window fyne.Window) {
+	var characterAspect1 *widget.RadioGroup
+	var characterAspect2 *widget.RadioGroup
+	var characterAspect3 *widget.RadioGroup
+
+	// set initial defaults
 	PointsToSpend = 10
 	StrengthValue = 10
 	ConstitutionValue = 10
@@ -62,10 +67,21 @@ func ShowNewGameScreen(window fyne.Window) {
 	})
 
 	characterGenderLabel := widget.NewLabel("Gender")
-	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
+	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {})
+
+	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
+		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		fmt.Println("Character Aspect 1:", selected)
 	})
 
-	characterAspect := widget.NewRadioGroup([]string{"👩‍🌾", "🧑‍🌾", "👨‍🌾", "🧙‍♀️", "🧙", "🧙‍♂️", "🦹‍♂️", "🥷", "🧝‍♀️", "🧝", "🧝‍♂️"}, func(selected string) {
+	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
+		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		fmt.Println("Character Aspect 2:", selected)
+	})
+
+	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
+		resetRadioGroups(characterAspect1, characterAspect2, characterAspect3)
+		fmt.Println("Character Aspect 3:", selected)
 	})
 
 	firstLine := container.New(layout.NewFormLayout(),
@@ -82,8 +98,8 @@ func ShowNewGameScreen(window fyne.Window) {
 		genderRadioButton,
 	)
 
-	characterAspectLine := container.New(layout.NewGridLayout(3),
-		characterGenderBox, characterAspect)
+	characterAspectLine := container.New(layout.NewGridLayout(4),
+		characterGenderBox, characterAspect1, characterAspect2, characterAspect3)
 
 	lastLine := container.NewHBox(
 		backButton,
@@ -118,4 +134,10 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 		valueLabel.Refresh()
 	}
 	return slider
+}
+
+func resetRadioGroups(groups ...*widget.RadioGroup) {
+	for _, group := range groups {
+		group.SetSelected("")
+	}
 }
