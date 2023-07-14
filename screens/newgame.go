@@ -1,6 +1,8 @@
 package screens
 
 import (
+	"gocastle/model"
+
 	"fmt"
 
 	"fyne.io/fyne/v2"
@@ -10,27 +12,17 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var (
-	pointsToSpend     float64
-	strengthValue     float64
-	constitutionValue float64
-	intelligenceValue float64
-	dexterityValue    float64
-	genderValue       string // TODO maybe change this to allow only the 3 types?
-	aspectValue       string // TODO maybe change this to allow only the allowed types?
-)
-
 func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect1 *widget.RadioGroup
 	var characterAspect2 *widget.RadioGroup
 	var characterAspect3 *widget.RadioGroup
 
 	// set initial defaults
-	pointsToSpend = 10
-	strengthValue = 10
-	constitutionValue = 10
-	intelligenceValue = 10
-	dexterityValue = 10
+	model.Player.PointsToSpend = 10
+	model.Player.StrengthValue = 10
+	model.Player.ConstitutionValue = 10
+	model.Player.IntelligenceValue = 10
+	model.Player.DexterityValue = 10
 
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
@@ -40,42 +32,44 @@ func ShowNewGameScreen(window fyne.Window) {
 
 	strengthLabel := widget.NewLabel("Strength: 10")
 	strengthRange := createSliderWithCallback("Strength", 5, 35,
-		10, &strengthValue, &pointsToSpend,
+		10, &model.Player.StrengthValue, &model.Player.PointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
 	constitutionLabel := widget.NewLabel("Constitution: 10")
 	constitutionRange := createSliderWithCallback("Constitution", 5, 35,
-		10, &constitutionValue, &pointsToSpend,
+		10, &model.Player.ConstitutionValue, &model.Player.PointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
 	intelligenceLabel := widget.NewLabel("Intelligence: 10")
 	intelligenceRange := createSliderWithCallback("Intelligence", 5, 35,
-		10, &intelligenceValue, &pointsToSpend,
+		10, &model.Player.IntelligenceValue, &model.Player.PointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
 	dexterityLabel := widget.NewLabel("Dexterity: 10")
 	dexterityRange := createSliderWithCallback("Dexterity", 5, 35,
-		10, &dexterityValue, &pointsToSpend,
+		10, &model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
 	characterGenderLabel := widget.NewLabel("Gender")
-	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {})
+	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
+		model.Player.GenderValue = selected
+	})
 	emptyLabel := widget.NewLabel(" ")
 
 	characterAspectLabel := widget.NewLabel("Aspect")
 	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
 		resetRadioGroups(characterAspect2, characterAspect3)
-		aspectValue = selected
+		model.Player.AspectValue = selected
 	})
 
 	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect3)
-		aspectValue = selected
+		model.Player.AspectValue = selected
 	})
 
 	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect2)
-		aspectValue = selected
+		model.Player.AspectValue = selected
 	})
 
 	backButton := widget.NewButton("Back", func() {
@@ -86,7 +80,7 @@ func ShowNewGameScreen(window fyne.Window) {
 			content := widget.NewLabel("You still have to choose a name for you character!")
 			dialog.ShowCustom("Character has no name", "Close", content, window)
 		} else {
-			if pointsToSpend > 0 {
+			if model.Player.PointsToSpend > 0 {
 				content := widget.NewLabel("You still have available characteristics point to allocate!")
 				dialog.ShowCustom("Points still available", "Close", content, window)
 			} else {
@@ -94,7 +88,7 @@ func ShowNewGameScreen(window fyne.Window) {
 					content := widget.NewLabel("Character has no gender, please choose one")
 					dialog.ShowCustom("Gender not selected", "Close", content, window)
 				} else {
-					if aspectValue == "" {
+					if model.Player.AspectValue == "" {
 						content := widget.NewLabel("Character has no aspect, please choose one")
 						dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					}
@@ -140,15 +134,15 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 	slider := widget.NewSlider(min, max)
 	slider.Value = defaultValue
 	slider.OnChanged = func(v float64) {
-		if (*pointsToSpend - (v - *value)) >= 0 {
-			*pointsToSpend = *pointsToSpend - (v - *value)
+		if (model.Player.PointsToSpend - (v - *value)) >= 0 {
+			model.Player.PointsToSpend = model.Player.PointsToSpend - (v - *value)
 			*value = v
 		} else {
 			slider.Value = *value
 			slider.Refresh()
 		}
 		valueLabel.SetText(fmt.Sprintf("%s: %.0f", characteristic, *value))
-		pointsToSpendLabel.SetText(fmt.Sprintf("%.0f", *pointsToSpend))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%.0f", model.Player.PointsToSpend))
 		valueLabel.Refresh()
 	}
 	return slider
