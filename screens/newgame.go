@@ -91,6 +91,9 @@ func ShowNewGameScreen(window fyne.Window) {
 					if model.Player.AspectValue == "" {
 						content := widget.NewLabel("Character has no aspect, please choose one")
 						dialog.ShowCustom("Aspect not selected", "Close", content, window)
+					} else {
+						// we are good to go!
+						ShowMapScreen(window)
 					}
 				}
 			}

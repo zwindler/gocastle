@@ -247,6 +247,22 @@ Added more conditions on "Validate" to make sure character creation is finished
 
 Reworked layout to fit well in the window. 
 
-I extracted all the variables for the character in a new model package (with a simple struct, for now)
+I extracted all the variables for the character in a new model package (with a simple struct, for now):
+
+```go
+package model
+
+type CharacterStats struct {
+	PointsToSpend     float64
+	StrengthValue     float64
+	ConstitutionValue float64
+	IntelligenceValue float64
+	DexterityValue    float64
+	GenderValue       string
+	AspectValue       string
+}
+
+var Player CharacterStats
+```
 
 "New Game" menu is ready :\)
