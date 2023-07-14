@@ -266,3 +266,27 @@ var Player CharacterStats
 ```
 
 "New Game" menu is ready :\)
+
+I then tried to create a simple map. First things I tried was to create a grid and put it in a scrollable container
+
+```
+func ShowMapScreen(window fyne.Window) {
+	mapContainer := container.New(layout.NewGridLayout(50))
+
+	for i := 0; i < 50; i++ {
+		for j := 0; j < 50; j++ {
+			image := canvas.NewImageFromFile("./static/grass.png")
+			image.FillMode = canvas.ImageFillOriginal
+			mapContainer.Add(image)
+		}
+	}
+
+	content := container.NewMax(container.NewScroll(mapContainer))
+
+	window.SetContent(content)
+}
+```
+
+This doesn't work very well as elements (columns + rows) have spaces between them, leaving a blank grid.
+
+The grass tile comes from [https://stealthix.itch.io/rpg-nature-tileset](https://stealthix.itch.io/rpg-nature-tileset)

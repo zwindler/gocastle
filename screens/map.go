@@ -2,16 +2,23 @@ package screens
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
+	"fyne.io/fyne/v2/layout"
 )
 
 func ShowMapScreen(window fyne.Window) {
-	characterNameLabel := widget.NewLabel("Character's name")
-	content := container.NewVBox(characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel, characterNameLabel)
-	scrollContainer := container.NewScroll(content)
-	scrollContainer.SetMinSize(fyne.NewSize(800, 600))
+	mapContainer := container.New(layout.NewGridLayout(50))
+
+	for i := 0; i < 50; i++ {
+		for j := 0; j < 50; j++ {
+			image := canvas.NewImageFromFile("./static/grass.png")
+			image.FillMode = canvas.ImageFillOriginal
+			mapContainer.Add(image)
+		}
+	}
+
+	content := container.NewMax(container.NewScroll(mapContainer))
 
 	window.SetContent(content)
-	window.Resize(fyne.NewSize(800, 600))
 }
