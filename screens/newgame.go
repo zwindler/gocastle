@@ -16,6 +16,8 @@ var (
 	constitutionValue float64
 	intelligenceValue float64
 	dexterityValue    float64
+	genderValue       string // TODO maybe change this to allow only the 3 types?
+	aspectValue       string // TODO maybe change this to allow only the allowed types?
 )
 
 func ShowNewGameScreen(window fyne.Window) {
@@ -56,32 +58,49 @@ func ShowNewGameScreen(window fyne.Window) {
 		10, &dexterityValue, &pointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	backButton := widget.NewButton("Back", func() {
-		ShowMenuScreen(window)
-	})
-	validateButton := widget.NewButton("Validate", func() {
-		if pointsToSpend > 0 {
-			content := widget.NewLabel("You still have available characteristics point to allocate!")
-			dialog.ShowCustom("Points still available", "Close", content, window)
-		}
-	})
-
 	characterGenderLabel := widget.NewLabel("Gender")
 	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {})
+	emptyLabel := widget.NewLabel(" ")
 
+	characterAspectLabel := widget.NewLabel("Aspect")
 	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
 		resetRadioGroups(characterAspect2, characterAspect3)
-		fmt.Println("Character Aspect 1:", selected)
+		aspectValue = selected
 	})
 
 	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect3)
-		fmt.Println("Character Aspect 2:", selected)
+		aspectValue = selected
 	})
 
 	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect2)
-		fmt.Println("Character Aspect 3:", selected)
+		aspectValue = selected
+	})
+
+	backButton := widget.NewButton("Back", func() {
+		ShowMenuScreen(window)
+	})
+	validateButton := widget.NewButton("Validate", func() {
+		if characterNameEntry.Text == "" {
+			content := widget.NewLabel("You still have to choose a name for you character!")
+			dialog.ShowCustom("Character has no name", "Close", content, window)
+		} else {
+			if pointsToSpend > 0 {
+				content := widget.NewLabel("You still have available characteristics point to allocate!")
+				dialog.ShowCustom("Points still available", "Close", content, window)
+			} else {
+				if genderRadioButton.Selected == "" {
+					content := widget.NewLabel("Character has no gender, please choose one")
+					dialog.ShowCustom("Gender not selected", "Close", content, window)
+				} else {
+					if aspectValue == "" {
+						content := widget.NewLabel("Character has no aspect, please choose one")
+						dialog.ShowCustom("Aspect not selected", "Close", content, window)
+					}
+				}
+			}
+		}
 	})
 
 	firstLine := container.New(layout.NewFormLayout(),
@@ -93,13 +112,11 @@ func ShowNewGameScreen(window fyne.Window) {
 		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 
-	characterGenderBox := container.New(layout.NewVBoxLayout(),
-		characterGenderLabel,
-		genderRadioButton,
-	)
+	characterGenderAspectLabelLine := container.New(layout.NewGridLayout(4),
+		characterGenderLabel, characterAspectLabel, emptyLabel, emptyLabel)
 
-	characterAspectLine := container.New(layout.NewGridLayout(4),
-		characterGenderBox, characterAspect1, characterAspect2, characterAspect3)
+	characterGenderAspectLine := container.New(layout.NewGridLayout(4),
+		genderRadioButton, characterAspect1, characterAspect2, characterAspect3)
 
 	lastLine := container.NewHBox(
 		backButton,
@@ -109,7 +126,8 @@ func ShowNewGameScreen(window fyne.Window) {
 	content := container.NewVBox(
 		firstLine,
 		slidersLine,
-		characterAspectLine,
+		characterGenderAspectLabelLine,
+		characterGenderAspectLine,
 		lastLine,
 	)
 
