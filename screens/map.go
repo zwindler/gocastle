@@ -28,7 +28,7 @@ func ShowMapScreen(window fyne.Window) {
 				if j == 0 {
 					vBorder.Add(tile)
 				} else {
-					currentPos := fyne.NewPos(float32(i)*32, float32(j)*32)
+					currentPos := fyne.NewPos(float32(i-1)*32, float32(j-1)*32)
 					tile.Move(currentPos)
 					usableMapContainer.Add(tile)
 					if i == 1 && j == 1 {
