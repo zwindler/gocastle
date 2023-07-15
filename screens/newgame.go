@@ -62,7 +62,6 @@ func ShowNewGameScreen(window fyne.Window) {
 	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
 		model.Player.GenderValue = selected
 	})
-	emptyLabel := widget.NewLabel(" ")
 
 	characterAspectLabel := widget.NewLabel("Aspect")
 	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
@@ -119,7 +118,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 
 	characterGenderAspectLabelLine := container.New(layout.NewGridLayout(4),
-		characterGenderLabel, characterAspectLabel, emptyLabel, emptyLabel)
+		characterGenderLabel, characterAspectLabel, layout.NewSpacer(), layout.NewSpacer())
 
 	characterGenderAspectLine := container.New(layout.NewGridLayout(4),
 		genderRadioButton, characterAspect1, characterAspect2, characterAspect3)
