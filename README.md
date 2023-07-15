@@ -69,7 +69,19 @@ The reason was that I hadn't set the image size in map.go (using `Resize()`)
 
 Setting only `SizeNamePadding` to 0 but not changing `SizeNameInnerPadding` produces OK results on UI while at the same time making the map work. It's even better if I bump `SizeNameInnerPadding` a bit.
 
-Hurray !
+Hurray!
+
+Well, not so fast ;-\)
+
+After a lot trial and error, I realised that creating a 50x50 Grid filled with containers without layout was both slow and also didn't work. For some reason there still is some padding involved when I try to display the character above the grass tile.
+
+So I finally switched to 2nd workaround (new container without layout). It came with its own challenges. Building the map is easy, you just have to move elements by steps of 32 pixels. But there seem to be an issue when calculating the size of the container (which seems to be 0), making it unscrollable when inserted inside a scrollable container.
+
+I worked around this for now by adding images of the length of the map. Crude but it works. I'll try to find a more elegant solution later.
+
+Now, I have a working map with a character displayed on top of it.
+
+Next step, movement and turns!!
 
 ## 2023-07-14
 
