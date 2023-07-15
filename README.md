@@ -289,4 +289,22 @@ func ShowMapScreen(window fyne.Window) {
 
 This doesn't work very well as elements (columns + rows) have spaces between them, leaving a blank grid.
 
-The grass tile comes from [https://stealthix.itch.io/rpg-nature-tileset](https://stealthix.itch.io/rpg-nature-tileset)
+Note: The grass tile comes from [https://stealthix.itch.io/rpg-nature-tileset](https://stealthix.itch.io/rpg-nature-tileset)
+
+## 2023-07-15
+
+Digging a bit on padding I've found that you can't change it on default Layouts. By default, all Layouts have padding between elements and you can only change it globally which is not recommended.
+
+Howerever, you can create your own Layout which somehow could not inherit padding. I'm a bit at a loss here :-\( because no one really explain how to do this:
+
+* https://github.com/fyne-io/fyne/issues/2719
+* https://github.com/fyne-io/fyne/issues/1031
+* https://stackoverflow.com/questions/60661694/padding-in-fyne-layout
+
+I've tried the example given in documentation but it doesn't really help
+* https://developer.fyne.io/extend/custom-layout
+
+I have 3 solutions for this :
+* try to remove padding globally (though I have yet to find how, its not documented either)
+* use container.NewWithoutLayout like in mainmenu and set positions manually
+* dig into custom layouts
