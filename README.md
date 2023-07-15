@@ -49,16 +49,27 @@ func (t CustomTheme) Size(style fyne.ThemeSizeName) float32 {
 	case theme.SizeNamePadding:
 		return 6
 	case theme.SizeNameText:
-		return 16
+		return 17
 	default:
 		return theme.DefaultTheme().Size(style)
 	}
 }
 ```
 
-This doesn't fix my map issue though... So I tried setting Padding to 0, but now UI looks horrible (obviously) AND I still have issues displaying the map (for some reason the tiles are very small, don't that the whole 32px).
+This doesn't fix my map issue though... So I tried setting SizeNameInnerPadding and SizeNamePadding to 0, but now UI looks horrible (obviously) AND I still have issues displaying the map (for some reason the tiles are very small, they don't take the whole 32px).
 
-So I'm going to the 2nd workaround and see what I can do with this.
+The reason was that I hadn't set the image size in map.go (using `Resize()`)
+
+```
+			image := canvas.NewImageFromFile("./static/grass.png")
+			image.FillMode = canvas.ImageFillOriginal
+			image.Resize(fyne.NewSize(32, 32))
+			mapContainer.Add(image)
+```
+
+Setting only `SizeNamePadding` to 0 but not changing `SizeNameInnerPadding` produces OK results on UI while at the same time making the map work. It's even better if I bump `SizeNameInnerPadding` a bit.
+
+Hurray !
 
 ## 2023-07-14
 

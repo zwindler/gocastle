@@ -25,6 +25,10 @@ func (t CustomTheme) Font(style fyne.TextStyle) fyne.Resource {
 
 func (t CustomTheme) Size(style fyne.ThemeSizeName) float32 {
 	switch style {
+	case theme.SizeNameInnerPadding:
+		return 14
+	case theme.SizeNamePadding:
+		return 0
 	case theme.SizeNameText:
 		return 17
 	default:

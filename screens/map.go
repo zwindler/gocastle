@@ -14,6 +14,7 @@ func ShowMapScreen(window fyne.Window) {
 		for j := 0; j < 50; j++ {
 			image := canvas.NewImageFromFile("./static/grass.png")
 			image.FillMode = canvas.ImageFillOriginal
+			image.Resize(fyne.NewSize(32, 32))
 			mapContainer.Add(image)
 		}
 	}
