@@ -7,28 +7,41 @@ import (
 )
 
 func ShowMapScreen(window fyne.Window) {
-	h, v := 20, 20
+	h, v := 30, 30
+	firstLine := container.NewGridWithColumns(h)
+	vBorder := container.NewGridWithRows(v - 1)
 
 	imageMatrix := createMapMatrix(h, v)
 	player := canvas.NewImageFromFile("./static/warrior.png")
 	player.FillMode = canvas.ImageFillOriginal
 	player.Resize(fyne.NewSize(32, 32))
 
-	mapContainer := container.NewWithoutLayout()
+	usableMapContainer := container.NewWithoutLayout()
 
 	for i := 0; i < v; i++ {
 		for j := 0; j < h; j++ {
-			tile := container.NewWithoutLayout(
-				imageMatrix[i][j],
-			)
-			if i == 1 && j == 1 {
-				tile.Add(player)
-			}
+			tile := imageMatrix[i][j]
 			tile.Resize(fyne.NewSize(32, 32))
-			tile.Move(fyne.NewPos(float32(i)*32, float32(j)*32))
-			mapContainer.Add(tile)
+			if i == 0 {
+				firstLine.Add(tile)
+			} else {
+				if j == 0 {
+					vBorder.Add(tile)
+				} else {
+					currentPos := fyne.NewPos(float32(i)*32, float32(j)*32)
+					tile.Move(currentPos)
+					usableMapContainer.Add(tile)
+					if i == 1 && j == 1 {
+						player.Move(currentPos)
+						usableMapContainer.Add(player)
+					}
+				}
+			}
 		}
 	}
+
+	secondLine := container.NewHBox(vBorder, usableMapContainer)
+	mapContainer := container.NewVBox(firstLine, secondLine)
 
 	content := container.NewScroll(mapContainer)
 
