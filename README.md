@@ -19,10 +19,46 @@ Howerever, you can create your own Layout which somehow could not inherit paddin
 I've tried the example given in documentation but it doesn't really help
 * https://developer.fyne.io/extend/custom-layout
 
-I have 3 solutions for this :
+I have 3 workaround for this :
 * try to remove padding globally (though I have yet to find how, its not documented either)
 * use container.NewWithoutLayout like in mainmenu and set positions manually
 * dig into custom layouts
+
+Looking in source code (theme.go in fyne lib) I've found 
+
+```golang
+func (t *builtinTheme) Size(s fyne.ThemeSizeName) float32 {
+	switch s {
+[...]
+	case SizeNameInnerPadding:
+		return 8
+	case SizeNamePadding:
+		return 6
+[...]
+```
+
+Then I realized why my UI is f* up since I created my own theme. I had overwritten the whole Size function which doesn't only change font size, but also borders and padding and so on 🤣 
+
+Fixed it like this, UI looks a lot better :D
+
+```go
+func (t CustomTheme) Size(style fyne.ThemeSizeName) float32 {
+	switch style {
+	case theme.SizeNameInnerPadding:
+		return 8
+	case theme.SizeNamePadding:
+		return 6
+	case theme.SizeNameText:
+		return 16
+	default:
+		return theme.DefaultTheme().Size(style)
+	}
+}
+```
+
+This doesn't fix my map issue though... So I tried setting Padding to 0, but now UI looks horrible (obviously) AND I still have issues displaying the map (for some reason the tiles are very small, don't that the whole 32px).
+
+So I'm going to the 2nd workaround and see what I can do with this.
 
 ## 2023-07-14
 

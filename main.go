@@ -23,8 +23,13 @@ func (t CustomTheme) Font(style fyne.TextStyle) fyne.Resource {
 	return theme.DefaultTheme().Font(style)
 }
 
-func (t CustomTheme) Size(s fyne.ThemeSizeName) float32 {
-	return 14
+func (t CustomTheme) Size(style fyne.ThemeSizeName) float32 {
+	switch style {
+	case theme.SizeNameText:
+		return 17
+	default:
+		return theme.DefaultTheme().Size(style)
+	}
 }
 
 func main() {
