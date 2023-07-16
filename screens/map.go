@@ -1,6 +1,7 @@
 package screens
 
 import (
+	"fmt"
 	"gocastle/maps"
 
 	"fyne.io/fyne/v2"
@@ -34,16 +35,16 @@ func ShowMapScreen(window fyne.Window) {
 	verticalBorder := container.NewVBox()
 
 	mapContainer = container.NewWithoutLayout()
-	for i := 0; i < mapMaxY; i++ {
+	for row := 0; row < mapMaxY; row++ {
 		firstLine.Add(horizontalBorder)
-		currentLine := float32(i) * 32
-		for j := 0; j < mapMaxX; j++ {
-			if j == 0 {
+		currentLine := float32(row) * 32
+		for column := 0; column < mapMaxX; column++ {
+			if column == 0 {
 				verticalBorder.Add(verticalLine)
 			}
-			tile := imageMatrix[i][j]
+			tile := imageMatrix[row][column]
 			tile.Resize(fyne.NewSize(32, 32))
-			currentPos := fyne.NewPos(currentLine, float32(j)*32)
+			currentPos := fyne.NewPos(float32(column)*32, currentLine)
 			tile.Move(currentPos)
 			mapContainer.Add(tile)
 		}
@@ -65,16 +66,27 @@ func ShowMapScreen(window fyne.Window) {
 }
 
 func createMapMatrix(h, v int) [][]*canvas.Image {
-
 	matrix := make([][]*canvas.Image, v)
 
-	for i := 0; i < v; i++ {
-		matrix[i] = make([]*canvas.Image, h)
-		for j := 0; j < h; j++ {
-			image := canvas.NewImageFromFile(maps.TilesTypes[currentMap[i][j]].Path)
-			image.FillMode = canvas.ImageFillOriginal
-			image.Resize(fyne.NewSize(32, 32))
-			matrix[i][j] = image
+	// extract the needed tiles from the Tileset
+	// create a table of subimages (image.Image type)
+	loadedTiles, err := maps.LoadTilesFromTileset(maps.TilesTypes)
+	if err != nil {
+		fmt.Errorf("unable to load tile from Tileset: %w", err)
+		// TODO error handling
+	}
+
+	// create the full matrix first to avoid out of bounds exception
+	for row := 0; row < mapMaxY; row++ {
+		matrix[row] = make([]*canvas.Image, v)
+	}
+	for row := 0; row < mapMaxY; row++ {
+		for column := 0; column < h; column++ {
+			image := loadedTiles[currentMap[row][column]]
+			imageCanvas := canvas.NewImageFromImage(image)
+			imageCanvas.FillMode = canvas.ImageFillOriginal
+			imageCanvas.Resize(fyne.NewSize(32, 32))
+			matrix[row][column] = imageCanvas
 		}
 	}
 
@@ -121,7 +133,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 }
 
 func checkWalkable(futurePosX int, futurePosY int) {
-	if maps.TilesTypes[currentMap[futurePosX][futurePosY]].IsWalkable {
+	if maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable {
 		playerPosX = futurePosX
 		playerPosY = futurePosY
 	}
