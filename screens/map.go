@@ -12,19 +12,19 @@ import (
 var (
 	playerPosX   int = 2
 	playerPosY   int = 4
-	mapMaxX      int
-	mapMaxY      int
+	mapColumns   int
+	mapRows      int
 	mapContainer *fyne.Container
 	playerAvatar *canvas.Image
 	currentMap   = maps.Map1
 )
 
 func ShowMapScreen(window fyne.Window) {
-	mapMaxX = len(currentMap)
-	if mapMaxX > 0 {
-		mapMaxY = len(currentMap[0])
+	mapRows = len(currentMap)
+	if mapRows > 0 {
+		mapColumns = len(currentMap[0])
 	}
-	imageMatrix := createMapMatrix(mapMaxX, mapMaxY)
+	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
 	firstLine := container.NewHBox()
 	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
@@ -35,10 +35,10 @@ func ShowMapScreen(window fyne.Window) {
 	verticalBorder := container.NewVBox()
 
 	mapContainer = container.NewWithoutLayout()
-	for row := 0; row < mapMaxY; row++ {
+	for row := 0; row < mapRows; row++ {
 		firstLine.Add(horizontalBorder)
 		currentLine := float32(row) * 32
-		for column := 0; column < mapMaxX; column++ {
+		for column := 0; column < mapColumns; column++ {
 			if column == 0 {
 				verticalBorder.Add(verticalLine)
 			}
@@ -58,15 +58,15 @@ func ShowMapScreen(window fyne.Window) {
 	secondLine := container.NewHBox(verticalBorder, mapContainer)
 
 	scrollableMapContainer := container.NewVBox(firstLine, secondLine)
-	scrollableMapContainer.Resize(fyne.NewSize(float32(mapMaxX)*32, float32(mapMaxY)*32))
+	scrollableMapContainer.Resize(fyne.NewSize(float32(mapColumns)*32, float32(mapRows)*32))
 	content := container.NewScroll(scrollableMapContainer)
 	window.Canvas().SetOnTypedKey(mapKeyListener)
 
 	window.SetContent(content)
 }
 
-func createMapMatrix(h, v int) [][]*canvas.Image {
-	matrix := make([][]*canvas.Image, v)
+func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
+	matrix := make([][]*canvas.Image, numRows)
 
 	// extract the needed tiles from the Tileset
 	// create a table of subimages (image.Image type)
@@ -77,11 +77,11 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 	}
 
 	// create the full matrix first to avoid out of bounds exception
-	for row := 0; row < mapMaxY; row++ {
-		matrix[row] = make([]*canvas.Image, v)
+	for row := 0; row < mapRows; row++ {
+		matrix[row] = make([]*canvas.Image, numColumns)
 	}
-	for row := 0; row < mapMaxY; row++ {
-		for column := 0; column < h; column++ {
+	for row := 0; row < mapRows; row++ {
+		for column := 0; column < numColumns; column++ {
 			image := loadedTiles[currentMap[row][column]]
 			imageCanvas := canvas.NewImageFromImage(image)
 			imageCanvas.FillMode = canvas.ImageFillOriginal
@@ -99,23 +99,23 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			checkWalkable(playerPosX, playerPosY-1)
 		}
 	} else if event.Name == fyne.KeyE {
-		if playerPosY > 0 && playerPosX < mapMaxX-1 {
+		if playerPosY > 0 && playerPosX < mapColumns-1 {
 			checkWalkable(playerPosX+1, playerPosY-1)
 		}
 	} else if event.Name == fyne.KeyRight || event.Name == fyne.KeyD {
-		if playerPosX < mapMaxX-1 {
+		if playerPosX < mapColumns-1 {
 			checkWalkable(playerPosX+1, playerPosY)
 		}
 	} else if event.Name == fyne.KeyC {
-		if playerPosX < mapMaxX-1 && playerPosY < mapMaxY-1 {
+		if playerPosX < mapColumns-1 && playerPosY < mapRows-1 {
 			checkWalkable(playerPosX+1, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyDown || event.Name == fyne.KeyS || event.Name == fyne.KeyX {
-		if playerPosY < mapMaxY-1 {
+		if playerPosY < mapRows-1 {
 			checkWalkable(playerPosX, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyW {
-		if playerPosY < mapMaxY-1 && playerPosX > 0 {
+		if playerPosY < mapRows-1 && playerPosX > 0 {
 			checkWalkable(playerPosX-1, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyLeft || event.Name == fyne.KeyQ {

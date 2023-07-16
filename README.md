@@ -141,6 +141,57 @@ func checkWalkable(futurePosX int, futurePosY int) {
 
 Now, you can't moved across walls :D
 
+But now, I have a lot of individual tiles (and probably more coming) and they are all coming from the same source file. This is a bit dump, and I tried to find a way to extract the tiles I want by creating subimages of a bigger image.
+
+That's how I managed to do it :
+
+```go
+type Coord struct {
+	X, Y int
+}
+
+type TileInfo struct {
+	Coordinates Coord
+	IsWalkable  bool
+}
+
+var (
+	TilesTypes = []TileInfo{
+		{Coordinates: Coord{X: 0, Y: 64}, IsWalkable: true},     //0
+		{Coordinates: Coord{X: 576, Y: 96}, IsWalkable: false},  //1
+[...]
+
+func extractTileFromTileset(coord Coord) (image.Image, error) {
+	x, y := coord.X, coord.Y
+	file, err := os.Open("static/RPG Nature Tileset.png")
+	if err != nil {
+		fmt.Println("Error opening image:", err)
+		return nil, err
+	}
+	defer file.Close()
+
+	bigImage, _, err := image.Decode(file)
+	if err != nil {
+		fmt.Println("Error decoding image:", err)
+		return nil, err
+	}
+
+	width := 32
+	height := 32
+
+	partImage := image.NewRGBA(image.Rect(0, 0, width, height))
+	draw.Draw(partImage, partImage.Bounds(), bigImage, image.Point{x, y}, draw.Src)
+
+	return partImage, nil
+}
+```
+
+Instead of pointing to a file, I pointed to coordonates on the main tileset file, and generate a subimage. Returned **partImage** is of image.Image type, which fyne supports if you use NewImageFromImage() instead of NewImageFromFile().
+
+That's huge for future map creation process.
+
+This also made me discover that I had mixed up all the axes, both in checkWalkable and mapContainer creation. Too many of i/j x/y h/v columns/rows...
+
 ## 2023-07-15
 
 Digging a bit on padding I've found that you can't change it on default Layouts. By default, all Layouts have padding between elements and you can only change it globally which is not recommended.
