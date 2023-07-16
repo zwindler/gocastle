@@ -1,16 +1,21 @@
 package maps
 
+type TileInfo struct {
+	Path       string
+	IsWalkable bool
+}
+
 var (
-	TilesTypes = []string{
-		"./static/grass.png",
-		"./static/building_corner_left_up.png",
-		"./static/building_corner_right_up.png",
-		"./static/building_corner_right_down.png",
-		"./static/building_corner_left_down.png",
-		"./static/building_left.png",
-		"./static/building_down.png",
-		"./static/building_right.png",
-		"./static/building_up.png",
-		"./static/opaque.png",
+	TilesTypes = []TileInfo{
+		{Path: "./static/grass.png", IsWalkable: true},
+		{Path: "./static/building_corner_left_up.png", IsWalkable: false},
+		{Path: "./static/building_corner_right_up.png", IsWalkable: false},
+		{Path: "./static/building_corner_right_down.png", IsWalkable: false},
+		{Path: "./static/building_corner_left_down.png", IsWalkable: false},
+		{Path: "./static/building_left.png", IsWalkable: false},
+		{Path: "./static/building_down.png", IsWalkable: false},
+		{Path: "./static/building_right.png", IsWalkable: false},
+		{Path: "./static/building_up.png", IsWalkable: false},
+		{Path: "./static/opaque.png", IsWalkable: false},
 	}
 )

@@ -104,13 +104,7 @@ Tiles should then be stored in some way. To do this in a simple way, I've added 
 	}
 [...]
 	Map1 = [][]int{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+[...]
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 5, 5, 5, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 9, 9, 9, 9, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -121,9 +115,31 @@ Tiles should then be stored in some way. To do this in a simple way, I've added 
 [...]
 ```
 
-Theresult is pretty clean 😎.
+The result is pretty clean 😎.
 
-There still is change to do to make it impossible for player to walk on some tiles but I'll work on this later.
+There still is change to do to make it impossible for player to walk on some tiles (walls).
+
+to do this I changed the TilesTypes from a string table to a Struct
+
+```go
+type TileInfo struct {
+	Path       string
+	IsWalkable bool
+}
+```
+
+And I made some changes on mapKeyListener to check "walkability" before moving, in addition to checking we are not at the edge of the map. Probably will move the out of the map logic inside this function as well.
+
+```go
+func checkWalkable(futurePosX int, futurePosY int) {
+	if maps.TilesTypes[currentMap[futurePosX][futurePosY]].IsWalkable {
+		playerPosX = futurePosX
+		playerPosY = futurePosY
+	}
+}
+```
+
+Now, you can't moved across walls :D
 
 ## 2023-07-15
 

@@ -15,13 +15,13 @@ var (
 	mapMaxY      int
 	mapContainer *fyne.Container
 	playerAvatar *canvas.Image
-	map1         = maps.Map1
+	currentMap   = maps.Map1
 )
 
 func ShowMapScreen(window fyne.Window) {
-	mapMaxX = len(map1)
+	mapMaxX = len(currentMap)
 	if mapMaxX > 0 {
-		mapMaxY = len(map1[0])
+		mapMaxY = len(currentMap[0])
 	}
 	imageMatrix := createMapMatrix(mapMaxX, mapMaxY)
 
@@ -71,7 +71,7 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 	for i := 0; i < v; i++ {
 		matrix[i] = make([]*canvas.Image, h)
 		for j := 0; j < h; j++ {
-			image := canvas.NewImageFromFile(maps.TilesTypes[map1[i][j]])
+			image := canvas.NewImageFromFile(maps.TilesTypes[currentMap[i][j]].Path)
 			image.FillMode = canvas.ImageFillOriginal
 			image.Resize(fyne.NewSize(32, 32))
 			matrix[i][j] = image
@@ -84,44 +84,47 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 func mapKeyListener(event *fyne.KeyEvent) {
 	if event.Name == fyne.KeyUp || event.Name == fyne.KeyZ {
 		if playerPosY > 0 {
-			playerPosY = playerPosY - 1
+			checkWalkable(playerPosX, playerPosY-1)
 		}
 	} else if event.Name == fyne.KeyE {
 		if playerPosY > 0 && playerPosX < mapMaxX-1 {
-			playerPosX = playerPosX + 1
-			playerPosY = playerPosY - 1
+			checkWalkable(playerPosX+1, playerPosY-1)
 		}
 	} else if event.Name == fyne.KeyRight || event.Name == fyne.KeyD {
 		if playerPosX < mapMaxX-1 {
-			playerPosX = playerPosX + 1
+			checkWalkable(playerPosX+1, playerPosY)
 		}
 	} else if event.Name == fyne.KeyC {
 		if playerPosX < mapMaxX-1 && playerPosY < mapMaxY-1 {
-			playerPosX = playerPosX + 1
-			playerPosY = playerPosY + 1
+			checkWalkable(playerPosX+1, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyDown || event.Name == fyne.KeyS || event.Name == fyne.KeyX {
 		if playerPosY < mapMaxY-1 {
-			playerPosY = playerPosY + 1
+			checkWalkable(playerPosX, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyW {
 		if playerPosY < mapMaxY-1 && playerPosX > 0 {
-			playerPosX = playerPosX - 1
-			playerPosY = playerPosY + 1
+			checkWalkable(playerPosX-1, playerPosY+1)
 		}
 	} else if event.Name == fyne.KeyLeft || event.Name == fyne.KeyQ {
 		if playerPosX > 0 {
-			playerPosX = playerPosX - 1
+			checkWalkable(playerPosX-1, playerPosY)
 		}
 	} else if event.Name == fyne.KeyA {
 		if playerPosX > 0 && playerPosY > 0 {
-			playerPosX = playerPosX - 1
-			playerPosY = playerPosY - 1
+			checkWalkable(playerPosX-1, playerPosY-1)
 		}
 	}
 
 	movePlayer()
 
+}
+
+func checkWalkable(futurePosX int, futurePosY int) {
+	if maps.TilesTypes[currentMap[futurePosX][futurePosY]].IsWalkable {
+		playerPosX = futurePosX
+		playerPosY = futurePosY
+	}
 }
 
 func movePlayer() {
