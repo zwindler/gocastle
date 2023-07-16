@@ -95,37 +95,21 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 
 func mapKeyListener(event *fyne.KeyEvent) {
 	if event.Name == fyne.KeyUp || event.Name == fyne.KeyZ {
-		if playerPosY > 0 {
-			checkWalkable(playerPosX, playerPosY-1)
-		}
+		checkWalkable(playerPosX, playerPosY-1)
 	} else if event.Name == fyne.KeyE {
-		if playerPosY > 0 && playerPosX < mapColumns-1 {
-			checkWalkable(playerPosX+1, playerPosY-1)
-		}
+		checkWalkable(playerPosX+1, playerPosY-1)
 	} else if event.Name == fyne.KeyRight || event.Name == fyne.KeyD {
-		if playerPosX < mapColumns-1 {
-			checkWalkable(playerPosX+1, playerPosY)
-		}
+		checkWalkable(playerPosX+1, playerPosY)
 	} else if event.Name == fyne.KeyC {
-		if playerPosX < mapColumns-1 && playerPosY < mapRows-1 {
-			checkWalkable(playerPosX+1, playerPosY+1)
-		}
+		checkWalkable(playerPosX+1, playerPosY+1)
 	} else if event.Name == fyne.KeyDown || event.Name == fyne.KeyS || event.Name == fyne.KeyX {
-		if playerPosY < mapRows-1 {
-			checkWalkable(playerPosX, playerPosY+1)
-		}
+		checkWalkable(playerPosX, playerPosY+1)
 	} else if event.Name == fyne.KeyW {
-		if playerPosY < mapRows-1 && playerPosX > 0 {
-			checkWalkable(playerPosX-1, playerPosY+1)
-		}
+		checkWalkable(playerPosX-1, playerPosY+1)
 	} else if event.Name == fyne.KeyLeft || event.Name == fyne.KeyQ {
-		if playerPosX > 0 {
-			checkWalkable(playerPosX-1, playerPosY)
-		}
+		checkWalkable(playerPosX-1, playerPosY)
 	} else if event.Name == fyne.KeyA {
-		if playerPosX > 0 && playerPosY > 0 {
-			checkWalkable(playerPosX-1, playerPosY-1)
-		}
+		checkWalkable(playerPosX-1, playerPosY-1)
 	}
 
 	movePlayer()
@@ -133,7 +117,9 @@ func mapKeyListener(event *fyne.KeyEvent) {
 }
 
 func checkWalkable(futurePosX int, futurePosY int) {
-	if maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable {
+	if futurePosX >= 0 && futurePosX < mapColumns &&
+		futurePosY >= 0 && futurePosY < mapRows &&
+		maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable {
 		playerPosX = futurePosX
 		playerPosY = futurePosY
 	}
