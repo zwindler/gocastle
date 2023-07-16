@@ -3,6 +3,7 @@ package screens
 import (
 	"fmt"
 	"gocastle/maps"
+	"math/rand"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -12,10 +13,13 @@ import (
 var (
 	playerPosX   int = 2
 	playerPosY   int = 4
+	playerAvatar *canvas.Image
+	PNJ1PosX     int = 10
+	PNJ1PosY     int = 15
+	PNJ1         *canvas.Image
 	mapColumns   int
 	mapRows      int
 	mapContainer *fyne.Container
-	playerAvatar *canvas.Image
 	currentMap   = maps.Map1
 )
 
@@ -54,6 +58,12 @@ func ShowMapScreen(window fyne.Window) {
 	playerAvatar.Resize(fyne.NewSize(32, 32))
 	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
 	mapContainer.Add(playerAvatar)
+
+	PNJ1 = canvas.NewImageFromFile("./static/farmer.png")
+	PNJ1.FillMode = canvas.ImageFillOriginal
+	PNJ1.Resize(fyne.NewSize(32, 32))
+	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*32), float32(PNJ1PosY*32)))
+	mapContainer.Add(PNJ1)
 
 	secondLine := container.NewHBox(verticalBorder, mapContainer)
 
@@ -123,20 +133,46 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	} else {
 		fmt.Println("You are blocked!")
 	}
+
+	newTurnForPNJs()
 }
 
 func checkWalkable(futurePosX int, futurePosY int) bool {
 	if futurePosX >= 0 && futurePosX < mapColumns &&
 		futurePosY >= 0 && futurePosY < mapRows &&
-		maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable {
+		maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable &&
+		(playerPosX != futurePosX || playerPosY != futurePosY) &&
+		(PNJ1PosX != futurePosX || PNJ1PosY != futurePosY) {
+		//TODO make a function to check for other characters presence
 		return true
 	}
 	return false
 }
 
+func newTurnForPNJs() {
+	// Generate random numbers between -1 and 1
+	randDeltaX := rand.Intn(3) - 1
+	randDeltaY := rand.Intn(3) - 1
+
+	newPNJ1PosX := PNJ1PosX + randDeltaX
+	newPNJ1PosY := PNJ1PosY + randDeltaY
+
+	if checkWalkable(newPNJ1PosX, newPNJ1PosY) {
+		movePNJ1(newPNJ1PosX, newPNJ1PosY)
+	}
+}
+
+//TODO unify movePlayer and movePNJ
 func movePlayer(futurePosX int, futurePosY int) {
 	// assign new values for player position
 	playerPosX = futurePosX
 	playerPosY = futurePosY
 	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+}
+
+func movePNJ1(futurePosX int, futurePosY int) {
+	// Assign new values for PNJ1 position
+	PNJ1PosX = futurePosX
+	PNJ1PosY = futurePosY
+	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*32), float32(PNJ1PosY*32)))
 }
