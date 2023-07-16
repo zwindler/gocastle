@@ -192,6 +192,10 @@ That's huge for future map creation process.
 
 This also made me discover that I had mixed up all the axes, both in checkWalkable and mapContainer creation. Too many of i/j x/y h/v columns/rows...
 
+Reworked mapKeyListener, checkWalkable and movePlayer to prepare for adding my first PNJ! checkWalkable only check if path is walkable and is generic (both player and PNJs). Doing somehing (only moving is implemented so far) triggers a new turn for PNJs (only moving for now as well). Farmer movement is random.
+
+First implementation is very crude but it works well :\)
+
 ## 2023-07-15
 
 Digging a bit on padding I've found that you can't change it on default Layouts. By default, all Layouts have padding between elements and you can only change it globally which is not recommended.
