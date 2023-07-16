@@ -6,6 +6,48 @@ This project is my journey to creating a graphical game while learning Golang
 
 Every session, I'll add an entry in this file telling what I did and what I learned
 
+## 2023-07-16
+
+I replaced the first tile row+colum that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines. It works OK. Then, I cleaned the code a bit.
+
+Finally, I made my first interactivity but listening to keystrokes and changing player position.
+
+```go
+[...]
+	window.Canvas().SetOnTypedKey(mapKeyListener)
+[...]
+
+
+func mapKeyListener(event *fyne.KeyEvent) {
+	if event.Name == fyne.KeyUp {
+		playerPosY = playerPosY - 1
+	} else if event.Name == fyne.KeyDown {
+		playerPosY = playerPosY + 1
+	} else if event.Name == fyne.KeyLeft {
+		playerPosX = playerPosX - 1
+	} else if event.Name == fyne.KeyRight {
+		playerPosX = playerPosX + 1
+	}
+
+	drawPlayer()
+
+}
+
+func drawPlayer() {
+	player := canvas.NewImageFromFile("./static/warrior.png")
+	player.FillMode = canvas.ImageFillOriginal
+	player.Resize(fyne.NewSize(32, 32))
+	player.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+	//TODO remove previous position
+	mapContainer.Add(player)
+}
+
+```
+
+
+It doesn't work super well because you have to scroll to refresh the screen after a keystroke and previous position is not removed. But it's promising ;\)
+
+
 ## 2023-07-15
 
 Digging a bit on padding I've found that you can't change it on default Layouts. By default, all Layouts have padding between elements and you can only change it globally which is not recommended.
