@@ -6,14 +6,16 @@ import (
 	"fyne.io/fyne/v2/container"
 )
 
+var (
+	playerPosX   int = 2
+	playerPosY   int = 4
+	mapContainer *fyne.Container
+)
+
 func ShowMapScreen(window fyne.Window) {
 	h, v := 30, 30
 	imageMatrix := createMapMatrix(h, v)
 	firstLine := container.NewHBox()
-
-	player := canvas.NewImageFromFile("./static/warrior.png")
-	player.FillMode = canvas.ImageFillOriginal
-	player.Resize(fyne.NewSize(32, 32))
 
 	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
 	horizontalBorder.FillMode = canvas.ImageFillOriginal
@@ -24,7 +26,7 @@ func ShowMapScreen(window fyne.Window) {
 	verticalBorder.Resize(fyne.NewSize(1, float32(v-1)*32))
 	secondLine := container.NewHBox(verticalBorder)
 
-	mapContainer := container.NewWithoutLayout()
+	mapContainer = container.NewWithoutLayout()
 	for i := 0; i < v; i++ {
 		currentLine := float32(i) * 32
 		for j := 0; j < h; j++ {
@@ -33,16 +35,14 @@ func ShowMapScreen(window fyne.Window) {
 			currentPos := fyne.NewPos(currentLine, float32(j)*32)
 			tile.Move(currentPos)
 			mapContainer.Add(tile)
-			if i == 2 && j == 4 {
-				player.Move(currentPos)
-				mapContainer.Add(player)
-			}
 		}
 	}
+	drawPlayer()
 	secondLine.Add(mapContainer)
 
 	scrollableMapContainer := container.NewVBox(firstLine, secondLine)
 	content := container.NewScroll(scrollableMapContainer)
+	window.Canvas().SetOnTypedKey(mapKeyListener)
 
 	window.SetContent(content)
 }
@@ -61,4 +61,28 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 	}
 
 	return matrix
+}
+
+func mapKeyListener(event *fyne.KeyEvent) {
+	if event.Name == fyne.KeyUp {
+		playerPosY = playerPosY - 1
+	} else if event.Name == fyne.KeyDown {
+		playerPosY = playerPosY + 1
+	} else if event.Name == fyne.KeyLeft {
+		playerPosX = playerPosX - 1
+	} else if event.Name == fyne.KeyRight {
+		playerPosX = playerPosX + 1
+	}
+
+	drawPlayer()
+
+}
+
+func drawPlayer() {
+	player := canvas.NewImageFromFile("./static/warrior.png")
+	player.FillMode = canvas.ImageFillOriginal
+	player.Resize(fyne.NewSize(32, 32))
+	player.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+	//TODO remove previous position
+	mapContainer.Add(player)
 }
