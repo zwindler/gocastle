@@ -8,7 +8,20 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 
 ## 2023-07-16
 
-I replaced the first tile row+colum that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines. It works OK. Then, I cleaned the code a bit.
+I replaced the first tile row+colum that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines (1x1000 and 1000x1). It works OK. Then, I cleaned the code a bit.
+
+```go
+	firstLine := container.NewHBox()
+	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
+	horizontalBorder.FillMode = canvas.ImageFillOriginal
+	horizontalBorder.Resize(fyne.NewSize(float32(mapMaxX-1)*32, 1))
+	firstLine.Add(horizontalBorder)
+
+	verticalBorder := canvas.NewImageFromFile("static/black_vline.png")
+	verticalBorder.FillMode = canvas.ImageFillOriginal
+	verticalBorder.Resize(fyne.NewSize(1, float32(mapMaxY-1)*32))
+	secondLine := container.NewHBox(verticalBorder)
+```
 
 Finally, I made my first interactivity but listening to keystrokes and changing player position.
 
@@ -34,19 +47,40 @@ func mapKeyListener(event *fyne.KeyEvent) {
 }
 
 func drawPlayer() {
-	player := canvas.NewImageFromFile("./static/warrior.png")
-	player.FillMode = canvas.ImageFillOriginal
-	player.Resize(fyne.NewSize(32, 32))
-	player.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
-	//TODO remove previous position
-	mapContainer.Add(player)
+	playerAvatar := canvas.NewImageFromFile("./static/warrior.png")
+	playerAvatar.FillMode = canvas.ImageFillOriginal
+	playerAvatar.Resize(fyne.NewSize(32, 32))
+	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+	mapContainer.Add(playerAvatar)
 }
 
 ```
 
+It doesn't work super well because you have to scroll to refresh the screen after a keystroke and previous position is not removed.
 
-It doesn't work super well because you have to scroll to refresh the screen after a keystroke and previous position is not removed. But it's promising ;\)
+By rewriting a bit of code here and there (mostly, adding playerAvatar as a package var and only moving, not adding it to the mapContainer every time), I now have a working character that can be moved on the whole map and that can't get out of it :\).
 
+The only remaining issue is the map horizontal + vertical borders that help me make the containerWithoutLayout scrollable aren't of the good size. I could leave them exactly the right size but that would prevent me from making maps from differents sizes.
+
+So I rewrote this part (again!) to make a Hbox + VBox and adding just enough 32x1 and 1x32 pixel lines to fit the whole map (horizontalBorder & verticalBorder). Crude...
+
+```go
+	mapContainer = container.NewWithoutLayout()
+	for i := 0; i < mapMaxY; i++ {
+		firstLine.Add(horizontalBorder)
+		currentLine := float32(i) * 32
+		for j := 0; j < mapMaxX; j++ {
+			if j == 0 {
+				verticalBorder.Add(verticalLine)
+			}
+			tile := imageMatrix[i][j]
+			tile.Resize(fyne.NewSize(32, 32))
+			currentPos := fyne.NewPos(currentLine, float32(j)*32)
+			tile.Move(currentPos)
+			mapContainer.Add(tile)
+		}
+	}
+```
 
 ## 2023-07-15
 

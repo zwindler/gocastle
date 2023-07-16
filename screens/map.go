@@ -17,21 +17,23 @@ var (
 
 func ShowMapScreen(window fyne.Window) {
 	imageMatrix := createMapMatrix(mapMaxX, mapMaxY)
-	firstLine := container.NewHBox()
 
+	firstLine := container.NewHBox()
 	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
 	horizontalBorder.FillMode = canvas.ImageFillOriginal
-	horizontalBorder.Resize(fyne.NewSize(float32(mapMaxX-1)*32, 1))
-	firstLine.Add(horizontalBorder)
-	verticalBorder := canvas.NewImageFromFile("static/black_vline.png")
-	verticalBorder.FillMode = canvas.ImageFillOriginal
-	verticalBorder.Resize(fyne.NewSize(1, float32(mapMaxY-1)*32))
-	secondLine := container.NewHBox(verticalBorder)
+
+	verticalLine := canvas.NewImageFromFile("static/black_vline.png")
+	verticalLine.FillMode = canvas.ImageFillOriginal
+	verticalBorder := container.NewVBox()
 
 	mapContainer = container.NewWithoutLayout()
 	for i := 0; i < mapMaxY; i++ {
+		firstLine.Add(horizontalBorder)
 		currentLine := float32(i) * 32
 		for j := 0; j < mapMaxX; j++ {
+			if j == 0 {
+				verticalBorder.Add(verticalLine)
+			}
 			tile := imageMatrix[i][j]
 			tile.Resize(fyne.NewSize(32, 32))
 			currentPos := fyne.NewPos(currentLine, float32(j)*32)
@@ -45,7 +47,7 @@ func ShowMapScreen(window fyne.Window) {
 	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
 	mapContainer.Add(playerAvatar)
 
-	secondLine.Add(mapContainer)
+	secondLine := container.NewHBox(verticalBorder, mapContainer)
 
 	scrollableMapContainer := container.NewVBox(firstLine, secondLine)
 	scrollableMapContainer.Resize(fyne.NewSize(float32(mapMaxX)*32, float32(mapMaxY)*32))
