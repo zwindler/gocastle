@@ -30,7 +30,7 @@ func (t CustomTheme) Size(style fyne.ThemeSizeName) float32 {
 	case theme.SizeNamePadding:
 		return 0
 	case theme.SizeNameText:
-		return 17
+		return 16
 	default:
 		return theme.DefaultTheme().Size(style)
 	}
