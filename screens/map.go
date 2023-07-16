@@ -9,27 +9,29 @@ import (
 var (
 	playerPosX   int = 2
 	playerPosY   int = 4
+	mapMaxX      int = 30
+	mapMaxY      int = 30
 	mapContainer *fyne.Container
+	playerAvatar *canvas.Image
 )
 
 func ShowMapScreen(window fyne.Window) {
-	h, v := 30, 30
-	imageMatrix := createMapMatrix(h, v)
+	imageMatrix := createMapMatrix(mapMaxX, mapMaxY)
 	firstLine := container.NewHBox()
 
 	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
 	horizontalBorder.FillMode = canvas.ImageFillOriginal
-	horizontalBorder.Resize(fyne.NewSize(float32(h-1)*32, 1))
+	horizontalBorder.Resize(fyne.NewSize(float32(mapMaxX-1)*32, 1))
 	firstLine.Add(horizontalBorder)
 	verticalBorder := canvas.NewImageFromFile("static/black_vline.png")
 	verticalBorder.FillMode = canvas.ImageFillOriginal
-	verticalBorder.Resize(fyne.NewSize(1, float32(v-1)*32))
+	verticalBorder.Resize(fyne.NewSize(1, float32(mapMaxY-1)*32))
 	secondLine := container.NewHBox(verticalBorder)
 
 	mapContainer = container.NewWithoutLayout()
-	for i := 0; i < v; i++ {
+	for i := 0; i < mapMaxY; i++ {
 		currentLine := float32(i) * 32
-		for j := 0; j < h; j++ {
+		for j := 0; j < mapMaxX; j++ {
 			tile := imageMatrix[i][j]
 			tile.Resize(fyne.NewSize(32, 32))
 			currentPos := fyne.NewPos(currentLine, float32(j)*32)
@@ -37,10 +39,16 @@ func ShowMapScreen(window fyne.Window) {
 			mapContainer.Add(tile)
 		}
 	}
-	drawPlayer()
+	playerAvatar = canvas.NewImageFromFile("./static/warrior.png")
+	playerAvatar.FillMode = canvas.ImageFillOriginal
+	playerAvatar.Resize(fyne.NewSize(32, 32))
+	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+	mapContainer.Add(playerAvatar)
+
 	secondLine.Add(mapContainer)
 
 	scrollableMapContainer := container.NewVBox(firstLine, secondLine)
+	scrollableMapContainer.Resize(fyne.NewSize(float32(mapMaxX)*32, float32(mapMaxY)*32))
 	content := container.NewScroll(scrollableMapContainer)
 	window.Canvas().SetOnTypedKey(mapKeyListener)
 
@@ -65,24 +73,27 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 
 func mapKeyListener(event *fyne.KeyEvent) {
 	if event.Name == fyne.KeyUp {
-		playerPosY = playerPosY - 1
+		if playerPosY > 0 {
+			playerPosY = playerPosY - 1
+		}
 	} else if event.Name == fyne.KeyDown {
-		playerPosY = playerPosY + 1
+		if playerPosY < mapMaxY-1 {
+			playerPosY = playerPosY + 1
+		}
 	} else if event.Name == fyne.KeyLeft {
-		playerPosX = playerPosX - 1
+		if playerPosX > 0 {
+			playerPosX = playerPosX - 1
+		}
 	} else if event.Name == fyne.KeyRight {
-		playerPosX = playerPosX + 1
+		if playerPosX < mapMaxX-1 {
+			playerPosX = playerPosX + 1
+		}
 	}
 
-	drawPlayer()
+	movePlayer()
 
 }
 
-func drawPlayer() {
-	player := canvas.NewImageFromFile("./static/warrior.png")
-	player.FillMode = canvas.ImageFillOriginal
-	player.Resize(fyne.NewSize(32, 32))
-	player.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
-	//TODO remove previous position
-	mapContainer.Add(player)
+func movePlayer() {
+	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
 }
