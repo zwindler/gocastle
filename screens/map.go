@@ -94,37 +94,49 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 }
 
 func mapKeyListener(event *fyne.KeyEvent) {
-	if event.Name == fyne.KeyUp || event.Name == fyne.KeyZ {
-		checkWalkable(playerPosX, playerPosY-1)
-	} else if event.Name == fyne.KeyE {
-		checkWalkable(playerPosX+1, playerPosY-1)
-	} else if event.Name == fyne.KeyRight || event.Name == fyne.KeyD {
-		checkWalkable(playerPosX+1, playerPosY)
-	} else if event.Name == fyne.KeyC {
-		checkWalkable(playerPosX+1, playerPosY+1)
-	} else if event.Name == fyne.KeyDown || event.Name == fyne.KeyS || event.Name == fyne.KeyX {
-		checkWalkable(playerPosX, playerPosY+1)
-	} else if event.Name == fyne.KeyW {
-		checkWalkable(playerPosX-1, playerPosY+1)
-	} else if event.Name == fyne.KeyLeft || event.Name == fyne.KeyQ {
-		checkWalkable(playerPosX-1, playerPosY)
-	} else if event.Name == fyne.KeyA {
-		checkWalkable(playerPosX-1, playerPosY-1)
+	directions := map[fyne.KeyName]struct{ dx, dy int }{
+		fyne.KeyUp:    {0, -1},
+		fyne.KeyZ:     {0, -1},
+		fyne.KeyE:     {1, -1},
+		fyne.KeyRight: {1, 0},
+		fyne.KeyD:     {1, 0},
+		fyne.KeyC:     {1, 1},
+		fyne.KeyDown:  {0, 1},
+		fyne.KeyS:     {0, 1},
+		fyne.KeyX:     {0, 1},
+		fyne.KeyW:     {-1, 1},
+		fyne.KeyLeft:  {-1, 0},
+		fyne.KeyQ:     {-1, 0},
+		fyne.KeyA:     {-1, -1},
 	}
 
-	movePlayer()
+	direction, ok := directions[event.Name]
+	if !ok {
+		return // Ignore keys that are not part of the directions map
+	}
 
+	newX := playerPosX + direction.dx
+	newY := playerPosY + direction.dy
+
+	if checkWalkable(newX, newY) {
+		movePlayer(newX, newY)
+	} else {
+		fmt.Println("You are blocked!")
+	}
 }
 
-func checkWalkable(futurePosX int, futurePosY int) {
+func checkWalkable(futurePosX int, futurePosY int) bool {
 	if futurePosX >= 0 && futurePosX < mapColumns &&
 		futurePosY >= 0 && futurePosY < mapRows &&
 		maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable {
-		playerPosX = futurePosX
-		playerPosY = futurePosY
+		return true
 	}
+	return false
 }
 
-func movePlayer() {
+func movePlayer(futurePosX int, futurePosY int) {
+	// assign new values for player position
+	playerPosX = futurePosX
+	playerPosY = futurePosY
 	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
 }
