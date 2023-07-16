@@ -1,6 +1,8 @@
 package screens
 
 import (
+	"gocastle/maps"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -9,13 +11,18 @@ import (
 var (
 	playerPosX   int = 2
 	playerPosY   int = 4
-	mapMaxX      int = 30
-	mapMaxY      int = 30
+	mapMaxX      int
+	mapMaxY      int
 	mapContainer *fyne.Container
 	playerAvatar *canvas.Image
+	map1         = maps.Map1
 )
 
 func ShowMapScreen(window fyne.Window) {
+	mapMaxX = len(map1)
+	if mapMaxX > 0 {
+		mapMaxY = len(map1[0])
+	}
 	imageMatrix := createMapMatrix(mapMaxX, mapMaxY)
 
 	firstLine := container.NewHBox()
@@ -58,12 +65,13 @@ func ShowMapScreen(window fyne.Window) {
 }
 
 func createMapMatrix(h, v int) [][]*canvas.Image {
+
 	matrix := make([][]*canvas.Image, v)
 
 	for i := 0; i < v; i++ {
 		matrix[i] = make([]*canvas.Image, h)
 		for j := 0; j < h; j++ {
-			image := canvas.NewImageFromFile("./static/grass.png")
+			image := canvas.NewImageFromFile(maps.TilesTypes[map1[i][j]])
 			image.FillMode = canvas.ImageFillOriginal
 			image.Resize(fyne.NewSize(32, 32))
 			matrix[i][j] = image
