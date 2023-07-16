@@ -74,21 +74,41 @@ func createMapMatrix(h, v int) [][]*canvas.Image {
 }
 
 func mapKeyListener(event *fyne.KeyEvent) {
-	if event.Name == fyne.KeyUp {
+	if event.Name == fyne.KeyUp || event.Name == fyne.KeyZ {
 		if playerPosY > 0 {
 			playerPosY = playerPosY - 1
 		}
-	} else if event.Name == fyne.KeyDown {
+	} else if event.Name == fyne.KeyE {
+		if playerPosY > 0 && playerPosX < mapMaxX-1 {
+			playerPosX = playerPosX + 1
+			playerPosY = playerPosY - 1
+		}
+	} else if event.Name == fyne.KeyRight || event.Name == fyne.KeyD {
+		if playerPosX < mapMaxX-1 {
+			playerPosX = playerPosX + 1
+		}
+	} else if event.Name == fyne.KeyC {
+		if playerPosX < mapMaxX-1 && playerPosY < mapMaxY-1 {
+			playerPosX = playerPosX + 1
+			playerPosY = playerPosY + 1
+		}
+	} else if event.Name == fyne.KeyDown || event.Name == fyne.KeyS || event.Name == fyne.KeyX {
 		if playerPosY < mapMaxY-1 {
 			playerPosY = playerPosY + 1
 		}
-	} else if event.Name == fyne.KeyLeft {
+	} else if event.Name == fyne.KeyW {
+		if playerPosY < mapMaxY-1 && playerPosX > 0 {
+			playerPosX = playerPosX - 1
+			playerPosY = playerPosY + 1
+		}
+	} else if event.Name == fyne.KeyLeft || event.Name == fyne.KeyQ {
 		if playerPosX > 0 {
 			playerPosX = playerPosX - 1
 		}
-	} else if event.Name == fyne.KeyRight {
-		if playerPosX < mapMaxX-1 {
-			playerPosX = playerPosX + 1
+	} else if event.Name == fyne.KeyA {
+		if playerPosX > 0 && playerPosY > 0 {
+			playerPosX = playerPosX - 1
+			playerPosY = playerPosY - 1
 		}
 	}
 
