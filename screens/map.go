@@ -36,11 +36,11 @@ func ShowMapScreen(window fyne.Window) {
 
 	mapContainer = container.NewWithoutLayout()
 	for row := 0; row < mapRows; row++ {
-		firstLine.Add(horizontalBorder)
+		verticalBorder.Add(verticalLine)
 		currentLine := float32(row) * 32
 		for column := 0; column < mapColumns; column++ {
-			if column == 0 {
-				verticalBorder.Add(verticalLine)
+			if row == 0 {
+				firstLine.Add(horizontalBorder)
 			}
 			tile := imageMatrix[row][column]
 			tile.Resize(fyne.NewSize(32, 32))
