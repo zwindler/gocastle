@@ -101,7 +101,7 @@ func ShowNewGameScreen(window fyne.Window) {
 						dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					} else {
 						// we are good to go!
-						ShowMapScreen(window)
+						ShowGameScreen(window)
 					}
 				}
 			}

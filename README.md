@@ -6,9 +6,21 @@ This project is my journey to creating a graphical game while learning Golang
 
 Every session, I'll add an entry in this file telling what I did and what I learned
 
+## Prerequisites 
+
+```bash
+sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
+```
+
+## 2023-07-17
+
+Now that I have PoCed the map, the character and the PNJs, it's time to take a look back at the main UI.
+
+There are at least 2 elements missing in my "map" screen (that I'm probably going to rename) if I look at Castle's UI. At the bottom of the screen, there is a scrollable text area containing messages of what happened, and another text area containing various players stats like health points, magic points, etc.
+
 ## 2023-07-16
 
-I replaced the first tile row+colum that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines (1x1000 and 1000x1). It works OK. Then, I cleaned the code a bit.
+I replaced the first tile row+column that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines (1x1000 and 1000x1). It works OK. Then, I cleaned the code a bit.
 
 ```go
 	firstLine := container.NewHBox()
@@ -557,4 +569,3 @@ It will crash with this error if you haven't rebooted (cf https://github.com/Sce
 ```
 GLX: Failed to create context: BadValue (integer parameter out of range for operation)
 ```
-

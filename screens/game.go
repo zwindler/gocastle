@@ -23,7 +23,7 @@ var (
 	currentMap   = maps.Map1
 )
 
-func ShowMapScreen(window fyne.Window) {
+func ShowGameScreen(window fyne.Window) {
 	mapRows = len(currentMap)
 	if mapRows > 0 {
 		mapColumns = len(currentMap[0])
