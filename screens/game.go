@@ -3,24 +3,29 @@ package screens
 import (
 	"fmt"
 	"gocastle/maps"
+	"gocastle/model"
+	"image/color"
 	"math/rand"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 )
 
 var (
-	playerPosX   int = 2
-	playerPosY   int = 4
-	playerAvatar *canvas.Image
-	PNJ1PosX     int = 10
-	PNJ1PosY     int = 15
-	PNJ1         *canvas.Image
-	mapColumns   int
-	mapRows      int
-	mapContainer *fyne.Container
-	currentMap   = maps.Map1
+	playerPosX             int = 2
+	playerPosY             int = 4
+	playerAvatar           *canvas.Image
+	PNJ1PosX               int = 10
+	PNJ1PosY               int = 15
+	PNJ1                   *canvas.Image
+	mapColumns             int
+	mapRows                int
+	currentMap             = maps.Map1
+	mapContainer           = container.NewWithoutLayout()
+	logsArea               = container.NewVBox()
+	logsScrollableTextArea = container.NewVScroll(logsArea)
 )
 
 func ShowGameScreen(window fyne.Window) {
@@ -38,7 +43,6 @@ func ShowGameScreen(window fyne.Window) {
 	verticalLine.FillMode = canvas.ImageFillOriginal
 	verticalBorder := container.NewVBox()
 
-	mapContainer = container.NewWithoutLayout()
 	for row := 0; row < mapRows; row++ {
 		verticalBorder.Add(verticalLine)
 		currentLine := float32(row) * 32
@@ -66,12 +70,19 @@ func ShowGameScreen(window fyne.Window) {
 	mapContainer.Add(PNJ1)
 
 	secondLine := container.NewHBox(verticalBorder, mapContainer)
+	scrollableMapContainer := container.NewScroll(container.NewVBox(firstLine, secondLine))
+	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
-	scrollableMapContainer := container.NewVBox(firstLine, secondLine)
-	scrollableMapContainer.Resize(fyne.NewSize(float32(mapColumns)*32, float32(mapRows)*32))
-	content := container.NewScroll(scrollableMapContainer)
+	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
+	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
+
+	statsTextArea := widget.NewLabel("")
+	statsTextArea.Resize(fyne.NewSize(200, 100))
+	statsTextArea.Move(fyne.NewPos(601, 501))
+
+	content := container.NewWithoutLayout(scrollableMapContainer, logsScrollableTextArea, statsTextArea)
+
 	window.Canvas().SetOnTypedKey(mapKeyListener)
-
 	window.SetContent(content)
 }
 
@@ -128,10 +139,17 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	newX := playerPosX + direction.dx
 	newY := playerPosY + direction.dy
 
+	// moving costs 3 seconds
+	model.TimeSinceBegin = model.TimeSinceBegin + 3
+
 	if checkWalkable(newX, newY) {
 		movePlayer(newX, newY)
 	} else {
 		fmt.Println("You are blocked!")
+		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin)+": you are blocked!", color.White)
+		logsEntry.TextSize = 12
+		logsArea.Add(logsEntry)
+		logsScrollableTextArea.ScrollToBottom()
 	}
 
 	newTurnForPNJs()
@@ -167,6 +185,7 @@ func movePlayer(futurePosX int, futurePosY int) {
 	// assign new values for player position
 	playerPosX = futurePosX
 	playerPosY = futurePosY
+
 	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
 }
 

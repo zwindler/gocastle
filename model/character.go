@@ -11,4 +11,6 @@ type CharacterStats struct {
 	AspectValue       string
 }
 
-var Player CharacterStats
+var (
+	Player         CharacterStats
+)
