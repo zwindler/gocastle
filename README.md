@@ -18,6 +18,37 @@ Now that I have PoCed the map, the character and the PNJs, it's time to take a l
 
 There are at least 2 elements missing in my "map" screen (that I'm probably going to rename) if I look at Castle's UI. At the bottom of the screen, there is a scrollable text area containing messages of what happened, and another text area containing various players stats like health points, magic points, etc.
 
+To create these area, I had to change (again again) a bit the layout and switch to a container without layout for the various elements.
+
+I then created NewVBox inside a NewVScroll in the package vars. 
+
+```go
+	logsArea               = container.NewVBox()
+	logsScrollableTextArea = container.NewVScroll(logsArea)
+```
+
+This way I can add "log entries" from every functions of the package. I tried with mapKeyListener:
+
+```go
+		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin)+": you are blocked!", color.White)
+		logsEntry.TextSize = 12
+		logsArea.Add(logsEntry)
+		logsScrollableTextArea.ScrollToBottom()
+```
+
+I also added a function FormatDuration() to display time spent by our character. Every actions will have specific time "costs". Walking costs 3s for each tile. Sleeping will cost a few hours, etc.
+
+The last thing I started working on is the stats Box, in the right down corner which will display hp, mp, time spent and location (using map name)
+
+```go
+	statsTextArea := container.New(layout.NewGridLayout(2),
+		healthPointsLabel, healthPointsValueLabel,
+		manaPointsLabel, manaPointsValueLabel,
+		timeSpentLabel, timeSpentValueLabel,
+		locationLabel, locationValueLabel,
+	)
+```
+
 ## 2023-07-16
 
 I replaced the first tile row+column that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines (1x1000 and 1000x1). It works OK. Then, I cleaned the code a bit.

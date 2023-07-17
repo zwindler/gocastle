@@ -6,7 +6,7 @@ var (
 	TimeSinceBegin int = 0
 )
 
-func FormatDuration(seconds int) string {
+func FormatDuration(seconds int, format string) string {
 	if seconds < 0 {
 		return "Invalid duration"
 	}
@@ -21,16 +21,21 @@ func FormatDuration(seconds int) string {
 	seconds -= minutes * 60
 
 	durationStr := ""
-	if days > 0 {
-		durationStr += fmt.Sprintf("%d day(s), ", days)
+
+	if format == "long" {
+		if days > 0 {
+			durationStr += fmt.Sprintf("%d day(s), ", days)
+		}
+		if hours > 0 {
+			durationStr += fmt.Sprintf("%d hour(s), ", hours)
+		}
+		if minutes > 0 {
+			durationStr += fmt.Sprintf("%d minute(s), ", minutes)
+		}
+		durationStr += fmt.Sprintf("%d second(s)", seconds)
+	} else {
+		durationStr = fmt.Sprintf("%dd%d:%d:%d, ", days, hours, minutes, seconds)
 	}
-	if hours > 0 {
-		durationStr += fmt.Sprintf("%d hour(s), ", hours)
-	}
-	if minutes > 0 {
-		durationStr += fmt.Sprintf("%d minute(s), ", minutes)
-	}
-	durationStr += fmt.Sprintf("%d second(s)", seconds)
 
 	return durationStr
 }

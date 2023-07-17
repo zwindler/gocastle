@@ -27,6 +27,9 @@ var (
 	mapContainer           = container.NewWithoutLayout()
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
+	healthPointsValueLabel = canvas.NewText("10/10", color.White)
+	manaPointsValueLabel   = canvas.NewText("10/10", color.White)
+	timeSpentValueLabel    = canvas.NewText("0d0:0:0", color.White)
 )
 
 func ShowGameScreen(window fyne.Window) {
@@ -79,19 +82,22 @@ func ShowGameScreen(window fyne.Window) {
 
 	healthPointsLabel := canvas.NewText("Health Points:", color.White)
 	healthPointsLabel.TextSize = 14
+	healthPointsValueLabel.TextSize = 14
 	manaPointsLabel := canvas.NewText("Mana Points:", color.White)
 	manaPointsLabel.TextSize = 14
+	manaPointsValueLabel.TextSize = 14
 	timeSpentLabel := canvas.NewText("Time spent:", color.White)
 	timeSpentLabel.TextSize = 14
+	timeSpentValueLabel.TextSize = 14
 	locationLabel := canvas.NewText("Location:", color.White)
 	locationLabel.TextSize = 14
 	locationValueLabel := canvas.NewText(currentMap.Name, color.White)
 	locationValueLabel.TextSize = 14
 
 	statsTextArea := container.New(layout.NewGridLayout(2),
-		healthPointsLabel, layout.NewSpacer(),
-		manaPointsLabel, layout.NewSpacer(),
-		timeSpentLabel, layout.NewSpacer(),
+		healthPointsLabel, healthPointsValueLabel,
+		manaPointsLabel, manaPointsValueLabel,
+		timeSpentLabel, timeSpentValueLabel,
 		locationLabel, locationValueLabel,
 	)
 	statsTextArea.Resize(fyne.NewSize(200, 100))
@@ -158,12 +164,14 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 	// moving costs 3 seconds
 	model.TimeSinceBegin = model.TimeSinceBegin + 3
+	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
+	timeSpentValueLabel.Refresh()
 
 	if checkWalkable(newX, newY) {
 		movePlayer(newX, newY)
 	} else {
 		fmt.Println("You are blocked!")
-		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin)+": you are blocked!", color.White)
+		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", color.White)
 		logsEntry.TextSize = 12
 		logsArea.Add(logsEntry)
 		logsScrollableTextArea.ScrollToBottom()
