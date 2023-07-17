@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
+	"fyne.io/fyne/v2/layout"
 )
 
 var (
@@ -73,12 +73,26 @@ func ShowGameScreen(window fyne.Window) {
 	scrollableMapContainer := container.NewScroll(container.NewVBox(firstLine, secondLine))
 	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
-	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
+	logsScrollableTextArea.Resize(fyne.NewSize(500, 100))
 	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
 
-	statsTextArea := widget.NewLabel("")
-	statsTextArea.Resize(fyne.NewSize(200, 100))
-	statsTextArea.Move(fyne.NewPos(601, 501))
+	healthPointsLabel := canvas.NewText("Health Points:", color.White)
+	healthPointsLabel.TextSize = 14
+	manaPointsLabel := canvas.NewText("Mana Points:", color.White)
+	manaPointsLabel.TextSize = 14
+	timeSpentLabel := canvas.NewText("Time spent:", color.White)
+	timeSpentLabel.TextSize = 14
+	locationLabel := canvas.NewText("Location:", color.White)
+	locationLabel.TextSize = 14
+
+	statsTextArea := container.New(layout.NewGridLayout(2),
+		healthPointsLabel, layout.NewSpacer(),
+		manaPointsLabel, layout.NewSpacer(),
+		timeSpentLabel, layout.NewSpacer(),
+		locationLabel, layout.NewSpacer(),
+	)
+	statsTextArea.Resize(fyne.NewSize(300, 100))
+	statsTextArea.Move(fyne.NewPos(501, 501))
 
 	content := container.NewWithoutLayout(scrollableMapContainer, logsScrollableTextArea, statsTextArea)
 
