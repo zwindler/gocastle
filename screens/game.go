@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gocastle/maps"
 	"gocastle/model"
-	"image/color"
 	"math/rand"
 
 	"fyne.io/fyne/v2"
@@ -27,9 +26,9 @@ var (
 	mapContainer           = container.NewWithoutLayout()
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
-	healthPointsValueLabel = canvas.NewText("10/10", color.White)
-	manaPointsValueLabel   = canvas.NewText("10/10", color.White)
-	timeSpentValueLabel    = canvas.NewText("0d0:0:0", color.White)
+	healthPointsValueLabel = canvas.NewText("10/10", model.TextColor)
+	manaPointsValueLabel   = canvas.NewText("10/10", model.TextColor)
+	timeSpentValueLabel    = canvas.NewText("0d0:0:0", model.TextColor)
 )
 
 func ShowGameScreen(window fyne.Window) {
@@ -80,18 +79,18 @@ func ShowGameScreen(window fyne.Window) {
 	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
 	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
 
-	healthPointsLabel := canvas.NewText("Health Points:", color.White)
+	healthPointsLabel := canvas.NewText("Health Points:", model.TextColor)
 	healthPointsLabel.TextSize = 14
 	healthPointsValueLabel.TextSize = 14
-	manaPointsLabel := canvas.NewText("Mana Points:", color.White)
+	manaPointsLabel := canvas.NewText("Mana Points:", model.TextColor)
 	manaPointsLabel.TextSize = 14
 	manaPointsValueLabel.TextSize = 14
-	timeSpentLabel := canvas.NewText("Time spent:", color.White)
+	timeSpentLabel := canvas.NewText("Time spent:", model.TextColor)
 	timeSpentLabel.TextSize = 14
 	timeSpentValueLabel.TextSize = 14
-	locationLabel := canvas.NewText("Location:", color.White)
+	locationLabel := canvas.NewText("Location:", model.TextColor)
 	locationLabel.TextSize = 14
-	locationValueLabel := canvas.NewText(currentMap.Name, color.White)
+	locationValueLabel := canvas.NewText(currentMap.Name, model.TextColor)
 	locationValueLabel.TextSize = 14
 
 	statsTextArea := container.New(layout.NewGridLayout(2),
@@ -171,7 +170,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		movePlayer(newX, newY)
 	} else {
 		fmt.Println("You are blocked!")
-		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", color.White)
+		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
 		logsEntry.TextSize = 12
 		logsArea.Add(logsEntry)
 		logsScrollableTextArea.ScrollToBottom()

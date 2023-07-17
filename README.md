@@ -49,6 +49,24 @@ The last thing I started working on is the stats Box, in the right down corner w
 	)
 ```
 
+I discovered that the theme depends on system being in light/dark mode. This is an issue because if I use text in black color on black theme you will not be able to read it.
+
+There may be a more elegant solution (I haven't found it yet) but I found you can access the ThemeVariant from app settings and documentation (https://developer.fyne.io/api/v2.0/theme/) told me that `VariantDark fyne.ThemeVariant = 0` and `VariantLight fyne.ThemeVariant = 1`.
+
+So I fixed it like that:
+
+```go
+	if goCastle.Settings().ThemeVariant() == 0 {
+		// dark theme
+		model.TextColor = color.White
+	} else {
+		// light theme
+		model.TextColor = color.Black
+	}
+```
+
+I also (re)discovered that almost all my screens support resizing. The main menu can be fixed easily with a Border Layout. The game screen may be tougher though since I heavily used fixed positions. So I removed the `mainWindow.SetFixedSize(true)` and plan on working on it.
+
 ## 2023-07-16
 
 I replaced the first tile row+column that served to set a "size" to the scrollable container (because the container without layout has no size?) but black pixel lines (1x1000 and 1000x1). It works OK. Then, I cleaned the code a bit.

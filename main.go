@@ -3,6 +3,7 @@ package main
 import (
 	"gocastle/model"
 	"gocastle/screens"
+	"image/color"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -11,6 +12,13 @@ import (
 func main() {
 	goCastle := app.New()
 	goCastle.Settings().SetTheme(&model.CustomTheme{})
+	if goCastle.Settings().ThemeVariant() == 0 {
+		// dark theme
+		model.TextColor = color.White
+	} else {
+		// light theme
+		model.TextColor = color.Black
+	}
 	mainWindow := goCastle.NewWindow("GoCastle")
 
 	screens.ShowMenuScreen(mainWindow)

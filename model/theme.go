@@ -7,6 +7,10 @@ import (
 	"fyne.io/fyne/v2/theme"
 )
 
+var (
+	TextColor color.Color
+)
+
 type CustomTheme struct{}
 
 func (t CustomTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
