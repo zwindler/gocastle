@@ -74,6 +74,7 @@ func ShowGameScreen(window fyne.Window) {
 
 	secondLine := container.NewHBox(verticalBorder, mapContainer)
 	scrollableMapContainer := container.NewScroll(container.NewVBox(firstLine, secondLine))
+
 	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
 	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
@@ -102,7 +103,8 @@ func ShowGameScreen(window fyne.Window) {
 	statsTextArea.Resize(fyne.NewSize(200, 100))
 	statsTextArea.Move(fyne.NewPos(601, 501))
 
-	content := container.NewWithoutLayout(scrollableMapContainer, logsScrollableTextArea, statsTextArea)
+	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
+	content := container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
 
 	window.Canvas().SetOnTypedKey(mapKeyListener)
 	window.SetContent(content)

@@ -24,6 +24,5 @@ func main() {
 	screens.ShowMenuScreen(mainWindow)
 
 	mainWindow.Resize(fyne.NewSize(800, 600))
-	mainWindow.SetFixedSize(true)
 	mainWindow.ShowAndRun()
 }

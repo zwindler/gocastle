@@ -25,23 +25,13 @@ func ShowMenuScreen(window fyne.Window) {
 		window.Close()
 	})
 
-	// Resize buttons
-	defaultButtonSize := fyne.NewSize(120, 40)
-	newGameButton.Resize(defaultButtonSize)
-	loadGameButton.Resize(defaultButtonSize)
-	quitButton.Resize(defaultButtonSize)
-
-	// Move buttons
-	newGameButton.Move(fyne.NewPos(340, 220))
-	loadGameButton.Move(fyne.NewPos(340, 275))
-	quitButton.Move(fyne.NewPos(340, 330))
-
 	// Create container with all elements
-	menu := container.NewWithoutLayout(
+	buttons := container.New(layout.NewVBoxLayout(),
 		newGameButton,
 		loadGameButton,
 		quitButton,
 	)
+	menu := container.New(layout.NewCenterLayout(), buttons)
 
 	window.SetContent(container.New(layout.NewMaxLayout(),
 		backgroundImage,

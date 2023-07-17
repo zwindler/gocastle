@@ -65,7 +65,34 @@ So I fixed it like that:
 	}
 ```
 
-I also (re)discovered that almost all my screens support resizing. The main menu can be fixed easily with a Border Layout. The game screen may be tougher though since I heavily used fixed positions. So I removed the `mainWindow.SetFixedSize(true)` and plan on working on it.
+I also (re)discovered that almost all my screens support resizing by re-reading https://developer.fyne.io/explore/layouts
+
+The main menu can be fixed easily with a Center Layout. The game screen may be tougher though since I heavily used fixed positions. So I removed the `mainWindow.SetFixedSize(true)` and worked on it.
+
+```go
+	buttons := container.New(layout.NewVBoxLayout(),
+		newGameButton,
+		loadGameButton,
+		quitButton,
+	)
+	menu := container.New(layout.NewCenterLayout(), buttons)
+
+	window.SetContent(container.New(layout.NewMaxLayout(),
+		backgroundImage,
+		menu))
+```
+
+I also think I can do something with the Border Layout for the map screen because documentation says
+> All items in the container that are not positioned on a border will fill the remaining space.
+
+Meaning I could but the bottom boxes (logs and stats) in the bottom border and the map will fill the rest. bottom boxes could also be handled as a border layout.
+
+```go
+	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
+	content := container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
+```
+
+And it works!!
 
 ## 2023-07-16
 
