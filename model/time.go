@@ -34,7 +34,7 @@ func FormatDuration(seconds int, format string) string {
 		}
 		durationStr += fmt.Sprintf("%d second(s)", seconds)
 	} else {
-		durationStr = fmt.Sprintf("%dd%d:%d:%d, ", days, hours, minutes, seconds)
+		durationStr = fmt.Sprintf("%dd%d:%d:%d", days, hours, minutes, seconds)
 	}
 
 	return durationStr
