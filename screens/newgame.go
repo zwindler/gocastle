@@ -18,7 +18,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect3 *widget.RadioGroup
 
 	// set initial defaults
-	// model.Player.PointsToSpend = 10
+	//model.Player.PointsToSpend = 10
 	model.Player.StrengthValue = 10
 	model.Player.ConstitutionValue = 10
 	model.Player.IntelligenceValue = 10
@@ -39,22 +39,22 @@ func ShowNewGameScreen(window fyne.Window) {
 	pointsToSpendValue := widget.NewLabel("10")
 
 	strengthLabel := widget.NewLabel("Strength: 10")
-	strengthRange := createSliderWithCallback("Strength", 5, 35,
+	strengthRange := createSliderWithCallback("Strength", 5, 20,
 		10, &model.Player.StrengthValue, &model.Player.PointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
 	constitutionLabel := widget.NewLabel("Constitution: 10")
-	constitutionRange := createSliderWithCallback("Constitution", 5, 35,
+	constitutionRange := createSliderWithCallback("Constitution", 5, 20,
 		10, &model.Player.ConstitutionValue, &model.Player.PointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
 	intelligenceLabel := widget.NewLabel("Intelligence: 10")
-	intelligenceRange := createSliderWithCallback("Intelligence", 5, 35,
+	intelligenceRange := createSliderWithCallback("Intelligence", 5, 20,
 		10, &model.Player.IntelligenceValue, &model.Player.PointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
 	dexterityLabel := widget.NewLabel("Dexterity: 10")
-	dexterityRange := createSliderWithCallback("Dexterity", 5, 35,
+	dexterityRange := createSliderWithCallback("Dexterity", 5, 20,
 		10, &model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
