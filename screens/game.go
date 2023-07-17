@@ -14,24 +14,25 @@ import (
 )
 
 var (
-	playerPosX             int = 2
-	playerPosY             int = 4
-	playerAvatar           *canvas.Image
-	PNJ1PosX               int = 10
-	PNJ1PosY               int = 15
-	PNJ1                   *canvas.Image
-	mapColumns             int
-	mapRows                int
-	currentMap             = maps.Map1
+	playerPosX   int = 2
+	playerPosY   int = 4
+	playerAvatar *canvas.Image
+	PNJ1PosX     int = 10
+	PNJ1PosY     int = 15
+	PNJ1         *canvas.Image
+	mapColumns   int
+	mapRows      int
+	currentMap   = maps.Town
+
 	mapContainer           = container.NewWithoutLayout()
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
 )
 
 func ShowGameScreen(window fyne.Window) {
-	mapRows = len(currentMap)
+	mapRows = len(currentMap.MapMatrix)
 	if mapRows > 0 {
-		mapColumns = len(currentMap[0])
+		mapColumns = len(currentMap.MapMatrix[0])
 	}
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
@@ -73,7 +74,7 @@ func ShowGameScreen(window fyne.Window) {
 	scrollableMapContainer := container.NewScroll(container.NewVBox(firstLine, secondLine))
 	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
-	logsScrollableTextArea.Resize(fyne.NewSize(500, 100))
+	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
 	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
 
 	healthPointsLabel := canvas.NewText("Health Points:", color.White)
@@ -84,15 +85,17 @@ func ShowGameScreen(window fyne.Window) {
 	timeSpentLabel.TextSize = 14
 	locationLabel := canvas.NewText("Location:", color.White)
 	locationLabel.TextSize = 14
+	locationValueLabel := canvas.NewText(currentMap.Name, color.White)
+	locationValueLabel.TextSize = 14
 
 	statsTextArea := container.New(layout.NewGridLayout(2),
 		healthPointsLabel, layout.NewSpacer(),
 		manaPointsLabel, layout.NewSpacer(),
 		timeSpentLabel, layout.NewSpacer(),
-		locationLabel, layout.NewSpacer(),
+		locationLabel, locationValueLabel,
 	)
-	statsTextArea.Resize(fyne.NewSize(300, 100))
-	statsTextArea.Move(fyne.NewPos(501, 501))
+	statsTextArea.Resize(fyne.NewSize(200, 100))
+	statsTextArea.Move(fyne.NewPos(601, 501))
 
 	content := container.NewWithoutLayout(scrollableMapContainer, logsScrollableTextArea, statsTextArea)
 
@@ -117,7 +120,7 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	}
 	for row := 0; row < mapRows; row++ {
 		for column := 0; column < numColumns; column++ {
-			image := loadedTiles[currentMap[row][column]]
+			image := loadedTiles[currentMap.MapMatrix[row][column]]
 			imageCanvas := canvas.NewImageFromImage(image)
 			imageCanvas.FillMode = canvas.ImageFillOriginal
 			imageCanvas.Resize(fyne.NewSize(32, 32))
@@ -172,7 +175,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 func checkWalkable(futurePosX int, futurePosY int) bool {
 	if futurePosX >= 0 && futurePosX < mapColumns &&
 		futurePosY >= 0 && futurePosY < mapRows &&
-		maps.TilesTypes[currentMap[futurePosY][futurePosX]].IsWalkable &&
+		maps.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable &&
 		(playerPosX != futurePosX || playerPosY != futurePosY) &&
 		(PNJ1PosX != futurePosX || PNJ1PosY != futurePosY) {
 		//TODO make a function to check for other characters presence
