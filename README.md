@@ -20,6 +20,28 @@ I thought using uints first but I'm unconformable with the fact that some comput
 
 All this is preliminary work to display live counters in the stats box of the game screen.
 
+I then reworked the code from the newgame screen + game screen to clean some ugly things, move code in functions to improve readability, set up constants. 
+
+No value is now set and then updated (like in newgame screen) and they are all dynamically displayed (specifically in updateStats() function but not only).
+
+```go
+func updateStats() {
+	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentHP, model.Player.MaxHP)
+	healthPointsValueLabel.Refresh()
+
+	manaPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentMP, model.Player.MaxMP)
+	manaPointsValueLabel.Refresh()
+
+	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
+	timeSpentValueLabel.Refresh()
+}
+```
+
+```diff
+-	pointsToSpendValue := widget.NewLabel("10")
++	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
+```
+
 ## 2023-07-17
 
 Now that I have PoCed the map, the character and the PNJs, it's time to take a look back at the main UI.
