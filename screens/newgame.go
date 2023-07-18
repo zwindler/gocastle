@@ -12,6 +12,11 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+const (
+	minStat = 5
+	maxStat = 20
+)
+
 func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect1 *widget.RadioGroup
 	var characterAspect2 *widget.RadioGroup
@@ -21,28 +26,26 @@ func ShowNewGameScreen(window fyne.Window) {
 	characterNameEntry := widget.NewEntry()
 
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
-	pointsToSpendValue := widget.NewLabel("10")
+	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
 
-	// TODO: this should display model.Player.StrengthValue, not a static 10
-	strengthLabel := widget.NewLabel("Strength: 10")
-	// TODO: argument 10 is probably useless, fix this
-	strengthRange := createSliderWithCallback("Strength", 5, 20,
-		10, &model.Player.StrengthValue, &model.Player.PointsToSpend,
+	strengthLabel := widget.NewLabel(fmt.Sprintf("Strength: %d", model.Player.StrengthValue))
+	strengthRange := createSliderWithCallback("Strength", minStat, maxStat,
+		&model.Player.StrengthValue, &model.Player.PointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
-	constitutionLabel := widget.NewLabel("Constitution: 10")
-	constitutionRange := createSliderWithCallback("Constitution", 5, 20,
-		10, &model.Player.ConstitutionValue, &model.Player.PointsToSpend,
+	constitutionLabel := widget.NewLabel(fmt.Sprintf("Constitution: %d", model.Player.ConstitutionValue))
+	constitutionRange := createSliderWithCallback("Constitution", minStat, maxStat,
+		&model.Player.ConstitutionValue, &model.Player.PointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
-	intelligenceLabel := widget.NewLabel("Intelligence: 10")
-	intelligenceRange := createSliderWithCallback("Intelligence", 5, 20,
-		10, &model.Player.IntelligenceValue, &model.Player.PointsToSpend,
+	intelligenceLabel := widget.NewLabel(fmt.Sprintf("Intelligence: %d", model.Player.IntelligenceValue))
+	intelligenceRange := createSliderWithCallback("Intelligence", minStat, maxStat,
+		&model.Player.IntelligenceValue, &model.Player.PointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
-	dexterityLabel := widget.NewLabel("Dexterity: 10")
-	dexterityRange := createSliderWithCallback("Dexterity", 5, 20,
-		10, &model.Player.DexterityValue, &model.Player.PointsToSpend,
+	dexterityLabel := widget.NewLabel(fmt.Sprintf("Dexterity: %d", model.Player.DexterityValue))
+	dexterityRange := createSliderWithCallback("Dexterity", minStat, maxStat,
+		&model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
 	characterGenderLabel := widget.NewLabel("Gender")
@@ -88,7 +91,7 @@ func ShowNewGameScreen(window fyne.Window) {
 						dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					} else {
 						// we are good to go!
-						maxHP := model.GetMaxHP(model.Player.Level, 10, model.Player.ConstitutionValue)
+						maxHP := model.GetMaxHP(model.Player.Level, model.PlayerDefaultHP, model.Player.ConstitutionValue)
 						model.Player.MaxHP = maxHP
 						model.Player.CurrentHP = maxHP
 						ShowGameScreen(window)
@@ -130,10 +133,10 @@ func ShowNewGameScreen(window fyne.Window) {
 }
 
 func createSliderWithCallback(characteristic string, min float64, max float64,
-	defaultValue float64, value *int, pointsToSpend *int,
+	value *int, pointsToSpend *int,
 	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
 	slider := widget.NewSlider(min, max)
-	slider.Value = defaultValue
+	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {
 		intV := int(v)
 		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
@@ -143,8 +146,8 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 			slider.Value = float64(*value)
 			slider.Refresh()
 		}
-		valueLabel.SetText(fmt.Sprintf("%s: %.0f", characteristic, *value))
-		pointsToSpendLabel.SetText(fmt.Sprintf("%.0f", model.Player.PointsToSpend))
+		valueLabel.SetText(fmt.Sprintf("%s: %d", characteristic, *value))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%d", model.Player.PointsToSpend))
 		valueLabel.Refresh()
 	}
 	return slider
