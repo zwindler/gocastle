@@ -42,6 +42,46 @@ func updateStats() {
 +	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
 ```
 
+Now, I can rework on NPCs a bit. I've added a new file called npc.go containing various structs that will be useful for next steps.
+
+```go
+type Avatar struct {
+	AspectPath *canvas.Image
+	PosX       int
+	PosY       int
+}
+
+type NPCStats struct {
+	Name      string
+	Pronoun   string
+	Avatar    Avatar
+	MaxHP     int
+	CurrentHP int
+	MaxMP     int
+	CurrentMP int
+}
+type NPCsOnCurrentMap struct {
+	List []NPCStats
+}
+
+var (
+	FarmerAvatar = Avatar{
+		CanvasImage: canvas.NewImageFromFile("./static/farmer.png"),
+	}
+	Farmer = NPCStats{
+		Name:      "farmer",
+		Avatar:    FarmerAvatar,
+		Pronoun:   "him",
+		MaxHP:     10,
+		CurrentHP: 10,
+	}
+)
+```
+
+On the map, I'll then remove the previous attempts to make NPCs and instanciate a list NPCsOnCurrentMap. The drawSubject() function is already nearly generic and so are movePlayer and moveNPC1 so only a little rework is required. 
+
+That's what I thought but it turned out it was a bit of a pain xD. I managed to get something to compile but NPC movement and collision is totally broken now :trollface:.
+
 ## 2023-07-17
 
 Now that I have PoCed the map, the character and the PNJs, it's time to take a look back at the main UI.

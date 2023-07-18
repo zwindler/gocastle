@@ -56,17 +56,17 @@ func ShowNewGameScreen(window fyne.Window) {
 	characterAspectLabel := widget.NewLabel("Aspect")
 	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
 		resetRadioGroups(characterAspect2, characterAspect3)
-		model.Player.AspectValue = selected
+		//model.Player.AspectValue = selected
 	})
 
 	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect3)
-		model.Player.AspectValue = selected
+		//model.Player.AspectValue = selected
 	})
 
 	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect2)
-		model.Player.AspectValue = selected
+		//model.Player.AspectValue = selected
 	})
 
 	backButton := widget.NewButton("Back", func() {
@@ -86,16 +86,16 @@ func ShowNewGameScreen(window fyne.Window) {
 					content := widget.NewLabel("Character has no gender, please choose one")
 					dialog.ShowCustom("Gender not selected", "Close", content, window)
 				} else {
-					if model.Player.AspectValue == "" {
-						content := widget.NewLabel("Character has no aspect, please choose one")
-						dialog.ShowCustom("Aspect not selected", "Close", content, window)
-					} else {
-						// we are good to go!
-						maxHP := model.GetMaxHP(model.Player.Level, model.PlayerDefaultHP, model.Player.ConstitutionValue)
-						model.Player.MaxHP = maxHP
-						model.Player.CurrentHP = maxHP
-						ShowGameScreen(window)
-					}
+					/*if model.Player.AspectValue == nil {
+					content := widget.NewLabel("Character has no aspect, please choose one")
+					dialog.ShowCustom("Aspect not selected", "Close", content, window)
+					} else {*/
+					// we are good to go!
+					maxHP := model.GetMaxHP(model.Player.Level, model.PlayerDefaultHP, model.Player.ConstitutionValue)
+					model.Player.MaxHP = maxHP
+					model.Player.CurrentHP = maxHP
+					ShowGameScreen(window)
+					//}
 				}
 			}
 		}

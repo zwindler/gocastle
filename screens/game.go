@@ -17,12 +17,8 @@ const (
 )
 
 var (
-	playerPosX   int = 2
-	playerPosY   int = 4
-	playerAvatar *canvas.Image
-	PNJ1PosX     int = 10
-	PNJ1PosY     int = 15
-	PNJ1         *canvas.Image
+	player  = model.Player
+	NPCList = model.NPCsOnCurrentMap{}
 
 	mapColumns int
 	mapRows    int
@@ -46,12 +42,22 @@ func ShowGameScreen(window fyne.Window) {
 	scrollableMapContainer := container.NewScroll(createMapArea(mapContainer))
 	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
-	// draw player and PNJ
-	// TODO create a Subject struct that contains both image and coordinates
-	playerAvatar = canvas.NewImageFromFile("./static/warrior.png")
-	PNJ1 = canvas.NewImageFromFile("./static/farmer.png")
-	drawSubject(mapContainer, playerAvatar, playerPosX, playerPosY)
-	drawSubject(mapContainer, PNJ1, PNJ1PosX, PNJ1PosY)
+	// TODO create a separate function for this
+	// set player on map and draw it
+	player.Avatar.PosX, player.Avatar.PosY = 2, 4
+	drawSubject(mapContainer, player.Avatar)
+
+	// set farmer on map and draw it
+	farmer := model.Farmer
+	NPCList.List = append(NPCList.List, farmer)
+	farmer.Avatar.PosX, farmer.Avatar.PosY = 10, 15
+	drawSubject(mapContainer, farmer.Avatar)
+
+	// set wolf on map and draw it
+	wolf := model.Wolf
+	NPCList.List = append(NPCList.List, wolf)
+	wolf.Avatar.PosX, wolf.Avatar.PosY = 22, 22
+	drawSubject(mapContainer, wolf.Avatar)
 
 	// already declared in var so has to manipulate it elsewhere
 	// TODO improve this?
@@ -111,11 +117,11 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	return container.NewVBox(horizontalBorder, mapHBox)
 }
 
-func drawSubject(mapContainer *fyne.Container, subject *canvas.Image, posX int, posY int) {
-	subject.FillMode = canvas.ImageFillOriginal
-	subject.Resize(fyneTileSize)
-	subject.Move(fyne.NewPos(float32(posX*tileSize), float32(posY*tileSize)))
-	mapContainer.Add(subject)
+func drawSubject(mapContainer *fyne.Container, subject model.Avatar) {
+	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
+	subject.CanvasImage.Resize(fyneTileSize)
+	subject.CanvasImage.Move(fyne.NewPos(float32(subject.PosX*tileSize), float32(subject.PosY*tileSize)))
+	mapContainer.Add(subject.CanvasImage)
 }
 
 // Create the stats area containing health points, mana points, time spent, and location info.
@@ -209,15 +215,17 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		return // Ignore keys that are not part of the directions map
 	}
 
-	newX := playerPosX + direction.dx
-	newY := playerPosY + direction.dy
+	newX := player.Avatar.PosX + direction.dx
+	newY := player.Avatar.PosY + direction.dy
 
 	// moving costs 3 seconds
 	model.TimeSinceBegin = model.TimeSinceBegin + 3
 	updateStats()
 
+	fmt.Printf("Trying to move character \n")
 	if checkWalkable(newX, newY) {
-		movePlayer(newX, newY)
+		fmt.Printf("Moving character \n")
+		player.Avatar = moveAvatar(newX, newY, player.Avatar)
 	} else {
 		fmt.Println("You are blocked!")
 		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
@@ -226,46 +234,70 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		logsScrollableTextArea.ScrollToBottom()
 	}
 
-	newTurnForPNJs()
+	newTurnForNPCs()
+}
+
+func newTurnForNPCs() {
+	// for all NPCs, move on a random adjacent tile
+	for _, npc := range NPCList.List {
+		newX := npc.Avatar.PosX + rand.Intn(3) - 1
+		newY := npc.Avatar.PosY + rand.Intn(3) - 1
+		if checkWalkable(newX, newY) {
+			fmt.Printf(npc.Name)
+			npc.Avatar = moveAvatar(newX, newY, npc.Avatar)
+		}
+	}
+
 }
 
 func checkWalkable(futurePosX int, futurePosY int) bool {
-	if futurePosX >= 0 && futurePosX < mapColumns &&
-		futurePosY >= 0 && futurePosY < mapRows &&
-		maps.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable &&
-		(playerPosX != futurePosX || playerPosY != futurePosY) &&
-		(PNJ1PosX != futurePosX || PNJ1PosY != futurePosY) {
-		//TODO make a function to check for other characters presence
+	if !checkOutOfBounds(futurePosX, futurePosY) &&
+		checkTileIsWalkable(futurePosX, futurePosY) &&
+		dontCollideWithPlayer(futurePosX, futurePosY) &&
+		dontCollideWithNPCs(futurePosX, futurePosY) {
 		return true
 	}
 	return false
 }
 
-func newTurnForPNJs() {
-	// Generate random numbers between -1 and 1
-	randDeltaX := rand.Intn(3) - 1
-	randDeltaY := rand.Intn(3) - 1
-
-	newPNJ1PosX := PNJ1PosX + randDeltaX
-	newPNJ1PosY := PNJ1PosY + randDeltaY
-
-	if checkWalkable(newPNJ1PosX, newPNJ1PosY) {
-		movePNJ1(newPNJ1PosX, newPNJ1PosY)
+func checkOutOfBounds(futurePosX int, futurePosY int) bool {
+	if futurePosX >= 0 && futurePosX < mapColumns &&
+		futurePosY >= 0 && futurePosY < mapRows {
+		return false
 	}
+	return true
 }
 
-//TODO unify movePlayer and movePNJ
-func movePlayer(futurePosX int, futurePosY int) {
-	// assign new values for player position
-	playerPosX = futurePosX
-	playerPosY = futurePosY
-
-	playerAvatar.Move(fyne.NewPos(float32(playerPosX*tileSize), float32(playerPosY*tileSize)))
+func checkTileIsWalkable(futurePosX int, futurePosY int) bool {
+	return maps.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
 }
 
-func movePNJ1(futurePosX int, futurePosY int) {
-	// Assign new values for PNJ1 position
-	PNJ1PosX = futurePosX
-	PNJ1PosY = futurePosY
-	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*tileSize), float32(PNJ1PosY*tileSize)))
+func dontCollideWithPlayer(futurePosX int, futurePosY int) bool {
+	if player.PosX == futurePosX && player.PosY == futurePosY {
+		return false
+	}
+	return true
+}
+
+func dontCollideWithNPCs(futurePosX int, futurePosY int) bool {
+	// for all NPCs, check if future position would collide
+	for _, npc := range NPCList.List {
+		if npc.Avatar.PosX == futurePosX && npc.Avatar.PosY == futurePosY {
+			return false
+		}
+	}
+	// coordinates are free for movement
+	return true
+}
+
+func moveAvatar(futurePosX int, futurePosY int, subject model.Avatar) model.Avatar {
+	fmt.Printf("Moving from %d %d to %d %d\n", subject.PosX, subject.PosY, futurePosX, futurePosY)
+
+	// assign new values for subject position
+	subject.PosX = futurePosX
+	subject.PosY = futurePosY
+
+	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+
+	return subject
 }

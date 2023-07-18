@@ -1,9 +1,11 @@
 package model
 
+import "fyne.io/fyne/v2/canvas"
+
 type CharacterStats struct {
 	CharacterName     string
 	GenderValue       string
-	AspectValue       string
+	Avatar            Avatar
 	PointsToSpend     int
 	StrengthValue     int
 	ConstitutionValue int
@@ -14,15 +16,20 @@ type CharacterStats struct {
 	CurrentHP         int
 	MaxMP             int
 	CurrentMP         int
+	PosX              int
+	PosY              int
 }
 
 var (
+	PlayerAvatar = Avatar{
+		CanvasImage: canvas.NewImageFromFile("./static/warrior.png"),
+	}
 	Player = CharacterStats{
 		// TODO remove
 		CharacterName: "zwindler",
 		GenderValue:   "Female",
-		AspectValue:   ":-)",
 		// endTODO
+		Avatar:            PlayerAvatar,
 		PointsToSpend:     10,
 		StrengthValue:     10,
 		ConstitutionValue: 10,
