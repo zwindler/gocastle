@@ -12,20 +12,26 @@ type CharacterStats struct {
 	Level             int
 	MaxHP             int
 	CurrentHP         int
+	MaxMP             int
+	CurrentMP         int
 }
 
 var Player = CharacterStats{
-	CharacterName:     "",
-	GenderValue:       "Female",
-	AspectValue:       ":-)",
+	// TODO remove
+	CharacterName: "zwindler",
+	GenderValue:   "Female",
+	AspectValue:   ":-)",
+	// endTODO
 	PointsToSpend:     10,
 	StrengthValue:     10,
 	ConstitutionValue: 10,
 	IntelligenceValue: 10,
 	DexterityValue:    10,
 	Level:             1,
-	MaxHP:             10,
-	CurrentHP:         10,
+	MaxHP:             8,
+	CurrentHP:         8,
+	MaxMP:             10,
+	CurrentMP:         10,
 }
 
 func GetMaxHP(level int, baseHP int, constitution int) int {

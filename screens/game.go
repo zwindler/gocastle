@@ -5,12 +5,15 @@ import (
 	"gocastle/maps"
 	"gocastle/model"
 	"math/rand"
-	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+)
+
+const (
+	tileSize = 32
 )
 
 var (
@@ -20,97 +23,140 @@ var (
 	PNJ1PosX     int = 10
 	PNJ1PosY     int = 15
 	PNJ1         *canvas.Image
-	mapColumns   int
-	mapRows      int
-	currentMap   = maps.Town
 
-	mapContainer           = container.NewWithoutLayout()
+	mapColumns int
+	mapRows    int
+
+	currentMap   = maps.Town
+	fyneTileSize = fyne.NewSize(tileSize, tileSize)
+
+	//mapContainer           = container.NewWithoutLayout()
+
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
+
 	healthPointsValueLabel = canvas.NewText("10/10", model.TextColor)
 	manaPointsValueLabel   = canvas.NewText("10/10", model.TextColor)
 	timeSpentValueLabel    = canvas.NewText("0d0:0:0", model.TextColor)
 )
 
 func ShowGameScreen(window fyne.Window) {
+	mapContainer := container.NewWithoutLayout()
+	// generate a scrollable container which contains the map container
+	scrollableMapContainer := container.NewScroll(createMapArea(mapContainer))
+	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
+
+	// draw player and PNJ
+	// TODO create a Subject struct that contains both image and coordinates
+	playerAvatar = canvas.NewImageFromFile("./static/warrior.png")
+	PNJ1 = canvas.NewImageFromFile("./static/farmer.png")
+	drawSubject(mapContainer, playerAvatar, playerPosX, playerPosY)
+	drawSubject(mapContainer, PNJ1, PNJ1PosX, PNJ1PosY)
+
+	// already declared in var so has to manipulate it elsewhere
+	// TODO improve this?
+	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
+	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
+
+	// bottom right corner is the stats box area
+	statsTextArea := createStatsArea()
+	statsTextArea.Resize(fyne.NewSize(200, 100))
+	statsTextArea.Move(fyne.NewPos(601, 501))
+
+	// merge log area and stats area
+	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
+
+	// merge map and bottom
+	content := container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
+
+	window.Canvas().SetOnTypedKey(mapKeyListener)
+	window.SetContent(content)
+}
+
+func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	mapRows = len(currentMap.MapMatrix)
 	if mapRows > 0 {
 		mapColumns = len(currentMap.MapMatrix[0])
 	}
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
-	firstLine := container.NewHBox()
-	horizontalBorder := canvas.NewImageFromFile("static/black_hline.png")
-	horizontalBorder.FillMode = canvas.ImageFillOriginal
-
+	horizontalLine := canvas.NewImageFromFile("static/black_hline.png")
+	horizontalLine.FillMode = canvas.ImageFillOriginal
 	verticalLine := canvas.NewImageFromFile("static/black_vline.png")
 	verticalLine.FillMode = canvas.ImageFillOriginal
+
+	// horizontalBorder is composed of images of 1x32px (horizontalLine)
+	// to force the minSize of the container
+	// TODO improve this
+	horizontalBorder := container.NewHBox()
+	// vertical border is the same thing but vertical
 	verticalBorder := container.NewVBox()
 
 	for row := 0; row < mapRows; row++ {
 		verticalBorder.Add(verticalLine)
-		currentLine := float32(row) * 32
+		currentLine := float32(row) * tileSize
 		for column := 0; column < mapColumns; column++ {
 			if row == 0 {
-				firstLine.Add(horizontalBorder)
+				horizontalBorder.Add(horizontalLine)
 			}
 			tile := imageMatrix[row][column]
-			tile.Resize(fyne.NewSize(32, 32))
-			currentPos := fyne.NewPos(float32(column)*32, currentLine)
+			tile.Resize(fyneTileSize)
+			currentPos := fyne.NewPos(float32(column)*tileSize, currentLine)
 			tile.Move(currentPos)
 			mapContainer.Add(tile)
 		}
 	}
-	playerAvatar = canvas.NewImageFromFile("./static/warrior.png")
-	playerAvatar.FillMode = canvas.ImageFillOriginal
-	playerAvatar.Resize(fyne.NewSize(32, 32))
-	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
-	mapContainer.Add(playerAvatar)
+	mapHBox := container.NewHBox(verticalBorder, mapContainer)
 
-	PNJ1 = canvas.NewImageFromFile("./static/farmer.png")
-	PNJ1.FillMode = canvas.ImageFillOriginal
-	PNJ1.Resize(fyne.NewSize(32, 32))
-	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*32), float32(PNJ1PosY*32)))
-	mapContainer.Add(PNJ1)
+	return container.NewVBox(horizontalBorder, mapHBox)
+}
 
-	secondLine := container.NewHBox(verticalBorder, mapContainer)
-	scrollableMapContainer := container.NewScroll(container.NewVBox(firstLine, secondLine))
+func drawSubject(mapContainer *fyne.Container, subject *canvas.Image, posX int, posY int) {
+	subject.FillMode = canvas.ImageFillOriginal
+	subject.Resize(fyneTileSize)
+	subject.Move(fyne.NewPos(float32(posX*tileSize), float32(posY*tileSize)))
+	mapContainer.Add(subject)
+}
 
-	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
+// Create the stats area containing health points, mana points, time spent, and location info.
+func createStatsArea() fyne.CanvasObject {
+	// Create an array to store all the canvas.NewText objects
+	statsTextObjects := []*canvas.Text{
+		canvas.NewText("Health Points:", model.TextColor),
+		healthPointsValueLabel,
+		canvas.NewText("Mana Points:", model.TextColor),
+		manaPointsValueLabel,
+		canvas.NewText("Time spent:", model.TextColor),
+		timeSpentValueLabel,
+		canvas.NewText("Location:", model.TextColor),
+		canvas.NewText(currentMap.Name, model.TextColor),
+	}
 
-	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
-	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
+	// update HP, MP, time
+	updateStats()
 
-	healthPointsLabel := canvas.NewText("Health Points:", model.TextColor)
-	healthPointsLabel.TextSize = 14
-	healthPointsValueString := strconv.Itoa(int(model.Player.CurrentHP)) + "/" + strconv.Itoa(int(model.Player.MaxHP))
-	healthPointsValueLabel.Text = healthPointsValueString
-	healthPointsValueLabel.TextSize = 14
-	manaPointsLabel := canvas.NewText("Mana Points:", model.TextColor)
-	manaPointsLabel.TextSize = 14
-	manaPointsValueLabel.TextSize = 14
-	timeSpentLabel := canvas.NewText("Time spent:", model.TextColor)
-	timeSpentLabel.TextSize = 14
-	timeSpentValueLabel.TextSize = 14
-	locationLabel := canvas.NewText("Location:", model.TextColor)
-	locationLabel.TextSize = 14
-	locationValueLabel := canvas.NewText(currentMap.Name, model.TextColor)
-	locationValueLabel.TextSize = 14
+	for _, textObj := range statsTextObjects {
+		textObj.TextSize = 14
+	}
 
-	statsTextArea := container.New(layout.NewGridLayout(2),
-		healthPointsLabel, healthPointsValueLabel,
-		manaPointsLabel, manaPointsValueLabel,
-		timeSpentLabel, timeSpentValueLabel,
-		locationLabel, locationValueLabel,
-	)
-	statsTextArea.Resize(fyne.NewSize(200, 100))
-	statsTextArea.Move(fyne.NewPos(601, 501))
+	// Add all the canvas.NewText objects to the statsTextArea
+	statsTextArea := container.New(layout.NewGridLayout(2))
+	for _, textObj := range statsTextObjects {
+		statsTextArea.Add(textObj)
+	}
 
-	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
-	content := container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
+	return statsTextArea
+}
 
-	window.Canvas().SetOnTypedKey(mapKeyListener)
-	window.SetContent(content)
+func updateStats() {
+	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentHP, model.Player.MaxHP)
+	healthPointsValueLabel.Refresh()
+
+	manaPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentMP, model.Player.MaxMP)
+	manaPointsValueLabel.Refresh()
+
+	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
+	timeSpentValueLabel.Refresh()
 }
 
 func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
@@ -125,15 +171,15 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	}
 
 	// create the full matrix first to avoid out of bounds exception
-	for row := 0; row < mapRows; row++ {
+	for row := 0; row < numRows; row++ {
 		matrix[row] = make([]*canvas.Image, numColumns)
 	}
-	for row := 0; row < mapRows; row++ {
+	for row := 0; row < numRows; row++ {
 		for column := 0; column < numColumns; column++ {
 			image := loadedTiles[currentMap.MapMatrix[row][column]]
 			imageCanvas := canvas.NewImageFromImage(image)
 			imageCanvas.FillMode = canvas.ImageFillOriginal
-			imageCanvas.Resize(fyne.NewSize(32, 32))
+			imageCanvas.Resize(fyneTileSize)
 			matrix[row][column] = imageCanvas
 		}
 	}
@@ -168,8 +214,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 	// moving costs 3 seconds
 	model.TimeSinceBegin = model.TimeSinceBegin + 3
-	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
-	timeSpentValueLabel.Refresh()
+	updateStats()
 
 	if checkWalkable(newX, newY) {
 		movePlayer(newX, newY)
@@ -215,12 +260,12 @@ func movePlayer(futurePosX int, futurePosY int) {
 	playerPosX = futurePosX
 	playerPosY = futurePosY
 
-	playerAvatar.Move(fyne.NewPos(float32(playerPosX*32), float32(playerPosY*32)))
+	playerAvatar.Move(fyne.NewPos(float32(playerPosX*tileSize), float32(playerPosY*tileSize)))
 }
 
 func movePNJ1(futurePosX int, futurePosY int) {
 	// Assign new values for PNJ1 position
 	PNJ1PosX = futurePosX
 	PNJ1PosY = futurePosY
-	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*32), float32(PNJ1PosY*32)))
+	PNJ1.Move(fyne.NewPos(float32(PNJ1PosX*tileSize), float32(PNJ1PosY*tileSize)))
 }
