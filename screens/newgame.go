@@ -17,28 +17,15 @@ func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect2 *widget.RadioGroup
 	var characterAspect3 *widget.RadioGroup
 
-	// set initial defaults
-	//model.Player.PointsToSpend = 10
-	model.Player.StrengthValue = 10
-	model.Player.ConstitutionValue = 10
-	model.Player.IntelligenceValue = 10
-	model.Player.DexterityValue = 10
-
-	// set other defaults for dev
-	model.Player.PointsToSpend = 0
-	model.Player.GenderValue = "Female"
-	model.Player.AspectValue = ":-)"
-
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
-
-	// set other defaults for dev
-	characterNameEntry.Text = "zwindler"
 
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel("10")
 
+	// TODO: this should display model.Player.StrengthValue, not a static 10
 	strengthLabel := widget.NewLabel("Strength: 10")
+	// TODO: argument 10 is probably useless, fix this
 	strengthRange := createSliderWithCallback("Strength", 5, 20,
 		10, &model.Player.StrengthValue, &model.Player.PointsToSpend,
 		strengthLabel, pointsToSpendValue)
@@ -101,6 +88,9 @@ func ShowNewGameScreen(window fyne.Window) {
 						dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					} else {
 						// we are good to go!
+						maxHP := model.GetMaxHP(model.Player.Level, 10, model.Player.ConstitutionValue)
+						model.Player.MaxHP = maxHP
+						model.Player.CurrentHP = maxHP
 						ShowGameScreen(window)
 					}
 				}
@@ -140,16 +130,17 @@ func ShowNewGameScreen(window fyne.Window) {
 }
 
 func createSliderWithCallback(characteristic string, min float64, max float64,
-	defaultValue float64, value *float64, pointsToSpend *float64,
+	defaultValue float64, value *uint, pointsToSpend *uint,
 	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
 	slider := widget.NewSlider(min, max)
 	slider.Value = defaultValue
 	slider.OnChanged = func(v float64) {
-		if (model.Player.PointsToSpend - (v - *value)) >= 0 {
-			model.Player.PointsToSpend = model.Player.PointsToSpend - (v - *value)
-			*value = v
+		uintV := uint(v)
+		if (model.Player.PointsToSpend - (uintV - *value)) >= 0 {
+			model.Player.PointsToSpend = model.Player.PointsToSpend - (uintV - *value)
+			*value = uintV
 		} else {
-			slider.Value = *value
+			slider.Value = float64(*value)
 			slider.Refresh()
 		}
 		valueLabel.SetText(fmt.Sprintf("%s: %.0f", characteristic, *value))

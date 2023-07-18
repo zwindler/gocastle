@@ -5,6 +5,7 @@ import (
 	"gocastle/maps"
 	"gocastle/model"
 	"math/rand"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -82,6 +83,8 @@ func ShowGameScreen(window fyne.Window) {
 
 	healthPointsLabel := canvas.NewText("Health Points:", model.TextColor)
 	healthPointsLabel.TextSize = 14
+	healthPointsValueString := strconv.Itoa(int(model.Player.CurrentHP)) + "/" + strconv.Itoa(int(model.Player.MaxHP))
+	healthPointsValueLabel.Text = healthPointsValueString
 	healthPointsValueLabel.TextSize = 14
 	manaPointsLabel := canvas.NewText("Mana Points:", model.TextColor)
 	manaPointsLabel.TextSize = 14
