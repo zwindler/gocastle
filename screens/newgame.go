@@ -130,15 +130,15 @@ func ShowNewGameScreen(window fyne.Window) {
 }
 
 func createSliderWithCallback(characteristic string, min float64, max float64,
-	defaultValue float64, value *uint, pointsToSpend *uint,
+	defaultValue float64, value *int, pointsToSpend *int,
 	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
 	slider := widget.NewSlider(min, max)
 	slider.Value = defaultValue
 	slider.OnChanged = func(v float64) {
-		uintV := uint(v)
-		if (model.Player.PointsToSpend - (uintV - *value)) >= 0 {
-			model.Player.PointsToSpend = model.Player.PointsToSpend - (uintV - *value)
-			*value = uintV
+		intV := int(v)
+		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
+			model.Player.PointsToSpend = model.Player.PointsToSpend - (intV - *value)
+			*value = intV
 		} else {
 			slider.Value = float64(*value)
 			slider.Refresh()

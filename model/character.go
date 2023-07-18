@@ -4,14 +4,14 @@ type CharacterStats struct {
 	CharacterName     string
 	GenderValue       string
 	AspectValue       string
-	PointsToSpend     uint
-	StrengthValue     uint
-	ConstitutionValue uint
-	IntelligenceValue uint
-	DexterityValue    uint
-	Level             uint
-	MaxHP             uint
-	CurrentHP         uint
+	PointsToSpend     int
+	StrengthValue     int
+	ConstitutionValue int
+	IntelligenceValue int
+	DexterityValue    int
+	Level             int
+	MaxHP             int
+	CurrentHP         int
 }
 
 var Player = CharacterStats{
@@ -28,7 +28,7 @@ var Player = CharacterStats{
 	CurrentHP:         10,
 }
 
-func GetMaxHP(level uint, baseHP uint, constitution uint) uint {
+func GetMaxHP(level int, baseHP int, constitution int) int {
 	maxHP := baseHP + (4 * (level - 1)) + (constitution-10)/5*level
-	return uint(maxHP)
+	return int(maxHP)
 }

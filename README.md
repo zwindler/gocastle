@@ -12,6 +12,14 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+## 2023-07-18
+
+Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 
+
+I thought using uints first but I'm unconformable with the fact that some computations could lead to negative values. In some case it's not possible (there are no negative stats or negative levels) but in other it could (negative current health point, yeah, you're dead). I'll leave an issue for the future me.
+
+All this is preliminary work to display live counters in the stats box of the game screen.
+
 ## 2023-07-17
 
 Now that I have PoCed the map, the character and the PNJs, it's time to take a look back at the main UI.
