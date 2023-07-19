@@ -235,10 +235,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	// before doing anything, check if we aren't out of bounds
 	if checkOutOfBounds(newX, newY) {
 		// Player tries to escape map, prevent this
-		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
-		logsEntry.TextSize = 12
-		logsArea.Add(logsEntry)
-		logsScrollableTextArea.ScrollToBottom()
+		AddLogEntry("you are blocked!")
 
 		// trying to move costs 2 seconds
 		model.IncrementTimeSinceBegin(2)
@@ -250,17 +247,13 @@ func mapKeyListener(event *fyne.KeyEvent) {
 				// let's attack!
 				// TODO make this depending on strengh and gear
 				npc.CurrentHP = npc.CurrentHP - 5
-				fmt.Printf("%s is hit!\n", npc.Name)
-
-				// TODO add a log message for this
+				AddLogEntry(fmt.Sprintf("you strike at %s. %s is hit!", npc.Name, npc.Pronoun))
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
+
 			} else {
 				// NPC is not hostile, we don't want to hurt them
-				logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
-				logsEntry.TextSize = 12
-				logsArea.Add(logsEntry)
-				logsScrollableTextArea.ScrollToBottom()
+				AddLogEntry("you are blocked!")
 
 				// trying to move costs 2 seconds
 				model.IncrementTimeSinceBegin(2)
@@ -279,6 +272,14 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	updateStats()
 
 	newTurnForNPCs()
+}
+
+func AddLogEntry(logString string) {
+	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
+	logsEntry := canvas.NewText(fullLogString, model.TextColor)
+	logsEntry.TextSize = 12
+	logsArea.Add(logsEntry)
+	logsScrollableTextArea.ScrollToBottom()
 }
 
 func newTurnForNPCs() {
