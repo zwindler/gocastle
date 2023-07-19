@@ -12,6 +12,22 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+## 2023-07-19
+
+After a good night's sleep, I found out that one of the issue from yesterday was that I was changing the generated farmer/wolf coordinates AFTER putting it in the NPCList. I guess this means that the wolf declared in ShowGameScreen is not the same object as the one in NPCList.
+
+I a way that's a good news because it'll help me generate mobs from generic deplarations in npc.go file.
+
+```go
+	// set wolf on map and draw it
+	wolf := model.Wolf
+	wolf.Avatar.PosX, wolf.Avatar.PosY = 22, 22
+	NPCList.List = append(NPCList.List, wolf)
+	drawSubject(mapContainer, wolf.Avatar)
+```
+
+Collisions with NPCs are still a bit broken
+
 ## 2023-07-18
 
 Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 

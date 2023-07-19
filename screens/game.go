@@ -49,14 +49,14 @@ func ShowGameScreen(window fyne.Window) {
 
 	// set farmer on map and draw it
 	farmer := model.Farmer
-	NPCList.List = append(NPCList.List, farmer)
 	farmer.Avatar.PosX, farmer.Avatar.PosY = 10, 15
+	NPCList.List = append(NPCList.List, farmer)
 	drawSubject(mapContainer, farmer.Avatar)
 
 	// set wolf on map and draw it
 	wolf := model.Wolf
-	NPCList.List = append(NPCList.List, wolf)
 	wolf.Avatar.PosX, wolf.Avatar.PosY = 22, 22
+	NPCList.List = append(NPCList.List, wolf)
 	drawSubject(mapContainer, wolf.Avatar)
 
 	// already declared in var so has to manipulate it elsewhere
@@ -225,7 +225,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	fmt.Printf("Trying to move character \n")
 	if checkWalkable(newX, newY) {
 		fmt.Printf("Moving character \n")
-		player.Avatar = moveAvatar(newX, newY, player.Avatar)
+		moveAvatar(newX, newY, &player.Avatar)
 	} else {
 		fmt.Println("You are blocked!")
 		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
@@ -240,11 +240,11 @@ func mapKeyListener(event *fyne.KeyEvent) {
 func newTurnForNPCs() {
 	// for all NPCs, move on a random adjacent tile
 	for _, npc := range NPCList.List {
+		fmt.Printf("Moving %s from %d %d\n", npc.Name, npc.Avatar.PosX, npc.Avatar.PosY)
 		newX := npc.Avatar.PosX + rand.Intn(3) - 1
 		newY := npc.Avatar.PosY + rand.Intn(3) - 1
 		if checkWalkable(newX, newY) {
-			fmt.Printf(npc.Name)
-			npc.Avatar = moveAvatar(newX, newY, npc.Avatar)
+			moveAvatar(newX, newY, &npc.Avatar)
 		}
 	}
 
@@ -290,7 +290,7 @@ func dontCollideWithNPCs(futurePosX int, futurePosY int) bool {
 	return true
 }
 
-func moveAvatar(futurePosX int, futurePosY int, subject model.Avatar) model.Avatar {
+func moveAvatar(futurePosX int, futurePosY int, subject *model.Avatar) {
 	fmt.Printf("Moving from %d %d to %d %d\n", subject.PosX, subject.PosY, futurePosX, futurePosY)
 
 	// assign new values for subject position
@@ -298,6 +298,4 @@ func moveAvatar(futurePosX int, futurePosY int, subject model.Avatar) model.Avat
 	subject.PosY = futurePosY
 
 	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
-
-	return subject
 }
