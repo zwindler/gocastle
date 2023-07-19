@@ -124,6 +124,8 @@ The last thing I need to do is to remove the NPC from NPCList.List once he/she/i
 				}
 ```
 
+I added more stats and modifications. Intelligence now change MPs, Strength and Dexterity improve base damage dealt on mobs.
+
 ## 2023-07-18
 
 Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 

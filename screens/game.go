@@ -246,10 +246,9 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			// if yes, is the NPC hostile?
 			if npc.Hostile {
 				// let's attack!
-				// TODO make this depending on strengh and gear
-				playerDamage := 5
-				addLogEntry(model.HandleNPCDamage(npc, playerDamage))
-				npc.CurrentHP = npc.CurrentHP - playerDamage
+				// TODO make this depending on gear
+				addLogEntry(model.HandleNPCDamage(npc, model.Player.BaseDamage))
+				npc.CurrentHP = npc.CurrentHP - model.Player.BaseDamage
 				if npc.CurrentHP <= 0 {
 					npc.Avatar.CanvasImage.Hidden = true
 					removeNPCByIndex(npcId)

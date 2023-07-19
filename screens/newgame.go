@@ -93,9 +93,21 @@ func ShowNewGameScreen(window fyne.Window) {
 					dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					} else {*/
 					// we are good to go!
-					maxHP := model.GetMaxHP(model.Player.Level, model.PlayerDefaultHP, model.Player.ConstitutionValue)
+
+					// starting MaxHP is 8, but constitution can change that
+					maxHP := model.GetMaxHP(model.Player.Level, 8, model.Player.ConstitutionValue)
 					model.Player.MaxHP = maxHP
 					model.Player.CurrentHP = maxHP
+
+					// starting MaxMP is 8, but intelligence can change that
+					maxMP := model.GetMaxMP(model.Player.Level, 8, model.Player.IntelligenceValue)
+					model.Player.MaxMP = maxMP
+					model.Player.CurrentMP = maxMP
+
+					// base damage solely depends on Strength, Dexterity and gear (soon)
+					baseDamage := model.DetermineBaseDamage(model.Player.StrengthValue, model.Player.DexterityValue)
+					model.Player.BaseDamage = baseDamage
+
 					ShowGameScreen(window)
 					//}
 				}
