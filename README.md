@@ -110,7 +110,19 @@ I then created a function that take a npc (*model.NPCStats struct) and a damageD
 
 This way I can give additionnal information in the log entries on NPC remaining health.
 
-the last thing I need to do is to remove the NPC from NPCList.List once he/she/it is dead, and remove the CanvasImage.
+The last thing I need to do is to remove the NPC from NPCList.List once he/she/it is dead, and remove the CanvasImage.
+
+```go
+				// let's attack!
+				// TODO make this depending on strengh and gear
+				playerDamage := 5
+				addLogEntry(model.HandleNPCDamage(npc, playerDamage))
+				npc.CurrentHP = npc.CurrentHP - playerDamage
+				if npc.CurrentHP <= 0 {
+					npc.Avatar.CanvasImage.Hidden = true
+					removeNPCByIndex(npcId)
+				}
+```
 
 ## 2023-07-18
 

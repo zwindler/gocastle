@@ -96,7 +96,7 @@ func createAvatar(avatar Avatar, x, y int) Avatar {
 	}
 }
 
-func handleNPCDamage(npc *NPCStats, damageDealt int) string {
+func HandleNPCDamage(npc *NPCStats, damageDealt int) string {
 	newHP := npc.CurrentHP - damageDealt
 
 	// Here there are levels of injury
@@ -115,4 +115,12 @@ func handleNPCDamage(npc *NPCStats, damageDealt int) string {
 		additionnalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
 	}
 	return fmt.Sprintf("you strike at the %s, %s is hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
+}
+
+// TODO issue with player collision since I moved it here
+func DontCollideWithPlayer(futurePosX int, futurePosY int) bool {
+	if Player.Avatar.PosX == futurePosX && Player.Avatar.PosY == futurePosY {
+		return false
+	}
+	return true
 }
