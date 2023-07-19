@@ -47,18 +47,7 @@ func ShowGameScreen(window fyne.Window) {
 	player.Avatar.PosX, player.Avatar.PosY = 2, 4
 	drawSubject(mapContainer, player.Avatar)
 
-	// set farmer on map and draw it
-	farmer := model.CreateNPC(model.Farmer, 10, 15)
-	NPCList.List = append(NPCList.List, farmer)
-	drawSubject(mapContainer, farmer.Avatar)
-
-	// set two wolve at the edge of the map and draw them
-	wolf := model.CreateNPC(model.Wolf, 22, 22)
-	NPCList.List = append(NPCList.List, wolf)
-	drawSubject(mapContainer, wolf.Avatar)
-	wolf2 := model.CreateNPC(model.Wolf, 24, 21)
-	NPCList.List = append(NPCList.List, wolf2)
-	drawSubject(mapContainer, wolf2.Avatar)
+	addNPCs(mapContainer)
 
 	// already declared in var so has to manipulate it elsewhere
 	// TODO improve this?
@@ -116,6 +105,30 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	mapHBox := container.NewHBox(verticalBorder, mapContainer)
 
 	return container.NewVBox(horizontalBorder, mapHBox)
+}
+
+func addNPCs(mapContainer *fyne.Container) {
+	// TODO: add info about NPCs in maps for fixed maps
+	// for generated maps, I'll have to create this randomly
+
+	// Define the NPC data in a slice
+	npcData := []struct {
+		npc  model.NPCStats
+		x, y int
+	}{
+		{model.Farmer, 10, 15},
+		{model.Mage, 5, 5},
+		{model.Wolf, 22, 22},
+		{model.Wolf, 24, 21},
+		{model.Ogre, 24, 23},
+	}
+
+	// Loop through the NPC data slice and create/draw each NPC
+	for _, data := range npcData {
+		npc := model.CreateNPC(data.npc, data.x, data.y)
+		NPCList.List = append(NPCList.List, npc)
+		drawSubject(mapContainer, npc.Avatar)
+	}
 }
 
 func drawSubject(mapContainer *fyne.Container, subject model.Avatar) {

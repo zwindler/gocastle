@@ -17,7 +17,7 @@ type NPCsOnCurrentMap struct {
 
 var (
 	FarmerAvatar = Avatar{
-		CanvasPath: "./static/farmer.png",
+		CanvasPath: "./static/male-farmer.png",
 	}
 	Farmer = NPCStats{
 		Name:      "farmer",
@@ -37,6 +37,35 @@ var (
 		MaxHP:     10,
 		CurrentHP: 10,
 	}
+
+	MageAvatar = Avatar{
+		CanvasPath: "./static/woman-mage.png",
+	}
+	
+	Mage = NPCStats{
+		Name:      "mage",
+		Avatar:    MageAvatar,
+		Pronoun:   "her",
+		MaxHP:     15,
+		CurrentHP: 15,
+		MaxMP:     20,
+		CurrentMP: 20,
+	}
+
+	OgreAvatar = Avatar{
+		CanvasPath: "./static/ogre.png",
+	}
+	
+	Ogre = NPCStats{
+		Name:      "ogre",
+		Avatar:    OgreAvatar,
+		Pronoun:   "him",
+		MaxHP:     25,
+		CurrentHP: 25,
+		MaxMP:     0,
+		CurrentMP: 0,
+	}
+	
 )
 
 func CreateNPC(npc NPCStats, x, y int) NPCStats {
