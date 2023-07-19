@@ -246,8 +246,9 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			if npc.Hostile {
 				// let's attack!
 				// TODO make this depending on strengh and gear
-				npc.CurrentHP = npc.CurrentHP - 5
-				AddLogEntry(fmt.Sprintf("you strike at %s. %s is hit!", npc.Name, npc.Pronoun))
+				damageDealt := 5
+				npc.CurrentHP = npc.CurrentHP - damageDealt
+				AddLogEntry(fmt.Sprintf("you strike at the %s, %s is hit!", npc.Name, npc.Pronoun))
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
 

@@ -23,7 +23,7 @@ var (
 	Farmer = NPCStats{
 		Name:      "farmer",
 		Avatar:    FarmerAvatar,
-		Pronoun:   "him",
+		Pronoun:   "he",
 		Hostile:   false,
 		MaxHP:     10,
 		CurrentHP: 10,
@@ -47,7 +47,7 @@ var (
 	Mage = NPCStats{
 		Name:      "mage",
 		Avatar:    MageAvatar,
-		Pronoun:   "her",
+		Pronoun:   "she",
 		Hostile:   false,
 		MaxHP:     15,
 		CurrentHP: 15,
@@ -61,7 +61,7 @@ var (
 	Ogre = NPCStats{
 		Name:      "ogre",
 		Avatar:    OgreAvatar,
-		Pronoun:   "him",
+		Pronoun:   "he",
 		Hostile:   true,
 		MaxHP:     25,
 		CurrentHP: 25,
