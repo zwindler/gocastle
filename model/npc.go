@@ -5,6 +5,7 @@ import "fyne.io/fyne/v2/canvas"
 type NPCStats struct {
 	Name      string
 	Pronoun   string
+	Hostile   bool
 	Avatar    Avatar
 	MaxHP     int
 	CurrentHP int
@@ -23,6 +24,7 @@ var (
 		Name:      "farmer",
 		Avatar:    FarmerAvatar,
 		Pronoun:   "him",
+		Hostile:   false,
 		MaxHP:     10,
 		CurrentHP: 10,
 	}
@@ -34,6 +36,7 @@ var (
 		Name:      "wolf",
 		Avatar:    WolfAvatar,
 		Pronoun:   "it",
+		Hostile:   true,
 		MaxHP:     10,
 		CurrentHP: 10,
 	}
@@ -41,11 +44,11 @@ var (
 	MageAvatar = Avatar{
 		CanvasPath: "./static/woman-mage.png",
 	}
-	
 	Mage = NPCStats{
 		Name:      "mage",
 		Avatar:    MageAvatar,
 		Pronoun:   "her",
+		Hostile:   false,
 		MaxHP:     15,
 		CurrentHP: 15,
 		MaxMP:     20,
@@ -55,17 +58,16 @@ var (
 	OgreAvatar = Avatar{
 		CanvasPath: "./static/ogre.png",
 	}
-	
 	Ogre = NPCStats{
 		Name:      "ogre",
 		Avatar:    OgreAvatar,
 		Pronoun:   "him",
+		Hostile:   true,
 		MaxHP:     25,
 		CurrentHP: 25,
 		MaxMP:     0,
 		CurrentMP: 0,
 	}
-	
 )
 
 func CreateNPC(npc NPCStats, x, y int) NPCStats {
@@ -74,6 +76,7 @@ func CreateNPC(npc NPCStats, x, y int) NPCStats {
 		Name:      npc.Name,
 		Pronoun:   npc.Pronoun,
 		Avatar:    avatar,
+		Hostile:   npc.Hostile,
 		MaxHP:     npc.MaxHP,
 		CurrentHP: npc.CurrentHP,
 		MaxMP:     npc.MaxMP,
