@@ -24,6 +24,8 @@ func ShowNewGameScreen(window fyne.Window) {
 
 	characterNameLabel := widget.NewLabel("Character's name")
 	characterNameEntry := widget.NewEntry()
+	// temporary, for dev
+	characterNameEntry.Text = "zwindler"
 
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))

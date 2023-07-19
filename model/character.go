@@ -23,12 +23,13 @@ var (
 		CanvasImage: canvas.NewImageFromFile("./static/warrior.png"),
 	}
 	Player = CharacterStats{
-		// TODO remove
+		// temporary, for dev
 		CharacterName: "zwindler",
 		GenderValue:   "Female",
-		// endTODO
-		Avatar:            PlayerAvatar,
-		PointsToSpend:     10,
+		PointsToSpend: 0,
+		// end temporary for dev
+		Avatar: PlayerAvatar,
+		//PointsToSpend:     10,
 		StrengthValue:     10,
 		ConstitutionValue: 10,
 		IntelligenceValue: 10,
