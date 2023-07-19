@@ -241,7 +241,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		logsScrollableTextArea.ScrollToBottom()
 
 		// trying to move costs 2 seconds
-		model.TimeSinceBegin = model.TimeSinceBegin + 2
+		model.IncrementTimeSinceBegin(2)
 	} else {
 		// let's check if we find a NPC on our path
 		if npc := getNPCAtPosition(newX, newY); npc != nil {
@@ -254,7 +254,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 				// TODO add a log message for this
 				// attacking costs 5 seconds
-				model.TimeSinceBegin = model.TimeSinceBegin + 5
+				model.IncrementTimeSinceBegin(5)
 			} else {
 				// NPC is not hostile, we don't want to hurt them
 				logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
@@ -263,7 +263,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 				logsScrollableTextArea.ScrollToBottom()
 
 				// trying to move costs 2 seconds
-				model.TimeSinceBegin = model.TimeSinceBegin + 2
+				model.IncrementTimeSinceBegin(2)
 			}
 		} else {
 			// no NPC found on our path, let's check if we can move
@@ -271,7 +271,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 				// path is free, let's move
 				moveAvatar(newX, newY, &player.Avatar)
 				// moving costs 3 seconds
-				model.TimeSinceBegin = model.TimeSinceBegin + 3
+				model.IncrementTimeSinceBegin(3)
 			}
 		}
 	}

@@ -6,6 +6,10 @@ var (
 	TimeSinceBegin int = 0
 )
 
+func IncrementTimeSinceBegin(value int) {
+	TimeSinceBegin += value
+}
+
 func FormatDuration(seconds int, format string) string {
 	if seconds < 0 {
 		return "Invalid duration"
