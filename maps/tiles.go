@@ -20,17 +20,18 @@ type TileInfo struct {
 
 var (
 	TilesTypes = []TileInfo{
-		{Coordinates: Coord{X: 0, Y: 64}, IsWalkable: true},     //0
-		{Coordinates: Coord{X: 576, Y: 96}, IsWalkable: false},  //1
-		{Coordinates: Coord{X: 576, Y: 128}, IsWalkable: false}, //2
-		{Coordinates: Coord{X: 608, Y: 128}, IsWalkable: false}, //3
-		{Coordinates: Coord{X: 608, Y: 96}, IsWalkable: false},  //4
-		{Coordinates: Coord{X: 512, Y: 160}, IsWalkable: false}, //5
-		{Coordinates: Coord{X: 480, Y: 128}, IsWalkable: false}, //6
-		{Coordinates: Coord{X: 512, Y: 96}, IsWalkable: false},  //7
-		{Coordinates: Coord{X: 544, Y: 128}, IsWalkable: false}, //8
-		{Coordinates: Coord{X: 128, Y: 64}, IsWalkable: false},  //9
-		{Coordinates: Coord{X: 96, Y: 64}, IsWalkable: false},   //10
+		{Coordinates: Coord{X: 0, Y: 64}, IsWalkable: true},     //0, grass
+		{Coordinates: Coord{X: 576, Y: 96}, IsWalkable: false},  //1, walls
+		{Coordinates: Coord{X: 576, Y: 128}, IsWalkable: false}, //2, walls
+		{Coordinates: Coord{X: 608, Y: 128}, IsWalkable: false}, //3, walls
+		{Coordinates: Coord{X: 608, Y: 96}, IsWalkable: false},  //4, walls
+		{Coordinates: Coord{X: 512, Y: 160}, IsWalkable: false}, //5, walls
+		{Coordinates: Coord{X: 480, Y: 128}, IsWalkable: false}, //6, walls
+		{Coordinates: Coord{X: 512, Y: 96}, IsWalkable: false},  //7, walls
+		{Coordinates: Coord{X: 544, Y: 128}, IsWalkable: false}, //8, walls
+		{Coordinates: Coord{X: 128, Y: 64}, IsWalkable: false},  //9, opaque
+		{Coordinates: Coord{X: 96, Y: 64}, IsWalkable: false},   //10, walls
+		{Coordinates: Coord{X: 160, Y: 64}, IsWalkable: true},   //11, transparent
 	}
 )
 

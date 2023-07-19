@@ -76,9 +76,9 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	}
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
-	horizontalLine := canvas.NewImageFromFile("static/black_hline.png")
+	horizontalLine := canvas.NewImageFromFile("static/transparent_hline.png")
 	horizontalLine.FillMode = canvas.ImageFillOriginal
-	verticalLine := canvas.NewImageFromFile("static/black_vline.png")
+	verticalLine := canvas.NewImageFromFile("static/transparent_tile.png")
 	verticalLine.FillMode = canvas.ImageFillOriginal
 
 	// horizontalBorder is composed of images of 1x32px (horizontalLine)
@@ -102,9 +102,9 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 			mapContainer.Add(tile)
 		}
 	}
-	mapHBox := container.NewHBox(verticalBorder, mapContainer)
+	mapHBox := container.NewHBox(mapContainer, verticalBorder)
 
-	return container.NewVBox(horizontalBorder, mapHBox)
+	return container.NewVBox(mapHBox, horizontalBorder)
 }
 
 func addNPCs(mapContainer *fyne.Container) {
@@ -156,7 +156,7 @@ func createStatsArea() fyne.CanvasObject {
 	updateStats()
 
 	for _, textObj := range statsTextObjects {
-		textObj.TextSize = 14
+		textObj.TextSize = 16
 	}
 
 	// Add all the canvas.NewText objects to the statsTextArea

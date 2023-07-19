@@ -114,7 +114,7 @@ func HandleNPCDamage(npc *NPCStats, damageDealt int) string {
 	} else if newHP > int(0.8*float64(npc.MaxHP)) && newHP < npc.MaxHP && npc.CurrentHP == npc.MaxHP {
 		additionnalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
 	}
-	return fmt.Sprintf("you strike at the %s, %s is hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
+	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
 }
 
 // returns true if we are going to collide with player, false instead
