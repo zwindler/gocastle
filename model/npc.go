@@ -118,8 +118,8 @@ func HandleNPCDamage(npc *NPCStats, damageDealt int) string {
 }
 
 // TODO issue with player collision since I moved it here
-func DontCollideWithPlayer(futurePosX int, futurePosY int) bool {
-	if Player.Avatar.PosX == futurePosX && Player.Avatar.PosY == futurePosY {
+func DontCollideWithPlayer(futurePosX int, futurePosY int, player *Avatar) bool {
+	if player.PosX == futurePosX && player.PosY == futurePosY {
 		return false
 	}
 	return true

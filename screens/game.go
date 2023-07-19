@@ -331,7 +331,7 @@ func dontCollideWithNPCs(futurePosX int, futurePosY int) bool {
 func checkWalkable(futurePosX int, futurePosY int) bool {
 	if !checkOutOfBounds(futurePosX, futurePosY) &&
 		checkTileIsWalkable(futurePosX, futurePosY) &&
-		model.DontCollideWithPlayer(futurePosX, futurePosY) &&
+		model.DontCollideWithPlayer(futurePosX, futurePosY, &player.Avatar) &&
 		dontCollideWithNPCs(futurePosX, futurePosY) {
 		return true
 	}
