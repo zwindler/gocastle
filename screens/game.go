@@ -234,10 +234,8 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 	// before doing anything, check if we aren't out of bounds
 	if checkOutOfBounds(newX, newY) {
-		// Player tries to escape map, prevent this
+		// Player tries to escape map, prevent this, lose 2 seconds
 		addLogEntry("you are blocked!")
-
-		// trying to move costs 2 seconds
 		model.IncrementTimeSinceBegin(2)
 	} else {
 		// let's check if we find a NPC on our path
@@ -257,18 +255,15 @@ func mapKeyListener(event *fyne.KeyEvent) {
 				model.IncrementTimeSinceBegin(5)
 
 			} else {
-				// NPC is not hostile, we don't want to hurt them
+				// NPC is not hostile, we don't want to hurt them, but lost 2s
 				addLogEntry("you are blocked!")
-
-				// trying to move costs 2 seconds
 				model.IncrementTimeSinceBegin(2)
 			}
 		} else {
 			// no NPC found on our path, let's check if we can move
 			if checkTileIsWalkable(newX, newY) {
-				// path is free, let's move
+				// path is free, let's move (3sec cost)
 				model.MoveAvatar(newX, newY, &player.Avatar)
-				// moving costs 3 seconds
 				model.IncrementTimeSinceBegin(3)
 			}
 		}
@@ -296,46 +291,46 @@ func newTurnForNPCs() {
 
 		// don't check / try to move if coordinates stay the same
 		if newX != npc.Avatar.PosX || newY != npc.Avatar.PosY {
-			if checkWalkable(newX, newY) {
-				model.MoveAvatar(newX, newY, &npc.Avatar)
+			// before doing anything, check if we aren't out of bounds
+			if !checkOutOfBounds(newX, newY) {
+				// let's check if we find another NPC on our NPC's path
+				if npcId := getNPCAtPosition(newX, newY); npcId != -1 {
+					otherNPC := &NPCList.List[npcId]
+					if (npc.Hostile && !otherNPC.Hostile) ||
+						(!npc.Hostile && otherNPC.Hostile) {
+						// TODO hostile NPC should attack friendly NPC
+						// and vice versa
+						addLogEntry(fmt.Sprintf("%s tries to attack %s", npc.Name, otherNPC.Name))
+					}
+					// let's then check we don't collide with player
+				} else if model.CollideWithPlayer(newX, newY, &player.Avatar) {
+					if npc.Hostile {
+						// TODO hostile NPC should attack player
+						addLogEntry(fmt.Sprintf("%s tries to attack you", npc.Name))
+					}
+					// no ones in our NPC's way
+				} else if checkTileIsWalkable(newX, newY) {
+					model.MoveAvatar(newX, newY, &npc.Avatar)
+				}
 			}
 		}
 	}
 }
 
+// TODO rework to move in maps.go
 func checkTileIsWalkable(futurePosX int, futurePosY int) bool {
 	return maps.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
 }
 
+// TODO rework to move to npc.go
 func getNPCAtPosition(x, y int) int {
+	// find if a NPC matches our destination
 	for index, npc := range NPCList.List {
 		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
 			return index
 		}
 	}
 	return -1
-}
-
-func dontCollideWithNPCs(futurePosX int, futurePosY int) bool {
-	// for all NPCs, check if future position would collide
-	for _, npc := range NPCList.List {
-		if npc.Avatar.PosX == futurePosX && npc.Avatar.PosY == futurePosY {
-			return false
-		}
-	}
-	// coordinates are free for movement
-	return true
-}
-
-// TODO remove it once NPC can fight back
-func checkWalkable(futurePosX int, futurePosY int) bool {
-	if !checkOutOfBounds(futurePosX, futurePosY) &&
-		checkTileIsWalkable(futurePosX, futurePosY) &&
-		model.DontCollideWithPlayer(futurePosX, futurePosY, &player.Avatar) &&
-		dontCollideWithNPCs(futurePosX, futurePosY) {
-		return true
-	}
-	return false
 }
 
 // TODO rework to move in maps.go

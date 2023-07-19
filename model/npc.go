@@ -117,10 +117,10 @@ func HandleNPCDamage(npc *NPCStats, damageDealt int) string {
 	return fmt.Sprintf("you strike at the %s, %s is hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
 }
 
-// TODO issue with player collision since I moved it here
-func DontCollideWithPlayer(futurePosX int, futurePosY int, player *Avatar) bool {
+// returns true if we are going to collide with player, false instead
+func CollideWithPlayer(futurePosX int, futurePosY int, player *Avatar) bool {
 	if player.PosX == futurePosX && player.PosY == futurePosY {
-		return false
+		return true
 	}
-	return true
+	return false
 }
