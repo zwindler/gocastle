@@ -110,6 +110,8 @@ I then created a function that take a npc (*model.NPCStats struct) and a damageD
 
 This way I can give additionnal information in the log entries on NPC remaining health.
 
+the last thing I need to do is to remove the NPC from NPCList.List once he/she/it is dead, and remove the CanvasImage.
+
 ## 2023-07-18
 
 Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 

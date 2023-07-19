@@ -1,6 +1,10 @@
 package model
 
-import "fyne.io/fyne/v2/canvas"
+import (
+	"fmt"
+
+	"fyne.io/fyne/v2/canvas"
+)
 
 type NPCStats struct {
 	Name      string
@@ -90,4 +94,25 @@ func createAvatar(avatar Avatar, x, y int) Avatar {
 		PosX:        x,
 		PosY:        y,
 	}
+}
+
+func handleNPCDamage(npc *NPCStats, damageDealt int) string {
+	newHP := npc.CurrentHP - damageDealt
+
+	// Here there are levels of injury
+	// I want to give player additionnal information, but not everytime!
+	// only when NPC are going from above 80% live to under 80%, for example
+	var additionnalInfo string
+	if newHP <= 0 {
+		additionnalInfo = fmt.Sprintf("%s is dead.", npc.Name)
+	} else if newHP > 0 && newHP <= int(0.2*float64(npc.MaxHP)) && npc.CurrentHP > int(0.2*float64(npc.MaxHP)) {
+		additionnalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
+	} else if newHP > int(0.2*float64(npc.MaxHP)) && newHP <= int(0.5*float64(npc.MaxHP)) && npc.CurrentHP > int(0.5*float64(npc.MaxHP)) {
+		additionnalInfo = fmt.Sprintf("%s looks seriously injured.", npc.Name)
+	} else if newHP > int(0.5*float64(npc.MaxHP)) && newHP <= int(0.8*float64(npc.MaxHP)) && npc.CurrentHP > int(0.8*float64(npc.MaxHP)) {
+		additionnalInfo = fmt.Sprintf("%s looks injured.", npc.Name)
+	} else if newHP > int(0.8*float64(npc.MaxHP)) && newHP < npc.MaxHP && npc.CurrentHP == npc.MaxHP {
+		additionnalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
+	}
+	return fmt.Sprintf("you strike at the %s, %s is hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
 }

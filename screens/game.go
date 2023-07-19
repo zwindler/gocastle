@@ -235,7 +235,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	// before doing anything, check if we aren't out of bounds
 	if checkOutOfBounds(newX, newY) {
 		// Player tries to escape map, prevent this
-		AddLogEntry("you are blocked!")
+		addLogEntry("you are blocked!")
 
 		// trying to move costs 2 seconds
 		model.IncrementTimeSinceBegin(2)
@@ -246,13 +246,13 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			if npc.Hostile {
 				// let's attack!
 				// TODO make this depending on strengh and gear
-				handleNPCDamage(npc, 5)
+				addLogEntry(model.handleNPCDamage(npc, 5))
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
 
 			} else {
 				// NPC is not hostile, we don't want to hurt them
-				AddLogEntry("you are blocked!")
+				addLogEntry("you are blocked!")
 
 				// trying to move costs 2 seconds
 				model.IncrementTimeSinceBegin(2)
@@ -273,38 +273,12 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	newTurnForNPCs()
 }
 
-func AddLogEntry(logString string) {
+func addLogEntry(logString string) {
 	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
 	logsEntry := canvas.NewText(fullLogString, model.TextColor)
 	logsEntry.TextSize = 12
 	logsArea.Add(logsEntry)
 	logsScrollableTextArea.ScrollToBottom()
-}
-
-func handleNPCDamage(npc *model.NPCStats, damageDealt int) {
-	newHP := npc.CurrentHP - damageDealt
-
-	// Here there are levels of injury
-	// I want to give player additionnal information, but not everytime!
-	// only when NPC are going from above 80% live to under 80%, for example
-	var additionnalInfo string
-	if newHP <= 0 {
-		additionnalInfo = fmt.Sprintf("%s is dead.", npc.Name)
-	} else if newHP > 0 && newHP <= int(0.2*float64(npc.MaxHP)) && npc.CurrentHP > int(0.2*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
-	} else if newHP > int(0.2*float64(npc.MaxHP)) && newHP <= int(0.5*float64(npc.MaxHP)) && npc.CurrentHP > int(0.5*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks seriously injured.", npc.Name)
-	} else if newHP > int(0.5*float64(npc.MaxHP)) && newHP <= int(0.8*float64(npc.MaxHP)) && npc.CurrentHP > int(0.8*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks injured.", npc.Name)
-	} else if newHP > int(0.8*float64(npc.MaxHP)) && newHP < npc.MaxHP && npc.CurrentHP == npc.MaxHP {
-		additionnalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
-	}
-
-	AddLogEntry(fmt.Sprintf("you strike at the %s, %s is hit! %s", npc.Name, npc.Pronoun, additionnalInfo))
-
-	// Set new HP count
-	npc.CurrentHP = newHP
-
 }
 
 func newTurnForNPCs() {
