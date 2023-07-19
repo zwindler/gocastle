@@ -48,16 +48,17 @@ func ShowGameScreen(window fyne.Window) {
 	drawSubject(mapContainer, player.Avatar)
 
 	// set farmer on map and draw it
-	farmer := model.Farmer
-	farmer.Avatar.PosX, farmer.Avatar.PosY = 10, 15
+	farmer := model.CreateNPC(model.Farmer, 10, 15)
 	NPCList.List = append(NPCList.List, farmer)
 	drawSubject(mapContainer, farmer.Avatar)
 
-	// set wolf on map and draw it
-	wolf := model.Wolf
-	wolf.Avatar.PosX, wolf.Avatar.PosY = 22, 22
+	// set two wolve at the edge of the map and draw them
+	wolf := model.CreateNPC(model.Wolf, 22, 22)
 	NPCList.List = append(NPCList.List, wolf)
 	drawSubject(mapContainer, wolf.Avatar)
+	wolf2 := model.CreateNPC(model.Wolf, 24, 21)
+	NPCList.List = append(NPCList.List, wolf2)
+	drawSubject(mapContainer, wolf2.Avatar)
 
 	// already declared in var so has to manipulate it elsewhere
 	// TODO improve this?
@@ -222,12 +223,10 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	model.TimeSinceBegin = model.TimeSinceBegin + 3
 	updateStats()
 
-	fmt.Printf("Trying to move character \n")
 	if checkWalkable(newX, newY) {
-		fmt.Printf("Moving character \n")
 		moveAvatar(newX, newY, &player.Avatar)
 	} else {
-		fmt.Println("You are blocked!")
+		//fmt.Println("You are blocked!")
 		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
 		logsEntry.TextSize = 12
 		logsArea.Add(logsEntry)
@@ -239,12 +238,17 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 func newTurnForNPCs() {
 	// for all NPCs, move on a random adjacent tile
-	for _, npc := range NPCList.List {
-		fmt.Printf("Moving %s from %d %d\n", npc.Name, npc.Avatar.PosX, npc.Avatar.PosY)
+	for index, _ := range NPCList.List {
+		npc := &NPCList.List[index]
+		//fmt.Printf("%s turn\n", npc.Name)
 		newX := npc.Avatar.PosX + rand.Intn(3) - 1
 		newY := npc.Avatar.PosY + rand.Intn(3) - 1
-		if checkWalkable(newX, newY) {
-			moveAvatar(newX, newY, &npc.Avatar)
+
+		// don't check / try to move if coordinates stay the same
+		if newX != npc.Avatar.PosX || newY != npc.Avatar.PosY {
+			if checkWalkable(newX, newY) {
+				moveAvatar(newX, newY, &npc.Avatar)
+			}
 		}
 	}
 
@@ -273,7 +277,7 @@ func checkTileIsWalkable(futurePosX int, futurePosY int) bool {
 }
 
 func dontCollideWithPlayer(futurePosX int, futurePosY int) bool {
-	if player.PosX == futurePosX && player.PosY == futurePosY {
+	if player.Avatar.PosX == futurePosX && player.Avatar.PosY == futurePosY {
 		return false
 	}
 	return true
@@ -291,8 +295,6 @@ func dontCollideWithNPCs(futurePosX int, futurePosY int) bool {
 }
 
 func moveAvatar(futurePosX int, futurePosY int, subject *model.Avatar) {
-	fmt.Printf("Moving from %d %d to %d %d\n", subject.PosX, subject.PosY, futurePosX, futurePosY)
-
 	// assign new values for subject position
 	subject.PosX = futurePosX
 	subject.PosY = futurePosY

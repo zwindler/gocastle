@@ -14,9 +14,7 @@ sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 
 ## 2023-07-19
 
-After a good night's sleep, I found out that one of the issue from yesterday was that I was changing the generated farmer/wolf coordinates AFTER putting it in the NPCList. I guess this means that the wolf declared in ShowGameScreen is not the same object as the one in NPCList.
-
-I a way that's a good news because it'll help me generate mobs from generic deplarations in npc.go file.
+After a good night's sleep, I found out that one of the issue from yesterday was that I was changing the generated farmer/wolf coordinates AFTER putting it in the NPCList. 
 
 ```go
 	// set wolf on map and draw it
@@ -26,7 +24,65 @@ I a way that's a good news because it'll help me generate mobs from generic depl
 	drawSubject(mapContainer, wolf.Avatar)
 ```
 
-Collisions with NPCs are still a bit broken
+Collisions with NPCs are still a bit broken. This was a stupid mistake in newTurnForNPCs function. I'm looping over npc with 
+```go
+	for _, npc := range NPCList.List {
+```
+
+**But npc is not a reference**, it's a whole new NPCStats object! I fixed it like this:
+
+```go
+	for index, _ := range NPCList.List {
+		npc := &NPCList.List[index]
+```
+
+Now, player can't collide with NPCs anymore. But for some reason, NPCs can. :-( So much for an "easy refactor". But since they don't collide in anything else, I figured it was probably just a bug in the dontCollideWithPlayer() I wrote yesterday night. 
+
+In fact, during refactor, I forgot to remove player's PosX/PosY variable from CharacterStats, which is now unified between Player and NPCs in Avatar struct.
+
+```diff
+-		if npc.PosX == futurePosX && npc.PosY == futurePosY {
++		if npc.Avatar.PosX == futurePosX && npc.Avatar.PosY == futurePosY {
+```
+
+Last but not list, I had trouble understanding that in Go, when you assign a struct variable to another variable, you are creating a "shallow copy" of the struct. Meaning that modifying one would affect the other. This prevented me to instanciate a new wolf.
+
+So I created 2 functions to copy NPCs types I declared in model package
+
+```go
+func CreateNPC(npc NPCStats, x, y int) NPCStats {
+	avatar := createAvatar(npc.Avatar, x, y)
+	return NPCStats{
+		Name:      npc.Name,
+		Pronoun:   npc.Pronoun,
+		Avatar:    avatar,
+		MaxHP:     npc.MaxHP,
+		CurrentHP: npc.CurrentHP,
+		MaxMP:     npc.MaxMP,
+		CurrentMP: npc.CurrentMP,
+	}
+}
+
+func createAvatar(avatar Avatar, x, y int) Avatar {
+	return Avatar{
+		CanvasImage: canvas.NewImageFromFile(avatar.CanvasPath),
+		PosX:        x,
+		PosY:        y,
+	}
+}
+```
+
+Which allows me to create as much wolves as I want
+
+```go
+	// set two wolve at the edge of the map and draw them
+	wolf := model.CreateNPC(model.Wolf, 22, 22)
+	NPCList.List = append(NPCList.List, wolf)
+	drawSubject(mapContainer, wolf.Avatar)
+	wolf2 := model.CreateNPC(model.Wolf, 24, 21)
+	NPCList.List = append(NPCList.List, wolf2)
+	drawSubject(mapContainer, wolf2.Avatar)
+```
 
 ## 2023-07-18
 

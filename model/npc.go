@@ -17,7 +17,7 @@ type NPCsOnCurrentMap struct {
 
 var (
 	FarmerAvatar = Avatar{
-		CanvasImage: canvas.NewImageFromFile("./static/farmer.png"),
+		CanvasPath: "./static/farmer.png",
 	}
 	Farmer = NPCStats{
 		Name:      "farmer",
@@ -28,7 +28,7 @@ var (
 	}
 
 	WolfAvatar = Avatar{
-		CanvasImage: canvas.NewImageFromFile("./static/wolf.png"),
+		CanvasPath: "./static/wolf.png",
 	}
 	Wolf = NPCStats{
 		Name:      "wolf",
@@ -38,3 +38,24 @@ var (
 		CurrentHP: 10,
 	}
 )
+
+func CreateNPC(npc NPCStats, x, y int) NPCStats {
+	avatar := createAvatar(npc.Avatar, x, y)
+	return NPCStats{
+		Name:      npc.Name,
+		Pronoun:   npc.Pronoun,
+		Avatar:    avatar,
+		MaxHP:     npc.MaxHP,
+		CurrentHP: npc.CurrentHP,
+		MaxMP:     npc.MaxMP,
+		CurrentMP: npc.CurrentMP,
+	}
+}
+
+func createAvatar(avatar Avatar, x, y int) Avatar {
+	return Avatar{
+		CanvasImage: canvas.NewImageFromFile(avatar.CanvasPath),
+		PosX:        x,
+		PosY:        y,
+	}
+}

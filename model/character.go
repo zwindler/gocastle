@@ -16,8 +16,6 @@ type CharacterStats struct {
 	CurrentHP         int
 	MaxMP             int
 	CurrentMP         int
-	PosX              int
-	PosY              int
 }
 
 var (
