@@ -101,6 +101,15 @@ The idea now is to:
 
 When NPCs will be able to return hits, checkWalkable() which did all that will cease to be useful.
 
+I then created a function that take a npc (*model.NPCStats struct) and a damageDealt int as arguments: 
+* If (npc.CurrentHP - damageDealt) is <= 0, print that NPC is dead
+* If (npc.CurrentHP - damageDealt) > 0% and <= 20% of npc.MaxHP, and that CurrentHP > 20%, print that NPC looks barely alive
+* If (npc.CurrentHP - damageDealt) > 20% and <= 50% of npc.MaxHP, and that CurrentHP > 50%, print that NPC looks seriously injured
+* If (npc.CurrentHP - damageDealt) > 50% and <= 80% of npc.MaxHP, and that CurrentHP > 80%, print that NPC looks injured
+* If (npc.CurrentHP - damageDealt) > 80% and < 100% of npc.MaxHP, and that CurrentHP = 100%, print that NPC looks barely injured
+
+This way I can give additionnal information in the log entries on NPC remaining health.
+
 ## 2023-07-18
 
 Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 
