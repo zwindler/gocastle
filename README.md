@@ -84,6 +84,23 @@ Which allows me to create as much wolves as I want
 	drawSubject(mapContainer, wolf2.Avatar)
 ```
 
+I then ask ChatGPT to generate me more mobs (mage, ogre). They seemed satisfying enough. I reworked a bit the NPC addition on the map (created a function addNPCs that I'll rework later).
+
+Some of my NPCs are hostiles (wolf, ogre) and other aren't (mage, farmer). I added this in the structure. This is preleminary to the first combat implementation! I don't want my hero killing innocent farmers T_T.
+
+I then reworked the whole mapKeyListener function, and more specifically the pat where I check if path is walkable or not to add the attack logic.
+
+The idea now is to:
+* checkOutOfBounds() to prevent player from escaping the map
+* getNPCAtPosition() to check if there is an NPC on our path
+	* if hostile, deal some damage
+	* if not hostile, we are blocked like before
+	* if there are no NPC, checkTileIsWalkable()
+		* if tile is walkable, move
+		* if not, we are blocked
+
+When NPCs will be able to return hits, checkWalkable() which did all that will cease to be useful.
+
 ## 2023-07-18
 
 Today I started by doing to cleanup of the stats system. I moved the CharacterStats initialization in the model package instead of the newgame screen. I also switch all the stats from float64 (from the sliders) to int because all the characteristics will always be positive integers. 

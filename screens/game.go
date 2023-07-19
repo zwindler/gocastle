@@ -232,19 +232,51 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	newX := player.Avatar.PosX + direction.dx
 	newY := player.Avatar.PosY + direction.dy
 
-	// moving costs 3 seconds
-	model.TimeSinceBegin = model.TimeSinceBegin + 3
-	updateStats()
-
-	if checkWalkable(newX, newY) {
-		moveAvatar(newX, newY, &player.Avatar)
-	} else {
-		//fmt.Println("You are blocked!")
+	// before doing anything, check if we aren't out of bounds
+	if checkOutOfBounds(newX, newY) {
+		// Player tries to escape map, prevent this
 		logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
 		logsEntry.TextSize = 12
 		logsArea.Add(logsEntry)
 		logsScrollableTextArea.ScrollToBottom()
+
+		// trying to move costs 2 seconds
+		model.TimeSinceBegin = model.TimeSinceBegin + 2
+	} else {
+		// let's check if we find a NPC on our path
+		if npc := getNPCAtPosition(newX, newY); npc != nil {
+			// if yes, is the NPC hostile?
+			if npc.Hostile {
+				// let's attack!
+				// TODO make this depending on strengh and gear
+				npc.CurrentHP = npc.CurrentHP - 5
+				fmt.Printf("%s is hit!\n", npc.Name)
+
+				// TODO add a log message for this
+				// attacking costs 5 seconds
+				model.TimeSinceBegin = model.TimeSinceBegin + 5
+			} else {
+				// NPC is not hostile, we don't want to hurt them
+				logsEntry := canvas.NewText(model.FormatDuration(model.TimeSinceBegin, "long")+": you are blocked!", model.TextColor)
+				logsEntry.TextSize = 12
+				logsArea.Add(logsEntry)
+				logsScrollableTextArea.ScrollToBottom()
+
+				// trying to move costs 2 seconds
+				model.TimeSinceBegin = model.TimeSinceBegin + 2
+			}
+		} else {
+			// no NPC found on our path, let's check if we can move
+			if checkTileIsWalkable(newX, newY) {
+				// path is free, let's move
+				moveAvatar(newX, newY, &player.Avatar)
+				// moving costs 3 seconds
+				model.TimeSinceBegin = model.TimeSinceBegin + 3
+			}
+		}
 	}
+
+	updateStats()
 
 	newTurnForNPCs()
 }
@@ -265,6 +297,15 @@ func newTurnForNPCs() {
 		}
 	}
 
+}
+
+func getNPCAtPosition(x, y int) *model.NPCStats {
+	for index, npc := range NPCList.List {
+		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
+			return &NPCList.List[index]
+		}
+	}
+	return nil
 }
 
 func checkWalkable(futurePosX int, futurePosY int) bool {
