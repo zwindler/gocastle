@@ -35,7 +35,63 @@ func (npc *NPCStats) IsNPCDead() bool {
 }
 ```
 
+I rewrote / moved pretty much every function in game.go xD!
+
 XP should always be gained in full, while there will be some random factor for gold, so I'll add to create those functions.
+
+```go
+// randomizeGoldLoot generates a random amount of gold within a specified range.
+func randomizeGoldLoot(goldAmount int) int {
+	if goldAmount <= 0 {
+		return 0
+	}
+
+	// Seed the random number generator with the current time
+	rand.Seed(time.Now().UnixNano())
+
+	// Generate a random multiplier between 0.5 and 1.5 (inclusive)
+	multiplier := rand.Float64() + 0.5
+
+	// Calculate the randomized gold amount
+	randomizedGold := int(float64(goldAmount) * multiplier)
+
+	return randomizedGold
+}
+```
+
+Leveling up function looks like this
+
+```go
+func (player *CharacterStats) DetermineLevel() bool {
+	for i, requiredXP := range xpTable {
+		if player.CurrentXP >= requiredXP {
+			// we are still above threshold, continue
+			continue
+		} else {
+			// we are bellow next threshold, that's our level
+			if i > player.Level {
+				// only change level if it's greater than current
+				// there could be effects removing XP but I don't want to affect level
+				player.Level = i
+
+				// Max HP changes during level up, also heal player
+				player.GetMaxHP()
+				player.CurrentHP = player.MaxHP
+
+				// Max MP changes during level up, also reset MP player
+				player.GetMaxMP()
+				player.CurrentMP = player.MaxMP
+
+				// base damage may evolve when you can add char points
+				player.DetermineBaseDamage()
+				return true
+			}
+			break
+		}
+	}
+	return false
+}
+```
 
 
 ## 2023-07-19
