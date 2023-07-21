@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2/canvas"
 )
 
@@ -86,16 +88,23 @@ func (player *CharacterStats) ChangeXP(XPAmount int) bool {
 // change amount of gold of player from GoldAmount, could be negative
 func (player *CharacterStats) ChangeGold(GoldAmount int) {
 	// TODO: add some random elements
-	player.CurrentXP = int(player.CurrentGold) + GoldAmount
+	player.CurrentGold = int(player.CurrentGold) + GoldAmount
 }
 
 func (player *CharacterStats) DetermineLevel() bool {
 	for i, requiredXP := range xpTable {
+		fmt.Printf("Current XP %d", player.CurrentXP)
 		if player.CurrentXP >= requiredXP {
-			// only change level if it's greater than current
-			// there could be effects removing XP but I don't want to affect level
-			if i+1 > player.Level {
-				player.Level = i + 1
+			// we are still above threshold, continue
+			fmt.Printf("%d continue", i)
+			continue
+		} else {
+			fmt.Printf("%d stop", i)
+			// we are bellow next threshold, that's our level
+			if i > player.Level {
+				// only change level if it's greater than current
+				// there could be effects removing XP but I don't want to affect level
+				player.Level = i
 
 				// Max HP changes during level up, also heal player
 				player.GetMaxHP()
@@ -109,7 +118,6 @@ func (player *CharacterStats) DetermineLevel() bool {
 				player.DetermineBaseDamage()
 				return true
 			}
-		} else {
 			break
 		}
 	}
