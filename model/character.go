@@ -94,8 +94,8 @@ func (player *CharacterStats) DetermineLevel() bool {
 		if player.CurrentXP >= requiredXP {
 			// only change level if it's greater than current
 			// there could be effects removing XP but I don't want to affect level
-			if i > player.Level {
-				player.Level = i
+			if i+1 > player.Level {
+				player.Level = i + 1
 
 				// Max HP changes during level up, also heal player
 				player.GetMaxHP()

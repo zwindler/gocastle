@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	player  = model.Player
+	player  = &model.Player
 	NPCList = model.NPCsOnCurrentMap{}
 
 	mapColumns int
