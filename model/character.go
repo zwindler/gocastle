@@ -1,6 +1,8 @@
 package model
 
-import "fyne.io/fyne/v2/canvas"
+import (
+	"fyne.io/fyne/v2/canvas"
+)
 
 type CharacterStats struct {
 	CharacterName     string

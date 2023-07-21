@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"fyne.io/fyne/v2/canvas"
 )
@@ -91,6 +93,8 @@ func CreateNPC(npc NPCStats, x, y int) NPCStats {
 		CurrentHP: npc.CurrentHP,
 		MaxMP:     npc.MaxMP,
 		CurrentMP: npc.CurrentMP,
+		LootXP:    npc.LootXP,
+		LootGold:  randomizeGoldLoot(npc.LootGold),
 	}
 }
 
@@ -124,7 +128,7 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 }
 
 func (npc *NPCStats) IsNPCDead() bool {
-	return npc.CurrentHP <= 0
+	return (npc.CurrentHP <= 0)
 }
 
 // For a given NPCsOnCurrentMap, check all NPCs if one is located on x,y
@@ -136,6 +140,24 @@ func (NPCList *NPCsOnCurrentMap) GetNPCAtPosition(x, y int) int {
 		}
 	}
 	return -1
+}
+
+// randomizeGoldLoot generates a random amount of gold within a specified range.
+func randomizeGoldLoot(goldAmount int) int {
+	if goldAmount <= 0 {
+		return 0
+	}
+
+	// Seed the random number generator with the current time
+	rand.Seed(time.Now().UnixNano())
+
+	// Generate a random multiplier between 0.5 and 1.5 (inclusive)
+	multiplier := rand.Float64() + 0.5
+
+	// Calculate the randomized gold amount
+	randomizedGold := int(float64(goldAmount) * multiplier)
+
+	return randomizedGold
 }
 
 // For a given NPCsOnCurrentMap, remove NPC by list id and hide CanvasImage
