@@ -12,6 +12,32 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+## 2023-07-21
+
+Now that we can kill NPCs, I see two logical next steps:
+* give XP + random loot when they die
+* make basic "AI" profiles rather than random movement
+
+Giving XP is rather easy, but adding loot will need to create a whole need screen (inventory) so I'm going to limit myself to XP + (basic) leveling for now.
+
+In NPCStat structure, I added the following stuff, and also added.
+
+```go
+	LootXP     int
+	LootGold   float32
+```
+
+I also reworked some functions because I forgot you could add functions to structs, which is so much nicer than passing the reference as argument. I also added the XP counter and a Gold counter for the player (CurrentXP, CurrentGold) and functions
+
+```go
+func (npc *NPCStats) IsNPCDead() bool {
+	return npc.CurrentHP <= 0
+}
+```
+
+XP should always be gained in full, while there will be some random factor for gold, so I'll add to create those functions.
+
+
 ## 2023-07-19
 
 After a good night's sleep, I found out that one of the issue from yesterday was that I was changing the generated farmer/wolf coordinates AFTER putting it in the NPCList. 
@@ -108,9 +134,9 @@ I then created a function that take a npc (*model.NPCStats struct) and a damageD
 * If (npc.CurrentHP - damageDealt) > 50% and <= 80% of npc.MaxHP, and that CurrentHP > 80%, print that NPC looks injured
 * If (npc.CurrentHP - damageDealt) > 80% and < 100% of npc.MaxHP, and that CurrentHP = 100%, print that NPC looks barely injured
 
-This way I can give additionnal information in the log entries on NPC remaining health.
+This way I can give additional information in the log entries on NPC remaining health.
 
-The last thing I need to do is to remove the NPC from NPCList.List once he/she/it is dead, and remove the CanvasImage. I added more stats and modifications. Intelligence now change MPs, Strength and Dexterity improve base damage dealt on mobs.
+The last thing I need to do is to remove the NPC from NPCList.List once he/she/it is dead, and remove the CanvasImage.
 
 ```go
 				// let's attack!
@@ -122,6 +148,7 @@ The last thing I need to do is to remove the NPC from NPCList.List once he/she/i
 				}
 ```
 
+I finally added more stats and modifications. Intelligence now change MPs, Strength and Dexterity improve base damage dealt on mobs.
 
 ## 2023-07-18
 

@@ -15,6 +15,8 @@ type NPCStats struct {
 	CurrentHP int
 	MaxMP     int
 	CurrentMP int
+	LootXP    int
+	LootGold  int
 }
 type NPCsOnCurrentMap struct {
 	List []NPCStats
@@ -96,25 +98,25 @@ func createAvatar(avatar Avatar, x, y int) Avatar {
 	}
 }
 
-func HandleNPCDamage(npc *NPCStats, damageDealt int) string {
+func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	newHP := npc.CurrentHP - damageDealt
 
 	// Here there are levels of injury
-	// I want to give player additionnal information, but not everytime!
+	// I want to give player additional information, but not every time!
 	// only when NPC are going from above 80% live to under 80%, for example
-	var additionnalInfo string
+	var additionalInfo string
 	if newHP <= 0 {
-		additionnalInfo = fmt.Sprintf("%s is dead.", npc.Name)
+		additionalInfo = fmt.Sprintf("%s is dead.", npc.Name)
 	} else if newHP > 0 && newHP <= int(0.2*float64(npc.MaxHP)) && npc.CurrentHP > int(0.2*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
+		additionalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
 	} else if newHP > int(0.2*float64(npc.MaxHP)) && newHP <= int(0.5*float64(npc.MaxHP)) && npc.CurrentHP > int(0.5*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks seriously injured.", npc.Name)
+		additionalInfo = fmt.Sprintf("%s looks seriously injured.", npc.Name)
 	} else if newHP > int(0.5*float64(npc.MaxHP)) && newHP <= int(0.8*float64(npc.MaxHP)) && npc.CurrentHP > int(0.8*float64(npc.MaxHP)) {
-		additionnalInfo = fmt.Sprintf("%s looks injured.", npc.Name)
+		additionalInfo = fmt.Sprintf("%s looks injured.", npc.Name)
 	} else if newHP > int(0.8*float64(npc.MaxHP)) && newHP < npc.MaxHP && npc.CurrentHP == npc.MaxHP {
-		additionnalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
+		additionalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
 	}
-	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionnalInfo)
+	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
 // returns true if we are going to collide with player, false instead
@@ -123,4 +125,8 @@ func CollideWithPlayer(futurePosX int, futurePosY int, player *Avatar) bool {
 		return true
 	}
 	return false
+}
+
+func (npc *NPCStats) IsNPCDead() bool {
+	return npc.CurrentHP <= 0
 }

@@ -16,7 +16,7 @@ type Avatar struct {
 	PosY        int
 }
 
-func MoveAvatar(futurePosX int, futurePosY int, subject *Avatar) {
+func (subject *Avatar) MoveAvatar(futurePosX int, futurePosY int) {
 	// assign new values for subject position
 	subject.PosX = futurePosX
 	subject.PosY = futurePosY

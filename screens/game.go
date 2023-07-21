@@ -245,9 +245,9 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			if npc.Hostile {
 				// let's attack!
 				// TODO make this depending on gear
-				addLogEntry(model.HandleNPCDamage(npc, model.Player.BaseDamage))
+				addLogEntry(npc.HandleNPCDamage(model.Player.BaseDamage))
 				npc.CurrentHP = npc.CurrentHP - model.Player.BaseDamage
-				if npc.CurrentHP <= 0 {
+				if npc.IsNPCDead() {
 					npc.Avatar.CanvasImage.Hidden = true
 					removeNPCByIndex(npcId)
 				}
@@ -263,7 +263,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			// no NPC found on our path, let's check if we can move
 			if checkTileIsWalkable(newX, newY) {
 				// path is free, let's move (3sec cost)
-				model.MoveAvatar(newX, newY, &player.Avatar)
+				player.Avatar.MoveAvatar(newX, newY)
 				model.IncrementTimeSinceBegin(3)
 			}
 		}
@@ -310,7 +310,7 @@ func newTurnForNPCs() {
 					}
 					// no ones in our NPC's way
 				} else if checkTileIsWalkable(newX, newY) {
-					model.MoveAvatar(newX, newY, &npc.Avatar)
+					npc.Avatar.MoveAvatar(newX, newY)
 				}
 			}
 		}

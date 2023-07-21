@@ -17,6 +17,8 @@ type CharacterStats struct {
 	MaxMP             int
 	CurrentMP         int
 	BaseDamage        int
+	CurrentXP         int
+	CurrentGold       float32
 }
 
 var (
