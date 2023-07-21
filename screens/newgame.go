@@ -95,18 +95,15 @@ func ShowNewGameScreen(window fyne.Window) {
 					// we are good to go!
 
 					// starting MaxHP is 8, but constitution can change that
-					maxHP := model.GetMaxHP(model.Player.Level, 8, model.Player.ConstitutionValue)
-					model.Player.MaxHP = maxHP
-					model.Player.CurrentHP = maxHP
+					model.Player.GetMaxHP()
+					model.Player.CurrentHP = model.Player.MaxHP
 
 					// starting MaxMP is 8, but intelligence can change that
-					maxMP := model.GetMaxMP(model.Player.Level, 8, model.Player.IntelligenceValue)
-					model.Player.MaxMP = maxMP
-					model.Player.CurrentMP = maxMP
+					model.Player.GetMaxMP()
+					model.Player.CurrentMP = model.Player.MaxMP
 
 					// base damage solely depends on Strength, Dexterity and gear (soon)
-					baseDamage := model.DetermineBaseDamage(model.Player.StrengthValue, model.Player.DexterityValue)
-					model.Player.BaseDamage = baseDamage
+					model.Player.DetermineBaseDamage()
 
 					ShowGameScreen(window)
 					//}

@@ -45,6 +45,8 @@ var (
 		Hostile:   true,
 		MaxHP:     10,
 		CurrentHP: 10,
+		LootXP:    100,
+		LootGold:  0,
 	}
 
 	MageAvatar = Avatar{
@@ -73,6 +75,8 @@ var (
 		CurrentHP: 25,
 		MaxMP:     0,
 		CurrentMP: 0,
+		LootXP:    500,
+		LootGold:  100,
 	}
 )
 
@@ -119,14 +123,29 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
-// returns true if we are going to collide with player, false instead
-func CollideWithPlayer(futurePosX int, futurePosY int, player *Avatar) bool {
-	if player.PosX == futurePosX && player.PosY == futurePosY {
-		return true
-	}
-	return false
-}
-
 func (npc *NPCStats) IsNPCDead() bool {
 	return npc.CurrentHP <= 0
+}
+
+// For a given NPCsOnCurrentMap, check all NPCs if one is located on x,y
+func (NPCList *NPCsOnCurrentMap) GetNPCAtPosition(x, y int) int {
+	// find if a NPC matches our destination
+	for index, npc := range NPCList.List {
+		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
+			return index
+		}
+	}
+	return -1
+}
+
+// For a given NPCsOnCurrentMap, remove NPC by list id and hide CanvasImage
+func (NPCList *NPCsOnCurrentMap) RemoveNPCByIndex(index int) {
+	// Check if the index is within the valid range of the slice.
+	if index >= 0 && index < len(NPCList.List) {
+		// Remove NPC image from map
+		NPCList.List[index].Avatar.CanvasImage.Hidden = true
+		// Use slicing to remove the element at the specified index.
+		NPCList.List = append(NPCList.List[:index], NPCList.List[index+1:]...)
+	}
+
 }

@@ -70,10 +70,7 @@ func ShowGameScreen(window fyne.Window) {
 }
 
 func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
-	mapRows = len(currentMap.MapMatrix)
-	if mapRows > 0 {
-		mapColumns = len(currentMap.MapMatrix[0])
-	}
+	mapRows, mapColumns = currentMap.GetMapSize()
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
 	horizontalLine := canvas.NewImageFromFile("static/transparent_hline.png")
@@ -153,7 +150,7 @@ func createStatsArea() fyne.CanvasObject {
 	}
 
 	// update HP, MP, time
-	updateStats()
+	updateStatsBox()
 
 	for _, textObj := range statsTextObjects {
 		textObj.TextSize = 16
@@ -168,7 +165,7 @@ func createStatsArea() fyne.CanvasObject {
 	return statsTextArea
 }
 
-func updateStats() {
+func updateStatsBox() {
 	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentHP, model.Player.MaxHP)
 	healthPointsValueLabel.Refresh()
 
@@ -233,13 +230,15 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	newY := player.Avatar.PosY + direction.dy
 
 	// before doing anything, check if we aren't out of bounds
-	if checkOutOfBounds(newX, newY) {
+	if currentMap.CheckOutOfBounds(newX, newY) {
 		// Player tries to escape map, prevent this, lose 2 seconds
 		addLogEntry("you are blocked!")
 		model.IncrementTimeSinceBegin(2)
 	} else {
 		// let's check if we find a NPC on our path
-		if npcId := getNPCAtPosition(newX, newY); npcId != -1 {
+		if npcId := NPCList.GetNPCAtPosition(newX, newY); npcId != -1 {
+			// get the real NPC from the list, not a copy
+			// TODO improve this
 			npc := &NPCList.List[npcId]
 			// if yes, is the NPC hostile?
 			if npc.Hostile {
@@ -248,8 +247,12 @@ func mapKeyListener(event *fyne.KeyEvent) {
 				addLogEntry(npc.HandleNPCDamage(model.Player.BaseDamage))
 				npc.CurrentHP = npc.CurrentHP - model.Player.BaseDamage
 				if npc.IsNPCDead() {
-					npc.Avatar.CanvasImage.Hidden = true
-					removeNPCByIndex(npcId)
+					if player.ChangeXP(npc.LootXP) {
+						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", model.Player.Level)
+						addLogEntry(levelUpEntry)
+					}
+					player.ChangeGold(npc.LootGold)
+					NPCList.RemoveNPCByIndex(npcId)
 				}
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
@@ -261,7 +264,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			}
 		} else {
 			// no NPC found on our path, let's check if we can move
-			if checkTileIsWalkable(newX, newY) {
+			if currentMap.CheckTileIsWalkable(newX, newY) {
 				// path is free, let's move (3sec cost)
 				player.Avatar.MoveAvatar(newX, newY)
 				model.IncrementTimeSinceBegin(3)
@@ -269,7 +272,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		}
 	}
 
-	updateStats()
+	updateStatsBox()
 
 	newTurnForNPCs()
 }
@@ -292,9 +295,9 @@ func newTurnForNPCs() {
 		// don't check / try to move if coordinates stay the same
 		if newX != npc.Avatar.PosX || newY != npc.Avatar.PosY {
 			// before doing anything, check if we aren't out of bounds
-			if !checkOutOfBounds(newX, newY) {
+			if !currentMap.CheckOutOfBounds(newX, newY) {
 				// let's check if we find another NPC on our NPC's path
-				if npcId := getNPCAtPosition(newX, newY); npcId != -1 {
+				if npcId := NPCList.GetNPCAtPosition(newX, newY); npcId != -1 {
 					otherNPC := &NPCList.List[npcId]
 					if (npc.Hostile && !otherNPC.Hostile) ||
 						(!npc.Hostile && otherNPC.Hostile) {
@@ -303,50 +306,16 @@ func newTurnForNPCs() {
 						addLogEntry(fmt.Sprintf("%s tries to attack %s", npc.Name, otherNPC.Name))
 					}
 					// let's then check we don't collide with player
-				} else if model.CollideWithPlayer(newX, newY, &player.Avatar) {
+				} else if player.Avatar.CollideWithPlayer(newX, newY) {
 					if npc.Hostile {
 						// TODO hostile NPC should attack player
 						addLogEntry(fmt.Sprintf("%s tries to attack you", npc.Name))
 					}
 					// no ones in our NPC's way
-				} else if checkTileIsWalkable(newX, newY) {
+				} else if currentMap.CheckTileIsWalkable(newX, newY) {
 					npc.Avatar.MoveAvatar(newX, newY)
 				}
 			}
 		}
-	}
-}
-
-// TODO rework to move in maps.go
-func checkTileIsWalkable(futurePosX int, futurePosY int) bool {
-	return maps.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
-}
-
-// TODO rework to move to npc.go
-func getNPCAtPosition(x, y int) int {
-	// find if a NPC matches our destination
-	for index, npc := range NPCList.List {
-		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
-			return index
-		}
-	}
-	return -1
-}
-
-// TODO rework to move in maps.go
-func checkOutOfBounds(futurePosX int, futurePosY int) bool {
-	if futurePosX >= 0 && futurePosX < mapColumns &&
-		futurePosY >= 0 && futurePosY < mapRows {
-		return false
-	}
-	return true
-}
-
-// TODO rework to move in npc.go
-func removeNPCByIndex(index int) {
-	// Check if the index is within the valid range of the slice.
-	if index >= 0 && index < len(NPCList.List) {
-		// Use slicing to remove the element at the specified index.
-		NPCList.List = append(NPCList.List[:index], NPCList.List[index+1:]...)
 	}
 }

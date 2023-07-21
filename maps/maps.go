@@ -35,3 +35,26 @@ var Town = Map{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	},
 }
+
+func (currentMap *Map) GetMapSize() (int, int) {
+	mapColumns := 0
+	mapRows := len(currentMap.MapMatrix)
+	if mapRows > 0 {
+		mapColumns = len(currentMap.MapMatrix[0])
+	}
+	return mapRows, mapColumns
+}
+
+func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
+	mapRows, mapColumns := currentMap.GetMapSize()
+	if futurePosX >= 0 && futurePosX < mapColumns &&
+		futurePosY >= 0 && futurePosY < mapRows {
+		return false
+	}
+	return true
+}
+
+// for a given map, check if x,y is considered walkable
+func (currentMap *Map) CheckTileIsWalkable(futurePosX int, futurePosY int) bool {
+	return TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
+}

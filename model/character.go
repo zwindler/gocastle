@@ -18,7 +18,7 @@ type CharacterStats struct {
 	CurrentMP         int
 	BaseDamage        int
 	CurrentXP         int
-	CurrentGold       float32
+	CurrentGold       int
 }
 
 var (
@@ -39,23 +39,82 @@ var (
 		DexterityValue:    10,
 		Level:             1,
 	}
+	xpTable = []int{
+		0, // Level 1
+		100,
+		300,
+		600,
+		1000, // Level 5
+		1500,
+		2100,
+		2800,
+		3600,
+		4500, // Level 10
+	}
+	baseHP = 8
+	baseMP = 8
 )
 
-func GetMaxHP(level int, baseHP int, constitution int) int {
+func (player *CharacterStats) GetMaxHP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 constitution point above 10 every level
-	maxHP := baseHP + (4 * (level - 1)) + (constitution-10)/3*level
-	return int(maxHP)
+	maxHP := baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
+	player.MaxHP = int(maxHP)
 }
 
-func GetMaxMP(level int, baseMP int, intelligence int) int {
+func (player *CharacterStats) GetMaxMP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 intelligence point above 10 every level
-	maxMP := baseMP + (4 * (level - 1)) + (intelligence-10)/3*level
-	return int(maxMP)
+	maxMP := baseMP + (4 * (player.Level - 1)) + (player.IntelligenceValue-10)/3*player.Level
+	player.MaxMP = int(maxMP)
 }
 
-func DetermineBaseDamage(strength int, dexterity int) int {
-	baseDamage := 4 + (strength-10)/5*2 + (dexterity-10)/5*2
-	return int(baseDamage)
+func (player *CharacterStats) DetermineBaseDamage() {
+	baseDamage := 4 + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
+	player.BaseDamage = int(baseDamage)
+}
+
+// change XP player from XPAmount, could be negative, return true if leveled up
+func (player *CharacterStats) ChangeXP(XPAmount int) bool {
+	player.CurrentXP = player.CurrentXP + XPAmount
+	// Since we change XP, check if level changes
+	return player.DetermineLevel()
+}
+
+// change amount of gold of player from GoldAmount, could be negative
+func (player *CharacterStats) ChangeGold(GoldAmount int) {
+	// TODO: add some random elements
+	player.CurrentXP = int(player.CurrentGold) + GoldAmount
+}
+
+func (player *CharacterStats) DetermineLevel() bool {
+	for i, requiredXP := range xpTable {
+		if player.CurrentXP >= requiredXP {
+			// only change level if it's greater than current
+			// there could be effects removing XP but I don't want to affect level
+			if i > player.Level {
+				player.Level = i
+
+				// Max HP changes during level up, also heal player
+				player.GetMaxHP()
+				player.CurrentHP = player.MaxHP
+
+				// Max MP changes during level up, also reset MP player
+				player.GetMaxMP()
+				player.CurrentMP = player.MaxMP
+
+				// base damage may evolve when you can add char points
+				player.DetermineBaseDamage()
+				return true
+			}
+		} else {
+			break
+		}
+	}
+	return false
+}
+
+// returns true if we are going to collide with player, false instead
+func (playerAvatar *Avatar) CollideWithPlayer(futurePosX int, futurePosY int) bool {
+	return (playerAvatar.PosX == futurePosX && playerAvatar.PosY == futurePosY)
 }
