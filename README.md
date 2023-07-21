@@ -93,6 +93,61 @@ func (player *CharacterStats) DetermineLevel() bool {
 }
 ```
 
+Now that we level up, let's write some basic "AI" for the monsters. What I have in mind is "if player is in close proximity", move toward him/her. To do this I need to compute the distance between the current NPC and the player. Since we have a grid, it's a simple Pythagora problem (le carré de l'hypothénuse).
+
+```go
+func (subject *Avatar) DistanceFromAvatar(subject2 *Avatar) float64 {
+	dx := float64(subject.PosX - subject2.PosX)
+	dy := float64(subject.PosY - subject2.PosY)
+	return math.Sqrt(dx*dx + dy*dy)
+}
+```
+
+Then, if player is less than "10" in distance, go toward him
+
+```go
+func (subject *Avatar) MoveAvatarTowardsAvatar(subject2 *Avatar) (int, int) {
+	// Calculate the distance between the Avatar and the other Avatar in the x and y directions
+	deltaX := subject2.PosX - subject.PosX
+	deltaY := subject2.PosY - subject.PosY
+
+	moveX := 0
+	moveY := 0
+
+	if deltaX > 0 {
+		moveX = 1
+	} else if deltaX < 0 {
+		moveX = -1
+	}
+
+	if deltaY > 0 {
+		moveY = 1
+	} else if deltaY < 0 {
+		moveY = -1
+	}
+
+	// Update new Avatar's position to move one step closer to the other Avatar
+	return subject.PosX + moveX, subject.PosY + moveY
+}
+```
+
+Then, I can tweak the NPCs turn like this:
+
+```go
+		if npc.Hostile && npc.Avatar.DistanceFromAvatar(&player.Avatar) <= 10 {
+			// player is near, move toward him/her
+			newX, newY = npc.Avatar.MoveAvatarTowardsAvatar(&player.Avatar)
+		} else {
+			// move randomly
+			newX = npc.Avatar.PosX + rand.Intn(3) - 1
+			newY = npc.Avatar.PosY + rand.Intn(3) - 1
+
+		}
+```
+
+Which works! 
+
+NPCs are a bit dumb though and it's quite easy to trick them into going in line. They can't surround you.
 
 ## 2023-07-19
 

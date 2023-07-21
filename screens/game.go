@@ -289,8 +289,17 @@ func newTurnForNPCs() {
 	// for all NPCs, move on a random adjacent tile
 	for index := range NPCList.List {
 		npc := &NPCList.List[index]
-		newX := npc.Avatar.PosX + rand.Intn(3) - 1
-		newY := npc.Avatar.PosY + rand.Intn(3) - 1
+
+		var newX, newY int
+		if npc.Hostile && npc.Avatar.DistanceFromAvatar(&player.Avatar) <= 10 {
+			// player is near, move toward him/her
+			newX, newY = npc.Avatar.MoveAvatarTowardsAvatar(&player.Avatar)
+		} else {
+			// move randomly
+			newX = npc.Avatar.PosX + rand.Intn(3) - 1
+			newY = npc.Avatar.PosY + rand.Intn(3) - 1
+
+		}
 
 		// don't check / try to move if coordinates stay the same
 		if newX != npc.Avatar.PosX || newY != npc.Avatar.PosY {
