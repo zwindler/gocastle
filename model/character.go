@@ -1,8 +1,6 @@
 package model
 
 import (
-	"fmt"
-
 	"fyne.io/fyne/v2/canvas"
 )
 
@@ -93,13 +91,13 @@ func (player *CharacterStats) ChangeGold(GoldAmount int) {
 
 func (player *CharacterStats) DetermineLevel() bool {
 	for i, requiredXP := range xpTable {
-		fmt.Printf("Current XP %d", player.CurrentXP)
+		//fmt.Printf("Current XP %d", player.CurrentXP)
 		if player.CurrentXP >= requiredXP {
 			// we are still above threshold, continue
-			fmt.Printf("%d continue", i)
+			//fmt.Printf("%d continue", i)
 			continue
 		} else {
-			fmt.Printf("%d stop", i)
+			//fmt.Printf("%d stop", i)
 			// we are bellow next threshold, that's our level
 			if i > player.Level {
 				// only change level if it's greater than current
