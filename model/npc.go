@@ -35,20 +35,6 @@ var (
 		CurrentHP: 10,
 	}
 
-	WolfAvatar = Avatar{
-		CanvasPath: "./static/wolf.png",
-	}
-	Wolf = NPCStats{
-		Name:      "wolf",
-		Avatar:    WolfAvatar,
-		Pronoun:   "it",
-		Hostile:   true,
-		MaxHP:     10,
-		CurrentHP: 10,
-		LootXP:    100,
-		LootGold:  0,
-	}
-
 	MageAvatar = Avatar{
 		CanvasPath: "./static/woman-mage.png",
 	}
@@ -61,6 +47,20 @@ var (
 		CurrentHP: 15,
 		MaxMP:     20,
 		CurrentMP: 20,
+	}
+
+	WolfAvatar = Avatar{
+		CanvasPath: "./static/wolf.png",
+	}
+	Wolf = NPCStats{
+		Name:      "wolf",
+		Avatar:    WolfAvatar,
+		Pronoun:   "it",
+		Hostile:   true,
+		MaxHP:     10,
+		CurrentHP: 10,
+		LootXP:    100,
+		LootGold:  0,
 	}
 
 	OgreAvatar = Avatar{
