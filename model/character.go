@@ -102,18 +102,16 @@ func (player *CharacterStats) DetermineLevel() bool {
 			if i > player.Level {
 				// only change level if it's greater than current
 				// there could be effects removing XP but I don't want to affect level
+
+				// increase PointsToSpend by 2 per new levels
+				// it shouldn't be more than 2 points each time when the game is finished/balanced
+				player.PointsToSpend = player.PointsToSpend + 2*(i-player.Level)
+
+				// set new level
 				player.Level = i
 
-				// Max HP changes during level up, also heal player
-				player.GetMaxHP()
-				player.CurrentHP = player.MaxHP
+				player.RefreshStats()
 
-				// Max MP changes during level up, also reset MP player
-				player.GetMaxMP()
-				player.CurrentMP = player.MaxMP
-
-				// base damage may evolve when you can add char points
-				player.DetermineBaseDamage()
 				return true
 			}
 			break
@@ -125,4 +123,17 @@ func (player *CharacterStats) DetermineLevel() bool {
 // returns true if we are going to collide with player, false instead
 func (playerAvatar *Avatar) CollideWithPlayer(futurePosX int, futurePosY int) bool {
 	return (playerAvatar.PosX == futurePosX && playerAvatar.PosY == futurePosY)
+}
+
+func (player *CharacterStats) RefreshStats() {
+	// Max HP changes during level up, also heal player
+	player.GetMaxHP()
+	player.CurrentHP = player.MaxHP
+
+	// Max MP changes during level up, also reset MP player
+	player.GetMaxMP()
+	player.CurrentMP = player.MaxMP
+
+	// base damage may evolve when you can add char points
+	player.DetermineBaseDamage()
 }

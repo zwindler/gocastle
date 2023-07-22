@@ -1,6 +1,7 @@
 package screens
 
 import (
+	"gocastle/maps"
 	"gocastle/model"
 
 	"fmt"
@@ -10,6 +11,12 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+)
+
+var (
+	player     = &model.Player
+	NPCList    = model.NPCsOnCurrentMap{}
+	currentMap = maps.Town
 )
 
 const (
@@ -94,16 +101,12 @@ func ShowNewGameScreen(window fyne.Window) {
 					} else {*/
 					// we are good to go!
 
-					// starting MaxHP is 8, but constitution can change that
-					model.Player.GetMaxHP()
-					model.Player.CurrentHP = model.Player.MaxHP
+					// TODO create a separate function for this
+					// set player on map
+					player.Avatar.PosX, player.Avatar.PosY = 2, 4
+					addNPCsInNPCList()
 
-					// starting MaxMP is 8, but intelligence can change that
-					model.Player.GetMaxMP()
-					model.Player.CurrentMP = model.Player.MaxMP
-
-					// base damage solely depends on Strength, Dexterity and gear (soon)
-					model.Player.DetermineBaseDamage()
+					player.RefreshStats()
 
 					ShowGameScreen(window)
 					//}
@@ -167,5 +170,28 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 func resetRadioGroups(groups ...*widget.RadioGroup) {
 	for _, group := range groups {
 		group.SetSelected("")
+	}
+}
+
+func addNPCsInNPCList() {
+	// TODO: add info about NPCs in maps for fixed maps
+	// for generated maps, I'll have to create this randomly
+
+	// Define the NPC data in a slice
+	npcData := []struct {
+		npc  model.NPCStats
+		x, y int
+	}{
+		{model.Farmer, 10, 15},
+		{model.Mage, 5, 5},
+		{model.Wolf, 22, 22},
+		{model.Wolf, 24, 21},
+		{model.Ogre, 24, 23},
+	}
+
+	// Loop through the NPC data slice and create/draw each NPC
+	for _, data := range npcData {
+		npc := model.CreateNPC(data.npc, data.x, data.y)
+		NPCList.List = append(NPCList.List, npc)
 	}
 }

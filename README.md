@@ -12,6 +12,52 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+## 2023-07-22
+
+Making better AI will require looking into "pathfinding" topics. Fortunately, friends from Twitter gave me some documentation to read:
+* https://natureofcode.com/book/chapter-6-autonomous-agents/
+* https://python-tcod.readthedocs.io/en/latest/tcod/path.html
+* https://www.fatoldyeti.com/categories/roguelike-tutorial/
+
+But I want to move toward a "working" game faster, I'll leave this for later.
+
+The 2 next topics I have to adress are the leveling up screen and the inventory screen. Leveling will probably much easier since I have pretty much everything already. 
+
+Inventory requires creating new structs, new functions, a new screen with new features (drag and drop if that's possible with fyne?), adding more images on the game screen, ...
+
+So, basically when a character levels up, I want to print a popup saying you leveled up (in addition to the log entry, already present) with a button allowing you to dismiss the notification + a button to go to a new screen.
+
+Then, I need to create a new screen that looks very much like the newgame screen, with new points to allocate (2/levels) and sliders.
+
+Since most variables related to the game (currentMap, NPCList) are stored local to the screen package, I should be able to move screens back and forth (we'll see).
+
+So I copy/pasted the newgame.go file and renamed it levelup.go, removed everything that had to do with gender, aspect, ... I also removed the conditonnals preventing to go to the next screen (game.go) if some points are not allocated.
+
+On the slider, I removed the ability to go below the values already allocated (you can't reduce the strength below 14 if you already had 14 before leveling up). This required me to create a new createSliderLevelUpWithCallback function, which is derivative of createSliderWithCallback function in newgame.go.
+
+```go
+	slider.OnChanged = func(v float64) {
+		intV := int(v)
+		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
+			// player still has enough point to spend to make this modification
+			// however, this could mean that player wants to remove points allocated
+			// to characteristics from previous levels, which we don't want
+
+			// we only allow modification if new value is greater or equal than current value
+			if intV >= currentValue {
+				model.Player.PointsToSpend = model.Player.PointsToSpend - (intV - *value)
+				*value = intV	
+			}
+		} else {
+			slider.Value = float64(*value)
+			slider.Refresh()
+		}
+```
+
+Surprisingly enough, it worked at first try 🤣 though clearly there are some annoying bugs because when I get back to game screen, player and NPCs position has been reset on the map, but not in NPCList. 
+
+This is quite obvious when you think about it. I must initialise map + positions only when creating a new game.
+
 ## 2023-07-21
 
 Now that we can kill NPCs, I see two logical next steps:

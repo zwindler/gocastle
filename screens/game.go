@@ -17,13 +17,9 @@ const (
 )
 
 var (
-	player  = &model.Player
-	NPCList = model.NPCsOnCurrentMap{}
-
 	mapColumns int
 	mapRows    int
 
-	currentMap   = maps.Town
 	fyneTileSize = fyne.NewSize(tileSize, tileSize)
 
 	//mapContainer           = container.NewWithoutLayout()
@@ -34,9 +30,12 @@ var (
 	healthPointsValueLabel = canvas.NewText("10/10", model.TextColor)
 	manaPointsValueLabel   = canvas.NewText("10/10", model.TextColor)
 	timeSpentValueLabel    = canvas.NewText("0d0:0:0", model.TextColor)
+
+	currentWindow fyne.Window
 )
 
 func ShowGameScreen(window fyne.Window) {
+	currentWindow = window
 	mapContainer := container.NewWithoutLayout()
 	// generate a scrollable container which contains the map container
 	scrollableMapContainer := container.NewScroll(createMapArea(mapContainer))
@@ -44,10 +43,8 @@ func ShowGameScreen(window fyne.Window) {
 
 	// TODO create a separate function for this
 	// set player on map and draw it
-	player.Avatar.PosX, player.Avatar.PosY = 2, 4
-	drawSubject(mapContainer, player.Avatar)
-
-	addNPCs(mapContainer)
+	player.Avatar.DrawAvatar(mapContainer)
+	drawNPCList(mapContainer)
 
 	// already declared in var so has to manipulate it elsewhere
 	// TODO improve this?
@@ -104,35 +101,11 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	return container.NewVBox(mapHBox, horizontalBorder)
 }
 
-func addNPCs(mapContainer *fyne.Container) {
-	// TODO: add info about NPCs in maps for fixed maps
-	// for generated maps, I'll have to create this randomly
-
-	// Define the NPC data in a slice
-	npcData := []struct {
-		npc  model.NPCStats
-		x, y int
-	}{
-		{model.Farmer, 10, 15},
-		{model.Mage, 5, 5},
-		{model.Wolf, 22, 22},
-		{model.Wolf, 24, 21},
-		{model.Ogre, 24, 23},
-	}
-
+func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
-	for _, data := range npcData {
-		npc := model.CreateNPC(data.npc, data.x, data.y)
-		NPCList.List = append(NPCList.List, npc)
-		drawSubject(mapContainer, npc.Avatar)
+	for _, npc := range NPCList.List {
+		npc.Avatar.DrawAvatar(mapContainer)
 	}
-}
-
-func drawSubject(mapContainer *fyne.Container, subject model.Avatar) {
-	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
-	subject.CanvasImage.Resize(fyneTileSize)
-	subject.CanvasImage.Move(fyne.NewPos(float32(subject.PosX*tileSize), float32(subject.PosY*tileSize)))
-	mapContainer.Add(subject.CanvasImage)
 }
 
 // Create the stats area containing health points, mana points, time spent, and location info.
@@ -250,6 +223,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 					if player.ChangeXP(npc.LootXP) {
 						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", model.Player.Level)
 						addLogEntry(levelUpEntry)
+						ShowLevelUpScreen(currentWindow)
 					}
 					player.ChangeGold(npc.LootGold)
 					NPCList.RemoveNPCByIndex(npcId)

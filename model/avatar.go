@@ -11,6 +11,10 @@ const (
 	tileSize = 32
 )
 
+var (
+	fyneTileSize = fyne.NewSize(tileSize, tileSize)
+)
+
 type Avatar struct {
 	CanvasImage *canvas.Image
 	CanvasPath  string
@@ -24,6 +28,15 @@ func (subject *Avatar) MoveAvatar(futurePosX int, futurePosY int) {
 	subject.PosY = futurePosY
 
 	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+}
+
+func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
+	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
+	subject.CanvasImage.Resize(fyneTileSize)
+
+	subject.MoveAvatar(subject.PosX, subject.PosY)
+
+	mapContainer.Add(subject.CanvasImage)
 }
 
 func (subject *Avatar) DistanceFromAvatar(subject2 *Avatar) float64 {
