@@ -54,11 +54,11 @@ On the slider, I removed the ability to go below the values already allocated (y
 		}
 ```
 
-Surprisingly enough, it worked at first try 🤣 though clearly there are some annoying bugs because when I get back to game screen, player and NPCs position has been reset on the map, but not in NPCList. 
+Surprisingly enough, copy pasting and tweaking a bit worked at first try 🤣 though clearly there are some annoying bugs because when I get back to game screen, player and NPCs position has been reset on the map, but not in NPCList. 
 
 This is quite obvious when you think about it. I must initialise map + positions only when creating a new game. I moved a few functions around, splitted initialisation in newgame.go and drawing stayed in game.go, and it's good.
 
-Well, the screen itself is hideous, but works as expected.
+Well, the screen itself is hideous, but works as expected. Seeing how this screen is empty, I wondered if I could change the levelup screen in a popup instead. I used dialog.ShowCustom before (in the newgame screen) and reading the documentation I found ShowCustomConfirm which allows confirmation + back button. Perfect!
 
 ## 2023-07-21
 
