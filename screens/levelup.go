@@ -11,11 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func ShowLevelUpScreen(window fyne.Window) {
-
-	characterNameLabel := widget.NewLabel("Character's name")
-	characterNameValue := widget.NewLabel(model.Player.CharacterName)
-
+func showLevelUpScreen() *fyne.Container {
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
 
@@ -44,42 +40,9 @@ func ShowLevelUpScreen(window fyne.Window) {
 		&model.Player.DexterityValue, currentDexterity, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	backButton := widget.NewButton("Back", func() {
-		ShowGameScreen(window)
-	})
-	validateButton := widget.NewButton("Validate", func() {
-		model.Player.GetMaxHP()
-		model.Player.CurrentHP = model.Player.MaxHP
-
-		model.Player.GetMaxMP()
-		model.Player.CurrentMP = model.Player.MaxMP
-
-		model.Player.DetermineBaseDamage()
-
-		ShowGameScreen(window)
-	})
-
-	firstLine := container.New(layout.NewFormLayout(),
-		characterNameLabel,
-		characterNameValue,
-	)
-
-	slidersLine := container.New(layout.NewGridLayout(5),
+	return container.New(layout.NewGridLayout(5),
 		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
-
-	lastLine := container.NewHBox(
-		backButton,
-		validateButton,
-	)
-
-	content := container.NewVBox(
-		firstLine,
-		slidersLine,
-		lastLine,
-	)
-
-	window.SetContent(content)
 }
 
 func createSliderLevelUpWithCallback(characteristic string, min float64, max float64,
@@ -109,3 +72,4 @@ func createSliderLevelUpWithCallback(characteristic string, min float64, max flo
 	}
 	return slider
 }
+

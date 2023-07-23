@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 )
 
@@ -223,7 +224,13 @@ func mapKeyListener(event *fyne.KeyEvent) {
 					if player.ChangeXP(npc.LootXP) {
 						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", model.Player.Level)
 						addLogEntry(levelUpEntry)
-						ShowLevelUpScreen(currentWindow)
+						levelUpPopup := showLevelUpScreen()
+						dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(validate bool) {
+							if validate {
+								player.RefreshStats()
+								updateStatsBox()
+							}
+						}, currentWindow)
 					}
 					player.ChangeGold(npc.LootGold)
 					NPCList.RemoveNPCByIndex(npcId)

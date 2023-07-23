@@ -12,6 +12,28 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+## 2023-07-23
+
+Following on yesterday's idea (changing the levelup screen to just a ShowCustomConfirm popup). Documentation is here (https://pkg.go.dev/fyne.io/fyne/v2/dialog#ShowCustomConfirm)
+
+```go
+func ShowCustomConfirm(title, confirm, dismiss string, content fyne.CanvasObject,
+	callback func(bool), parent fyne.Window)
+```
+
+I just have to implement callback (which is code from the Validate button in my previous levelup.go screen). Basically it's just `player.RefreshStats()`
+
+```go
+dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(validate bool) {
+	if validate {
+		player.RefreshStats()
+		updateStatsBox()
+	}
+}, currentWindow)
+```
+
+Easy peasy
+
 ## 2023-07-22
 
 Making better AI will require looking into "pathfinding" topics. Fortunately, friends from Twitter gave me some documentation to read:
