@@ -34,6 +34,14 @@ dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(va
 
 Easy peasy
 
+Since GoCastle is now "playable" (even though really boring + short), I've added goreleaser and my first release . I'm a bit disappointed though because Windows + Mac + ARM64 targets all failed
+
+```
+        imports github.com/go-gl/gl/v3.2-core/gl: build constraints exclude all Go files in /home/zwindler/go/pkg/mod/github.com/go-gl/gl@v0.0.0-20211210172815-726fda9656d6/v3.2-core/gl
+```
+
+There seem to be a closed issue about this and it should be resolved so I'm a bit confused... https://github.com/fyne-io/fyne/issues/1739
+
 ## 2023-07-22
 
 Making better AI will require looking into "pathfinding" topics. Fortunately, friends from Twitter gave me some documentation to read:
