@@ -226,10 +226,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 						addLogEntry(levelUpEntry)
 						levelUpPopup := showLevelUpScreen()
 						dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(validate bool) {
-							if validate {
-								player.RefreshStats()
-								updateStatsBox()
-							}
+							updateStatsBox()
 						}, currentWindow)
 					}
 					player.ChangeGold(npc.LootGold)
