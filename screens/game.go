@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gocastle/maps"
 	"gocastle/model"
+	"log"
 	"math/rand"
 
 	"fyne.io/fyne/v2"
@@ -157,7 +158,8 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	// create a table of subimages (image.Image type)
 	loadedTiles, err := maps.LoadTilesFromTileset(maps.TilesTypes)
 	if err != nil {
-		fmt.Errorf("unable to load tile from Tileset: %w", err)
+		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
+		log.Fatalf("MapMatrix error: %s", err)
 		// TODO error handling
 	}
 
@@ -218,14 +220,15 @@ func mapKeyListener(event *fyne.KeyEvent) {
 			if npc.Hostile {
 				// let's attack!
 				// TODO make this depending on gear
-				addLogEntry(npc.HandleNPCDamage(model.Player.BaseDamage))
-				npc.CurrentHP = npc.CurrentHP - model.Player.BaseDamage
+				addLogEntry(npc.HandleNPCDamage(player.PhysicalDamage))
+				npc.CurrentHP = npc.CurrentHP - player.PhysicalDamage
 				if npc.IsNPCDead() {
 					if player.ChangeXP(npc.LootXP) {
-						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", model.Player.Level)
+						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", player.Level)
 						addLogEntry(levelUpEntry)
 						levelUpPopup := showLevelUpScreen()
 						dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(validate bool) {
+							player.RefreshStats(true)
 							updateStatsBox()
 						}, currentWindow)
 					}

@@ -1,26 +1,42 @@
 package model
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2/canvas"
 )
 
 type CharacterStats struct {
-	CharacterName     string
-	GenderValue       string
-	Avatar            Avatar
+	// Character personalisation
+	CharacterName string
+	GenderValue   string
+
+	// Avatar
+	Avatar Avatar
+
+	// Main characteristics
 	PointsToSpend     int
 	StrengthValue     int
 	ConstitutionValue int
 	IntelligenceValue int
 	DexterityValue    int
-	Level             int
-	MaxHP             int
-	CurrentHP         int
-	MaxMP             int
-	CurrentMP         int
-	BaseDamage        int
-	CurrentXP         int
-	CurrentGold       int
+
+	// XP + levels
+	CurrentXP int
+	Level     int
+
+	// Secondary charateristics
+	// Those characteristics depend on main chars, level and gear
+	MaxHP          int
+	CurrentHP      int
+	MaxMP          int
+	CurrentMP      int
+	PhysicalDamage int
+	Armor          int
+
+	// Inventory
+	CurrentGold int
+	Inventory   []Object
 }
 
 var (
@@ -53,10 +69,14 @@ var (
 		3600,
 		4500, // Level 10
 	}
-	baseHP = 8
-	baseMP = 8
+
+	// basic base secondary characteristics
+	baseHP             = 8
+	baseMP             = 8
+	basePhysicalDamage = 2
 )
 
+// GetMaxHP changes player maxHP depending of player's level and constitution
 func (player *CharacterStats) GetMaxHP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 constitution point above 10 every level
@@ -64,6 +84,7 @@ func (player *CharacterStats) GetMaxHP() {
 	player.MaxHP = int(maxHP)
 }
 
+// GetMaxMP changes player maxMP depending of player's level and intelligence
 func (player *CharacterStats) GetMaxMP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 intelligence point above 10 every level
@@ -71,24 +92,39 @@ func (player *CharacterStats) GetMaxMP() {
 	player.MaxMP = int(maxMP)
 }
 
-func (player *CharacterStats) DetermineBaseDamage() {
-	baseDamage := 4 + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
-	player.BaseDamage = int(baseDamage)
+// DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear
+func (player *CharacterStats) DeterminePhysicalDamage() {
+	damage := basePhysicalDamage + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
+
+	// search in inventory items modifying the physicalDamage
+	for _, item := range player.Inventory {
+		for _, stat := range item.Stats {
+			if stat.Name == "physicalDamage" {
+				damage += stat.Modifier
+			}
+		}
+	}
+
+	fmt.Printf("damage %d\n", damage)
+	player.PhysicalDamage = int(damage)
 }
 
-// change XP player from XPAmount, could be negative, return true if leveled up
+// ChangeXP changes XP player from XPAmount, could be negative, return true if leveled up
 func (player *CharacterStats) ChangeXP(XPAmount int) bool {
 	player.CurrentXP = player.CurrentXP + XPAmount
 	// Since we change XP, check if level changes
 	return player.DetermineLevel()
 }
 
-// change amount of gold of player from GoldAmount, could be negative
+// ChangeGold changes amount of gold of player from GoldAmount, could be negative
 func (player *CharacterStats) ChangeGold(GoldAmount int) {
 	// TODO: add some random elements
 	player.CurrentGold = int(player.CurrentGold) + GoldAmount
 }
 
+// DetermineLevel check player currentXP and increase level if necessary
+// You can't loose levels even if you lost XP (by design). Returns true if
+// player leveled up
 func (player *CharacterStats) DetermineLevel() bool {
 	for i, requiredXP := range xpTable {
 		//fmt.Printf("Current XP %d", player.CurrentXP)
@@ -109,8 +145,7 @@ func (player *CharacterStats) DetermineLevel() bool {
 
 				// set new level
 				player.Level = i
-
-				player.RefreshStats()
+				player.RefreshStats(true)
 
 				return true
 			}
@@ -120,20 +155,35 @@ func (player *CharacterStats) DetermineLevel() bool {
 	return false
 }
 
-// returns true if we are going to collide with player, false instead
+// CollideWithPlayer returns true if we are going to collide with player, false instead
 func (playerAvatar *Avatar) CollideWithPlayer(futurePosX int, futurePosY int) bool {
 	return (playerAvatar.PosX == futurePosX && playerAvatar.PosY == futurePosY)
 }
 
-func (player *CharacterStats) RefreshStats() {
-	// Max HP changes during level up, also heal player
+// RefreshStats is used when characters stats are modified, which in turn
+// changes basic stats for player. If heal is true, reset HP/MP to 100%max
+func (player *CharacterStats) RefreshStats(heal bool) {
+	// Max HP changes during level up
 	player.GetMaxHP()
-	player.CurrentHP = player.MaxHP
-
 	// Max MP changes during level up, also reset MP player
 	player.GetMaxMP()
-	player.CurrentMP = player.MaxMP
-
 	// base damage may evolve when you can add char points
-	player.DetermineBaseDamage()
+	player.DeterminePhysicalDamage()
+
+	if heal {
+		player.CurrentHP = player.MaxHP
+		player.CurrentMP = player.MaxMP
+	}
+}
+
+// AddObjectToInventory adds an object to the player's inventory.
+func (player *CharacterStats) AddObjectToInventory(obj Object) {
+	player.Inventory = append(player.Inventory, obj)
+}
+
+// RemoveObjectFromInventory removes an object from the player's inventory by its index.
+func (player *CharacterStats) RemoveObjectFromInventory(index int) {
+	if index >= 0 && index < len(player.Inventory) {
+		player.Inventory = append(player.Inventory[:index], player.Inventory[index+1:]...)
+	}
 }

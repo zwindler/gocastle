@@ -3,6 +3,7 @@ package screens
 import (
 	"gocastle/maps"
 	"gocastle/model"
+	"log"
 
 	"fmt"
 
@@ -106,7 +107,16 @@ func ShowNewGameScreen(window fyne.Window) {
 					player.Avatar.PosX, player.Avatar.PosY = 2, 4
 					addNPCsInNPCList()
 
-					player.RefreshStats()
+					// create a knife and add it to player's inventory
+					// TODO rework later
+					knife, err := model.CreateObject(model.Knife)
+					if err != nil {
+						err = fmt.Errorf("unable to add knife to inventory: %w", err)
+						log.Fatalf("NewGame error: %s", err)
+					}
+					player.AddObjectToInventory(knife)
+
+					player.RefreshStats(true)
 
 					ShowGameScreen(window)
 					//}

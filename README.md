@@ -42,6 +42,58 @@ Since GoCastle is now "playable" (even though really boring + short), I've added
 
 There seem to be a closed issue about this and it should be resolved so I'm a bit confused... https://github.com/fyne-io/fyne/issues/1739
 
+Now that we have a first 0.0.1 version, it's time to start to think about inventory, which is going to be painful, I think.
+
+In "Castle of the wind", the inventory is a separate screen divided in 3 parts : On the left, a drawing of the player, surrounded by boxes showing everywere you can put objects on. The right side is divided in 2 vertical boxes : one for what's on the floor, the other for your "containers" (backpack, belts, purses). You equip items from tle floor or your containers by drag and dropping to the right location on the left side.
+
+I could try to reproduce this but I already know there is no drag-n-drop support is not functionnal in fyne for now. https://github.com/fyne-io/fyne/issues/142
+
+Since I have no real idea on how to workaround this, I'm going to do something very crude for now:
+* items automatically go into your items list
+* I'll just make dropdown lists to select which object for a given category you choose to equip
+
+I've created a new file called object.go to create the necessary structs / functions.
+
+```go
+	WeaponCategory = Category{
+		Name:        "Weapon",
+		Description: "Weapons used for combat.",
+	}
+[...]
+	Knife = Object{
+		Name:     "Common knife",
+		Category: "Weapon",
+		Stats: []ObjectStat{
+			{
+				Name:     "physicalDamage",
+				Modifier: 2,
+			},
+		},
+	}
+```
+
+I've created various functions to add/remove items from inventory, check that categories exists, ...
+
+I've then modified the DeterminePhysicalDamage() function (previously called DetermineBaseDamage())
+
+```go
+// DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear
+func (player *CharacterStats) DeterminePhysicalDamage() {
+	damage := basePhysicalDamage + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
+
+	// search in inventory items modifying the physicalDamage
+	for _, item := range player.Inventory {
+		for _, stat := range item.Stats {
+			if stat.Name == "physicalDamage" {
+				damage += stat.Modifier
+			}
+		}
+	}
+
+	player.PhysicalDamage = int(damage)
+}
+```
+
 ## 2023-07-22
 
 Making better AI will require looking into "pathfinding" topics. Fortunately, friends from Twitter gave me some documentation to read:
