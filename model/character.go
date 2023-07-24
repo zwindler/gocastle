@@ -110,7 +110,6 @@ func (player *CharacterStats) DeterminePhysicalDamage() {
 		}
 	}
 
-	fmt.Printf("damage %d\n", damage)
 	player.PhysicalDamage = int(damage)
 }
 

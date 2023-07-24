@@ -35,6 +35,7 @@ var (
 	}
 )
 
+// extractTileFromTileset extracts a subimage from coordinates on a tileset
 func extractTileFromTileset(coord Coord) (image.Image, error) {
 	x, y := coord.X, coord.Y
 	file, err := os.Open("static/RPG Nature Tileset.png")
@@ -59,6 +60,7 @@ func extractTileFromTileset(coord Coord) (image.Image, error) {
 	return partImage, nil
 }
 
+// LoadTilesFromTileset load all tiles from []TileInfo and store them in a []image.Image
 func LoadTilesFromTileset(tiles []TileInfo) ([]image.Image, error) {
 	var images []image.Image
 

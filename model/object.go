@@ -59,7 +59,7 @@ var (
 	}
 )
 
-// Common categories slice.
+// Allowed categories slice.
 var CategoryList = []Category{
 	WeaponCategory,
 	BodyArmorCategory,

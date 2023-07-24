@@ -42,6 +42,7 @@ var (
 	currentWindow fyne.Window
 )
 
+// ShowGameScreen is the main function of the game screen
 func ShowGameScreen(window fyne.Window) {
 	currentWindow = window
 	mapContainer = container.NewWithoutLayout()
@@ -76,6 +77,7 @@ func ShowGameScreen(window fyne.Window) {
 	drawNPCList(mapContainer)
 }
 
+// createMapArea generates a fyne container containing the map tiles
 func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	mapRows, mapColumns = currentMap.GetMapSize()
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
@@ -111,6 +113,7 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	return container.NewVBox(mapHBox, horizontalBorder)
 }
 
+// drawNPCList draws the NPC's Avatars images on the mapContainer
 func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
 	for _, npc := range NPCList.List {
@@ -118,7 +121,8 @@ func drawNPCList(mapContainer *fyne.Container) {
 	}
 }
 
-// Create the stats area containing health points, mana points, time spent, and location info.
+// createStatsArea creates the stats area containing health points, mana points,
+// time spent, and location info.
 func createStatsArea() fyne.CanvasObject {
 	// Create an array to store all the canvas.NewText objects
 	statsTextObjects := []*canvas.Text{
@@ -133,7 +137,7 @@ func createStatsArea() fyne.CanvasObject {
 	}
 
 	// update HP, MP, time
-	updateStatsBox()
+	updateStatsArea()
 
 	for _, textObj := range statsTextObjects {
 		textObj.TextSize = 16
@@ -148,7 +152,8 @@ func createStatsArea() fyne.CanvasObject {
 	return statsTextArea
 }
 
-func updateStatsBox() {
+// updateStatsArea refreshes the values in StatsArea
+func updateStatsArea() {
 	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentHP, model.Player.MaxHP)
 	healthPointsValueLabel.Refresh()
 
@@ -159,6 +164,7 @@ func updateStatsBox() {
 	timeSpentValueLabel.Refresh()
 }
 
+// createMapMatrix creates the tiles matrix ([][]*canvas.Image)
 func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	matrix := make([][]*canvas.Image, numRows)
 
@@ -188,6 +194,7 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	return matrix
 }
 
+// mapKeyListener is the main loop function in this screen
 func mapKeyListener(event *fyne.KeyEvent) {
 	directions := map[fyne.KeyName]struct{ dx, dy int }{
 		fyne.KeyUp:    {0, -1},
@@ -237,7 +244,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 						levelUpPopup := showLevelUpScreen()
 						dialog.ShowCustomConfirm("Level up!", "Validate", "Close", levelUpPopup, func(validate bool) {
 							player.RefreshStats(true)
-							updateStatsBox()
+							updateStatsArea()
 						}, currentWindow)
 					}
 					player.ChangeGold(npc.LootGold)
@@ -262,7 +269,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	}
 
 	centerMapOnPlayer()
-	updateStatsBox()
+	updateStatsArea()
 
 	newTurnForNPCs()
 }
@@ -305,6 +312,7 @@ func centerMapOnPlayer() {
 	scrollableMapContainer.Refresh()
 }
 
+// addLogEntry adds entries in the Log scrollable screen
 func addLogEntry(logString string) {
 	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
 	logsEntry := canvas.NewText(fullLogString, model.TextColor)
@@ -313,6 +321,7 @@ func addLogEntry(logString string) {
 	logsScrollableTextArea.ScrollToBottom()
 }
 
+// newTurnForNPCs manages all the map's NPCs actions
 func newTurnForNPCs() {
 	// for all NPCs, move on a random adjacent tile
 	for index := range NPCList.List {

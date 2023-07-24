@@ -36,6 +36,7 @@ var Town = Map{
 	},
 }
 
+// GetMapSize return number of rows and number of columns of a given map
 func (currentMap *Map) GetMapSize() (int, int) {
 	mapColumns := 0
 	mapRows := len(currentMap.MapMatrix)
@@ -45,6 +46,7 @@ func (currentMap *Map) GetMapSize() (int, int) {
 	return mapRows, mapColumns
 }
 
+// CheckOutOfBounds checks if x, y coordinates are out of map bounds
 func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
 	mapRows, mapColumns := currentMap.GetMapSize()
 	if futurePosX >= 0 && futurePosX < mapColumns &&
@@ -54,7 +56,7 @@ func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
 	return true
 }
 
-// for a given map, check if x,y is considered walkable
+// CheckTileIsWalkable checks if, for a given map, x,y coordinates are considered walkable
 func (currentMap *Map) CheckTileIsWalkable(futurePosX int, futurePosY int) bool {
 	return TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
 }

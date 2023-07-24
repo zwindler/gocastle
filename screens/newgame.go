@@ -25,6 +25,7 @@ const (
 	maxStat = 20
 )
 
+// ShowNewGameScreen is the main function of the new game screen
 func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect1 *widget.RadioGroup
 	var characterAspect2 *widget.RadioGroup
@@ -157,6 +158,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	window.SetContent(content)
 }
 
+// createSliderWithCallback is the callback function for sliders in newgame screen
 func createSliderWithCallback(characteristic string, min float64, max float64,
 	value *int, pointsToSpend *int,
 	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
@@ -178,12 +180,14 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 	return slider
 }
 
+// resetRadioGroups is a helper function for resetting unselected radio groups
 func resetRadioGroups(groups ...*widget.RadioGroup) {
 	for _, group := range groups {
 		group.SetSelected("")
 	}
 }
 
+// addNPCsInNPCList adds NPCs on the Town map. Sould be in maps package
 func addNPCsInNPCList() {
 	// TODO: add info about NPCs in maps for fixed maps
 	// for generated maps, I'll have to create this randomly

@@ -6,10 +6,12 @@ var (
 	TimeSinceBegin int = 0
 )
 
+// IncrementTimeSinceBegin is a helper function to handle in-game time
 func IncrementTimeSinceBegin(value int) {
 	TimeSinceBegin += value
 }
 
+// FormatDuration is a helper function that returns a string to get nice logs
 func FormatDuration(seconds int, format string) string {
 	if seconds < 0 {
 		return "Invalid duration"

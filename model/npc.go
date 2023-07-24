@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-
-	"fyne.io/fyne/v2/canvas"
 )
 
 type NPCStats struct {
@@ -82,6 +80,7 @@ var (
 	}
 )
 
+// CreateNPC creates a copy of a given NPC at given coordinates
 func CreateNPC(npc NPCStats, x, y int) NPCStats {
 	avatar := createAvatar(npc.Avatar, x, y)
 	return NPCStats{
@@ -98,14 +97,7 @@ func CreateNPC(npc NPCStats, x, y int) NPCStats {
 	}
 }
 
-func createAvatar(avatar Avatar, x, y int) Avatar {
-	return Avatar{
-		CanvasImage: canvas.NewImageFromFile(avatar.CanvasPath),
-		PosX:        x,
-		PosY:        y,
-	}
-}
-
+// HandleNPCDamage returns strings for having nice logs during combat with NPCs
 func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	newHP := npc.CurrentHP - damageDealt
 
@@ -127,6 +119,7 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
+// IsNPCDead checks if NPC's HP <= 0
 func (npc *NPCStats) IsNPCDead() bool {
 	return (npc.CurrentHP <= 0)
 }

@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+// showLevelUpScreen is the main function for the level-up screen
 func showLevelUpScreen() *fyne.Container {
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
@@ -45,6 +46,7 @@ func showLevelUpScreen() *fyne.Container {
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 }
 
+// createSliderLevelUpWithCallback is the callback function for characteristics sliders
 func createSliderLevelUpWithCallback(characteristic string, min float64, max float64,
 	value *int, currentValue int, pointsToSpend *int,
 	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
@@ -72,4 +74,3 @@ func createSliderLevelUpWithCallback(characteristic string, min float64, max flo
 	}
 	return slider
 }
-
