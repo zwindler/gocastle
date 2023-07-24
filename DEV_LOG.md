@@ -22,6 +22,47 @@ A few functions to equip/un-equip and modified DeterminePhysicalDamage() to only
 
 Next logical step would be to create a new Inventory screen but There is something really painful I've not tackled yet : the map isn't centered on the player. You have to scroll manually and it's really not acceptable, especially if I start generating big maps.
 
+It seems to be possible, [looking at this issue](https://github.com/fyne-io/fyne/issues/894) using `.Offset`. After thinking a bit (determine that you don't want to move focus until you are over half of the screen), I had something working :\)
+
+```go
+// centerMapOnPlayer will center scrollable map focus on player as best it can
+func centerMapOnPlayer() {
+	x := float32(tileSize * player.Avatar.PosX)
+	y := float32(tileSize * player.Avatar.PosY)
+	if x < 400 {
+		x = 400
+	}
+	if y < 300 {
+		y = 300
+	}
+	scrollableMapContainer.Offset = fyne.NewPos(x-400, y-300)
+	scrollableMapContainer.Refresh()
+}
+```
+
+I used fixed values (400/300) at first, which is half of 800x600 and since it's the minimum size of the game screen it work great, even if you resize the screen. But I changed to use the real window value because it will look weird on big maps and bigger screen.
+
+In the end it was a bit trickier than I thought because you can't get window size, you have to use container.Size(), but not scrollable ones because their size is off :-/
+
+(See code comments for explanation)
+
+```go
+func centerMapOnPlayer() {
+	x := float32(tileSize * player.Avatar.PosX)
+	y := float32(tileSize * player.Avatar.PosY)
+	containerX := mainContent.Size().Width
+	containerY := mainContent.Size().Height - statsTextArea.MinSize().Height
+	if x < containerX/2 {
+		x = containerX / 2
+	}
+	if y < containerY/2 {
+		y = containerY / 2
+	}
+	scrollableMapContainer.Offset = fyne.NewPos(x-containerX/2, y-containerY/2)
+	scrollableMapContainer.Refresh()
+}
+```
+
 ## 2023-07-23
 
 Following on yesterday's idea (changing the levelup screen to just a ShowCustomConfirm popup). Documentation is here (https://pkg.go.dev/fyne.io/fyne/v2/dialog#ShowCustomConfirm)

@@ -24,11 +24,17 @@ var (
 
 	fyneTileSize = fyne.NewSize(tileSize, tileSize)
 
-	//mapContainer           = container.NewWithoutLayout()
+	mainContent   *fyne.Container
+	mapContainer  *fyne.Container
+	statsTextArea fyne.CanvasObject
 
+	// I have to declare these here because I can't use *widget.Scroll as type :-(
+	// It's a shame because I redeclare them later
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
+	scrollableMapContainer = container.NewScroll(container.NewWithoutLayout())
 
+	// TODO clean this
 	healthPointsValueLabel = canvas.NewText("10/10", model.TextColor)
 	manaPointsValueLabel   = canvas.NewText("10/10", model.TextColor)
 	timeSpentValueLabel    = canvas.NewText("0d0:0:0", model.TextColor)
@@ -38,15 +44,11 @@ var (
 
 func ShowGameScreen(window fyne.Window) {
 	currentWindow = window
-	mapContainer := container.NewWithoutLayout()
-	// generate a scrollable container which contains the map container
-	scrollableMapContainer := container.NewScroll(createMapArea(mapContainer))
-	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
+	mapContainer = container.NewWithoutLayout()
 
-	// TODO create a separate function for this
-	// set player on map and draw it
-	player.Avatar.DrawAvatar(mapContainer)
-	drawNPCList(mapContainer)
+	// generate a scrollable container which contains the map container
+	scrollableMapContainer = container.NewScroll(createMapArea(mapContainer))
+	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
 
 	// already declared in var so has to manipulate it elsewhere
 	// TODO improve this?
@@ -54,7 +56,7 @@ func ShowGameScreen(window fyne.Window) {
 	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
 
 	// bottom right corner is the stats box area
-	statsTextArea := createStatsArea()
+	statsTextArea = createStatsArea()
 	statsTextArea.Resize(fyne.NewSize(200, 100))
 	statsTextArea.Move(fyne.NewPos(601, 501))
 
@@ -62,10 +64,16 @@ func ShowGameScreen(window fyne.Window) {
 	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
 
 	// merge map and bottom
-	content := container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
+	mainContent = container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
 
 	window.Canvas().SetOnTypedKey(mapKeyListener)
-	window.SetContent(content)
+	window.SetContent(mainContent)
+
+	// TODO create a separate function for this
+	// set player on map and draw it
+	player.Avatar.DrawAvatar(mapContainer)
+	centerMapOnPlayer()
+	drawNPCList(mapContainer)
 }
 
 func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
@@ -253,9 +261,48 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		}
 	}
 
+	centerMapOnPlayer()
 	updateStatsBox()
 
 	newTurnForNPCs()
+}
+
+// centerMapOnPlayer will center scrollable map focus on player as best it can
+func centerMapOnPlayer() {
+	// the idea is to focus on the player position
+	// but we need various informations to compute this
+
+	// Let's start by getting the player real coordinates in pixels
+	x := float32(tileSize * player.Avatar.PosX)
+	y := float32(tileSize * player.Avatar.PosY)
+
+	// we also need window size (because by default it's 800x600
+	// but it can be resized!)
+	// I can't use scrollableMapContainer because it's Size() is wrong (always 32x32)
+	// window X size is easy to determine, it's the width of the content container
+	containerX := mainContent.Size().Width
+	// window Y is harder to get. If we take "content" container it will be off
+	// because content also includes logs+stats container
+	// so I need to remove statsTextArea Height
+	containerY := mainContent.Size().Height - statsTextArea.MinSize().Height
+
+	// now, I can focus the scrollable map by adding an offset
+	// but the tricky part is that you don't want to move the offset until
+	// player is already in the middle of the screen, or else when the player
+	// is close to the border, it'll look weird
+	// Castle of the Wind had the exact same behavior
+	// The easiest way to do this is to remove half of the screen width/height
+	// (but make sure before it's always >= 0)
+
+	//fmt.Printf("%f %f", containerX, containerY)
+	if x < containerX/2 {
+		x = containerX / 2
+	}
+	if y < containerY/2 {
+		y = containerY / 2
+	}
+	scrollableMapContainer.Offset = fyne.NewPos(x-containerX/2, y-containerY/2)
+	scrollableMapContainer.Refresh()
 }
 
 func addLogEntry(logString string) {
