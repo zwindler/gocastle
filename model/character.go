@@ -1,3 +1,5 @@
+// models/character.go
+
 package model
 
 import (
@@ -7,7 +9,7 @@ import (
 )
 
 type CharacterStats struct {
-	// Character personalisation
+	// Character personalization
 	CharacterName string
 	GenderValue   string
 
@@ -25,7 +27,7 @@ type CharacterStats struct {
 	CurrentXP int
 	Level     int
 
-	// Secondary charateristics
+	// Secondary characteristics
 	// Those characteristics depend on main chars, level and gear
 	MaxHP          int
 	CurrentHP      int
@@ -35,8 +37,9 @@ type CharacterStats struct {
 	Armor          int
 
 	// Inventory
-	CurrentGold int
-	Inventory   []Object
+	Inventory       []Object
+	CurrentGold     int // TODO merge this to inventory
+	InventoryWeight int // weight of all player's inventory in grams
 }
 
 var (
@@ -98,9 +101,11 @@ func (player *CharacterStats) DeterminePhysicalDamage() {
 
 	// search in inventory items modifying the physicalDamage
 	for _, item := range player.Inventory {
-		for _, stat := range item.Stats {
-			if stat.Name == "physicalDamage" {
-				damage += stat.Modifier
+		if item.Equipped {
+			for _, stat := range item.Stats {
+				if stat.Name == "physicalDamage" {
+					damage += stat.Modifier
+				}
 			}
 		}
 	}
@@ -177,8 +182,10 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 }
 
 // AddObjectToInventory adds an object to the player's inventory.
-func (player *CharacterStats) AddObjectToInventory(obj Object) {
+// return index of latest element in Inventory
+func (player *CharacterStats) AddObjectToInventory(obj Object) int {
 	player.Inventory = append(player.Inventory, obj)
+	return len(player.Inventory) - 1
 }
 
 // RemoveObjectFromInventory removes an object from the player's inventory by its index.
@@ -186,4 +193,59 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 	if index >= 0 && index < len(player.Inventory) {
 		player.Inventory = append(player.Inventory[:index], player.Inventory[index+1:]...)
 	}
+}
+
+// EquipItem equips an item in the player's inventory by its index.
+// If the item is already equipped or the category doesn't exist, it returns an error.
+// If another item of the same category is equipped, un-equip it
+func (player *CharacterStats) EquipItem(index int) error {
+	if index >= 0 && index < len(player.Inventory) {
+		item := &player.Inventory[index]
+		if item.Equipped {
+			return fmt.Errorf("item '%s' is already equipped", item.Name)
+		}
+		if !CategoryExists(item.Category) {
+			return fmt.Errorf("category '%s' does not exist", item.Category)
+		}
+
+		// Check if there is already an equipped item in the same category
+		// if true, un-equip it
+		for i, equippedItem := range player.Inventory {
+			if equippedItem.Equipped && equippedItem.Category == item.Category {
+				// Un-equip the already equipped item
+				player.Inventory[i].Equipped = false
+				break
+			}
+		}
+
+		// Equip the selected item
+		player.Inventory[index].Equipped = true
+		return nil
+	}
+	return fmt.Errorf("invalid item index")
+}
+
+// UnequipItem un-equips an item in the player's inventory by its index.
+// If the item is not equipped, it returns an error.
+func (player *CharacterStats) UnequipItem(index int) error {
+	if index >= 0 && index < len(player.Inventory) {
+		item := &player.Inventory[index]
+		if !item.Equipped {
+			return fmt.Errorf("item '%s' is not equipped", item.Name)
+		}
+
+		// Un-equip the item
+		player.Inventory[index].Equipped = false
+		return nil
+	}
+	return fmt.Errorf("invalid item index")
+}
+
+// ComputeTotalWeight computes the total weight of the player's inventory.
+func (player *CharacterStats) ComputeTotalWeight() {
+	totalWeight := 0
+	for _, item := range player.Inventory {
+		totalWeight += item.Weight
+	}
+	player.InventoryWeight = totalWeight
 }

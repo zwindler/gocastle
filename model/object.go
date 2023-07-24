@@ -14,6 +14,8 @@ type ObjectStat struct {
 type Object struct {
 	Name     string       // Object name.
 	Category string       // Object category.
+	Weight   int          // Object weight in grams
+	Equipped bool         // Is object equipped
 	Stats    []ObjectStat // Object stats (e.g., strength, health, etc.).
 }
 
@@ -44,9 +46,10 @@ var (
 		Description: "Magical potions with various effects.",
 	}
 
-	Knife = Object{
-		Name:     "Common knife",
+	HuntingKnife = Object{
+		Name:     "Hunting knife",
 		Category: "Weapon",
+		Weight:   200,
 		Stats: []ObjectStat{
 			{
 				Name:     "physicalDamage",
@@ -60,6 +63,7 @@ var (
 var CategoryList = []Category{
 	WeaponCategory,
 	BodyArmorCategory,
+	HeadGearCategory,
 	PotionCategory,
 }
 
@@ -85,6 +89,7 @@ func CreateObject(obj Object) (Object, error) {
 	newObject := Object{
 		Name:     obj.Name,
 		Category: obj.Category,
+		Weight:   obj.Weight,
 	}
 
 	// Copy the ObjectStat slice.

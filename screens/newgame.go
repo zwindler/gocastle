@@ -107,14 +107,15 @@ func ShowNewGameScreen(window fyne.Window) {
 					player.Avatar.PosX, player.Avatar.PosY = 2, 4
 					addNPCsInNPCList()
 
-					// create a knife and add it to player's inventory
+					// create a knife, add it to player's inventory, equip it
 					// TODO rework later
-					knife, err := model.CreateObject(model.Knife)
+					knife, err := model.CreateObject(model.HuntingKnife)
 					if err != nil {
 						err = fmt.Errorf("unable to add knife to inventory: %w", err)
 						log.Fatalf("NewGame error: %s", err)
 					}
-					player.AddObjectToInventory(knife)
+					knifeIndex := player.AddObjectToInventory(knife)
+					player.EquipItem(knifeIndex)
 
 					player.RefreshStats(true)
 

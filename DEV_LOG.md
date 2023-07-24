@@ -2,6 +2,12 @@
 
 I'll put everything that happens in this repository in writing
 
+## 2023-07-24
+
+Inventory implementation is still really "early". Physical damage computation works but will take all items, including those un-equipped.
+
+I'm going to add values on items for "equipped" and "weight".
+
 ## 2023-07-23
 
 Following on yesterday's idea (changing the levelup screen to just a ShowCustomConfirm popup). Documentation is here (https://pkg.go.dev/fyne.io/fyne/v2/dialog#ShowCustomConfirm)
