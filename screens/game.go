@@ -82,25 +82,9 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	mapRows, mapColumns = currentMap.GetMapSize()
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
 
-	horizontalLine := canvas.NewImageFromFile("static/transparent_hline.png")
-	horizontalLine.FillMode = canvas.ImageFillOriginal
-	verticalLine := canvas.NewImageFromFile("static/transparent_tile.png")
-	verticalLine.FillMode = canvas.ImageFillOriginal
-
-	// horizontalBorder is composed of images of 1x32px (horizontalLine)
-	// to force the minSize of the container
-	// TODO improve this
-	horizontalBorder := container.NewHBox()
-	// vertical border is the same thing but vertical
-	verticalBorder := container.NewVBox()
-
 	for row := 0; row < mapRows; row++ {
-		verticalBorder.Add(verticalLine)
 		currentLine := float32(row) * tileSize
 		for column := 0; column < mapColumns; column++ {
-			if row == 0 {
-				horizontalBorder.Add(horizontalLine)
-			}
 			tile := imageMatrix[row][column]
 			tile.Resize(fyneTileSize)
 			currentPos := fyne.NewPos(float32(column)*tileSize, currentLine)
@@ -108,9 +92,15 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 			mapContainer.Add(tile)
 		}
 	}
-	mapHBox := container.NewHBox(mapContainer, verticalBorder)
 
-	return container.NewVBox(mapHBox, horizontalBorder)
+	// create a transparent filler to trick scrollable containers
+	limits := canvas.NewImageFromFile("static/transparent_tile.png")
+	limits.FillMode = canvas.ImageFillStretch
+	limits.SetMinSize(fyne.NewSize(float32(mapColumns)*16, float32(mapRows)*16))
+
+	return container.NewGridWithColumns(2,
+		mapContainer, layout.NewSpacer(),
+		layout.NewSpacer(), limits)
 }
 
 // drawNPCList draws the NPC's Avatars images on the mapContainer
