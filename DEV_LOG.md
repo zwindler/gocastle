@@ -6,7 +6,21 @@ I'll put everything that happens in this repository in writing
 
 Inventory implementation is still really "early". Physical damage computation works but will take all items, including those un-equipped.
 
-I'm going to add values on items for "equipped" and "weight".
+I've added values on items for "equipped" and "weight" :
+
+```go
+// Object represents an object with its properties.
+type Object struct {
+[...]
+	Weight   int          // Object weight in grams
+	Equipped bool         // Is object equipped
+	Stats    []ObjectStat // Object stats (e.g., strength, health, etc.).
+}
+```
+
+A few functions to equip/un-equip and modified DeterminePhysicalDamage() to only take into account equipped items.
+
+Next logical step would be to create a new Inventory screen but There is something really painful I've not tackled yet : the map isn't centered on the player. You have to scroll manually and it's really not acceptable, especially if I start generating big maps.
 
 ## 2023-07-23
 
