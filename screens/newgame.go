@@ -199,9 +199,9 @@ func addNPCsInNPCList() {
 	}{
 		{model.Farmer, 10, 15},
 		{model.Mage, 5, 5},
-		{model.Wolf, 22, 22},
-		{model.Wolf, 24, 21},
-		{model.Ogre, 24, 23},
+		{model.Wolf, 25, 26},
+		{model.Wolf, 28, 27},
+		{model.Ogre, 30, 25},
 	}
 
 	// Loop through the NPC data slice and create/draw each NPC

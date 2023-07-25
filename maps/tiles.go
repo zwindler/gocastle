@@ -10,7 +10,8 @@ import (
 )
 
 type Coord struct {
-	X, Y int
+	X, Y     int
+	filePath string
 }
 
 type TileInfo struct {
@@ -20,25 +21,38 @@ type TileInfo struct {
 
 var (
 	TilesTypes = []TileInfo{
-		{Coordinates: Coord{X: 0, Y: 64}, IsWalkable: true},     //0, grass
-		{Coordinates: Coord{X: 576, Y: 96}, IsWalkable: false},  //1, walls
-		{Coordinates: Coord{X: 576, Y: 128}, IsWalkable: false}, //2, walls
-		{Coordinates: Coord{X: 608, Y: 128}, IsWalkable: false}, //3, walls
-		{Coordinates: Coord{X: 608, Y: 96}, IsWalkable: false},  //4, walls
-		{Coordinates: Coord{X: 512, Y: 160}, IsWalkable: false}, //5, walls
-		{Coordinates: Coord{X: 480, Y: 128}, IsWalkable: false}, //6, walls
-		{Coordinates: Coord{X: 512, Y: 96}, IsWalkable: false},  //7, walls
-		{Coordinates: Coord{X: 544, Y: 128}, IsWalkable: false}, //8, walls
-		{Coordinates: Coord{X: 128, Y: 64}, IsWalkable: false},  //9, opaque
-		{Coordinates: Coord{X: 96, Y: 64}, IsWalkable: false},   //10, walls
-		{Coordinates: Coord{X: 160, Y: 64}, IsWalkable: true},   //11, transparent
+		{Coordinates: Coord{X: 0, Y: 0, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},      //0, grass
+		{Coordinates: Coord{X: 192, Y: 0, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},   //1, upper left straw roof
+		{Coordinates: Coord{X: 192, Y: 32, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //2, lower left straw roof
+		{Coordinates: Coord{X: 192, Y: 64, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //3, upper left wooden wall
+		{Coordinates: Coord{X: 192, Y: 96, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //4, lower left wooden wall
+		{Coordinates: Coord{X: 224, Y: 0, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},   //5, upper right straw roof
+		{Coordinates: Coord{X: 224, Y: 32, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //6, lower right straw roof
+		{Coordinates: Coord{X: 224, Y: 64, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //7, upper right wooden wall
+		{Coordinates: Coord{X: 224, Y: 96, filePath: "static/tilea3_MACK.png"}, IsWalkable: false},  //8, lower right wooden wall
+		{Coordinates: Coord{X: 0, Y: 0, filePath: "static/transparent_tile.png"}, IsWalkable: true}, //9, transparent
+		{Coordinates: Coord{X: 0, Y: 96, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},     //10, some flowers
+		{Coordinates: Coord{X: 32, Y: 96, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},    //11, more flowers
+		{Coordinates: Coord{X: 64, Y: 32, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},   //12, upper left wooden border
+		{Coordinates: Coord{X: 64, Y: 0, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},    //13, wooden border
+		{Coordinates: Coord{X: 64, Y: 64, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},   //14, down left wooden border
+		{Coordinates: Coord{X: 96, Y: 0, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},    //15, wooden border
+		{Coordinates: Coord{X: 96, Y: 32, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},   //16, upper right wooden border
+		{Coordinates: Coord{X: 96, Y: 64, filePath: "static/tilea2_MACK.png"}, IsWalkable: false},   //17, down right wooden border
+		{Coordinates: Coord{X: 64, Y: 128, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},   //18 upper left high grass
+		{Coordinates: Coord{X: 64, Y: 160, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},   //19 down left high grass
+		{Coordinates: Coord{X: 96, Y: 128, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},   //20 upper right high grass
+		{Coordinates: Coord{X: 96, Y: 160, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},   //21 down right high grass
+		{Coordinates: Coord{X: 80, Y: 144, filePath: "static/tilea2_MACK.png"}, IsWalkable: true},   //22 center high grass
 	}
 )
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset
 func extractTileFromTileset(coord Coord) (image.Image, error) {
 	x, y := coord.X, coord.Y
-	file, err := os.Open("static/RPG Nature Tileset.png")
+	filePath := coord.filePath
+
+	file, err := os.Open(filePath)
 	if err != nil {
 		fmt.Println("Error opening image:", err)
 		return nil, err
