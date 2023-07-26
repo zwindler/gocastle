@@ -32,11 +32,12 @@ func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect2 *widget.RadioGroup
 	var characterAspect3 *widget.RadioGroup
 
-	characterNameLabel := widget.NewLabel("Character's name")
+	characterNameLabel := widget.NewLabelWithStyle("Character's name", 0, fyne.TextStyle{Bold: true, Italic: true})
 	characterNameEntry := widget.NewEntry()
 	// temporary, for dev
 	characterNameEntry.Text = "zwindler"
 
+	CharacteristicsLabel := widget.NewLabelWithStyle("Characteristics", 0, fyne.TextStyle{Bold: true, Italic: true})
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
 
@@ -60,12 +61,6 @@ func ShowNewGameScreen(window fyne.Window) {
 		&model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	/*
-		characterGenderLabel := widget.NewLabel("Gender")
-		genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
-			model.Player.GenderValue = selected
-		})*/
-
 	aspect_icon_path := [][]string{
 		{"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
 			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png"},
@@ -75,7 +70,7 @@ func ShowNewGameScreen(window fyne.Window) {
 			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png"},
 	}
 
-	characterAspectLabel := widget.NewLabel("Aspect")
+	characterAspectLabel := widget.NewLabelWithStyle("Aspect", 0, fyne.TextStyle{Bold: true, Italic: true})
 	characterAspect1 = widget.NewRadioGroup([]string{"1", "2", "3", "4", "5", "6"}, func(selected string) {
 		resetRadioGroups(characterAspect2, characterAspect3)
 		if selected != "" {
@@ -175,20 +170,19 @@ func ShowNewGameScreen(window fyne.Window) {
 		characterAspect2, characterAspectTable[1],
 		characterAspect3, characterAspectTable[2])
 
-	lastLine := container.NewHBox(
-		backButton,
-		validateButton,
-	)
+	lastLine := container.NewBorder(nil, nil, backButton, validateButton, nil)
 
 	content := container.NewVBox(
 		firstLine,
+		CharacteristicsLabel,
 		slidersLine,
 		characterAspectLabel,
 		characterGenderAspectLine,
-		lastLine,
 	)
 
-	window.SetContent(content)
+	mainContent = container.NewBorder(nil, lastLine, nil, nil, content)
+
+	window.SetContent(mainContent)
 }
 
 // createSliderWithCallback is the callback function for sliders in newgame screen
