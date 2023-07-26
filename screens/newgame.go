@@ -16,7 +16,6 @@ import (
 
 var (
 	player     = &model.Player
-	NPCList    = model.NPCsOnCurrentMap{}
 	currentMap = maps.Town
 )
 
@@ -101,12 +100,11 @@ func ShowNewGameScreen(window fyne.Window) {
 					content := widget.NewLabel("Character has no aspect, please choose one")
 					dialog.ShowCustom("Aspect not selected", "Close", content, window)
 					} else {*/
-					// we are good to go!
 
-					// TODO create a separate function for this
-					// set player on map
-					player.Avatar.PosX, player.Avatar.PosY = 2, 4
-					addNPCsInNPCList()
+					// we are good to go!
+					player.Avatar.PosX = currentMap.PlayerStart.X
+					player.Avatar.PosY = currentMap.PlayerStart.Y
+					currentMap.AddNPCs()
 
 					// create a knife, add it to player's inventory, equip it
 					// TODO rework later
@@ -184,29 +182,5 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 func resetRadioGroups(groups ...*widget.RadioGroup) {
 	for _, group := range groups {
 		group.SetSelected("")
-	}
-}
-
-// addNPCsInNPCList adds NPCs on the Town map. Sould be in maps package
-func addNPCsInNPCList() {
-	// TODO: add info about NPCs in maps for fixed maps
-	// for generated maps, I'll have to create this randomly
-
-	// Define the NPC data in a slice
-	npcData := []struct {
-		npc  model.NPCStats
-		x, y int
-	}{
-		{model.Farmer, 10, 15},
-		{model.Mage, 5, 5},
-		{model.Wolf, 25, 26},
-		{model.Wolf, 28, 27},
-		{model.Ogre, 30, 25},
-	}
-
-	// Loop through the NPC data slice and create/draw each NPC
-	for _, data := range npcData {
-		npc := model.CreateNPC(data.npc, data.x, data.y)
-		NPCList.List = append(NPCList.List, npc)
 	}
 }

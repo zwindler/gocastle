@@ -2,6 +2,42 @@
 
 I'll put everything that happens in this repository in writing
 
+## 2023-07-26
+
+Moving the code around, I realized it made no sense **not** to store the NPCList and the player's start coordinates in the map struct.
+
+```go
+type SpawnNPC []struct {
+	npc  model.NPCStats
+	x, y int
+}
+
+var Town = Map{
+	Name:        "Town",
+	PlayerStart: Coord{2, 4},
+	spawnNPC: SpawnNPC{
+		{model.Farmer, 10, 15},
+		{model.Wolf, 25, 26},
+		{model.Wolf, 28, 27},
+		{model.Ogre, 30, 25},
+	},
+	[...]
+```
+
+I also changed TileInfo to allow multiple tilesets
+
+```
+type TileInfo struct {
+	X, Y       int
+	filePath   string
+	IsWalkable bool
+}
+```
+
+The one I chose in early game dev was a bit too restricted and I needed more diverse tiles (buildings, dungeons). I used a tileset used by many RPGmakers players designed by "MACK". Apparently, the only thing needed is to credit him/her. So thanks MACK.
+
+This opened the way for a BIG revamp of my "Town" map (which is more of a village). Doing so, I realized that editing the map matrix (50x50) by hand is WAY too difficult. I have to generate it...
+
 ## 2023-07-24
 
 Inventory implementation is still really "early". Physical damage computation works but will take all items, including those un-equipped.

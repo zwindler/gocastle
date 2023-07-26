@@ -1,12 +1,36 @@
 package maps
 
+import (
+	"fmt"
+	"gocastle/model"
+)
+
+type Coord struct {
+	X, Y int
+}
+
 type Map struct {
-	Name      string
-	MapMatrix [][]int
+	Name        string
+	PlayerStart Coord
+	spawnNPC    SpawnNPC
+	NPCList     model.NPCsOnCurrentMap
+	MapMatrix   [][]int
+}
+
+type SpawnNPC []struct {
+	npc  model.NPCStats
+	x, y int
 }
 
 var Town = Map{
-	Name: "Town",
+	Name:        "Town",
+	PlayerStart: Coord{2, 4},
+	spawnNPC: SpawnNPC{
+		{model.Farmer, 10, 15},
+		{model.Wolf, 25, 26},
+		{model.Wolf, 28, 27},
+		{model.Ogre, 30, 25},
+	},
 	MapMatrix: [][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
 		{0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
@@ -84,4 +108,18 @@ func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
 // CheckTileIsWalkable checks if, for a given map, x,y coordinates are considered walkable
 func (currentMap *Map) CheckTileIsWalkable(futurePosX int, futurePosY int) bool {
 	return TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
+}
+
+// AddNPCs adds NPCs on a map from spawnNPC struct
+func (currentMap *Map) AddNPCs() {
+	// TODO: add info about NPCs in maps for fixed maps
+	// for generated maps, I'll have to create this randomly
+
+	// Loop through the NPC data slice and create/draw each NPC
+	for _, data := range currentMap.spawnNPC {
+		npc := model.CreateNPC(data.npc, data.x, data.y)
+		fmt.Printf("%s", npc.Name)
+		currentMap.NPCList.List = append(currentMap.NPCList.List, npc)
+	}
+
 }
