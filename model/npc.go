@@ -9,6 +9,7 @@ import (
 type NPCStats struct {
 	Name      string
 	Pronoun   string
+	Dialog    string
 	Hostile   bool
 	Avatar    Avatar
 	MaxHP     int
@@ -23,24 +24,25 @@ type NPCsOnCurrentMap struct {
 }
 
 var (
-	FarmerAvatar = Avatar{
-		CanvasPath: "./static/male-farmer.png",
+	FemaleFarmerAvatar = Avatar{
+		CanvasPath: "./static/female-farmer.png",
 	}
-	Farmer = NPCStats{
-		Name:      "farmer",
-		Avatar:    FarmerAvatar,
-		Pronoun:   "he",
+	FemaleFarmer = NPCStats{
+		Name:      "Farmer",
+		Avatar:    FemaleFarmerAvatar,
+		Dialog:    "Hello, my name is Mylène :-)",
+		Pronoun:   "she",
 		Hostile:   false,
 		MaxHP:     10,
 		CurrentHP: 10,
 	}
 
-	MageAvatar = Avatar{
+	FemaleMageAvatar = Avatar{
 		CanvasPath: "./static/woman-mage.png",
 	}
-	Mage = NPCStats{
-		Name:      "mage",
-		Avatar:    MageAvatar,
+	FemaleMage = NPCStats{
+		Name:      "Mage",
+		Avatar:    FemaleMageAvatar,
 		Pronoun:   "she",
 		Hostile:   false,
 		MaxHP:     15,
@@ -53,7 +55,7 @@ var (
 		CanvasPath: "./static/wolf.png",
 	}
 	Wolf = NPCStats{
-		Name:      "wolf",
+		Name:      "Wolf",
 		Avatar:    WolfAvatar,
 		Pronoun:   "it",
 		Hostile:   true,
@@ -67,7 +69,7 @@ var (
 		CanvasPath: "./static/ogre.png",
 	}
 	Ogre = NPCStats{
-		Name:      "ogre",
+		Name:      "Ogre",
 		Avatar:    OgreAvatar,
 		Pronoun:   "he",
 		Hostile:   true,
@@ -87,6 +89,7 @@ func CreateNPC(npc NPCStats, x, y int) NPCStats {
 		Name:      npc.Name,
 		Pronoun:   npc.Pronoun,
 		Avatar:    avatar,
+		Dialog:    npc.Dialog,
 		Hostile:   npc.Hostile,
 		MaxHP:     npc.MaxHP,
 		CurrentHP: npc.CurrentHP,

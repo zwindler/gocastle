@@ -45,7 +45,13 @@ func actOnDirectionKey(newX, newY int) {
 
 			} else {
 				// NPC is not hostile, we don't want to hurt them, but lost 2s
-				addLogEntry("you are blocked!")
+				if npc.Dialog != "" {
+					dialogEntry := fmt.Sprintf("%s says: %s", npc.Name, npc.Dialog)
+					addLogEntry(dialogEntry)
+				} else {
+					addLogEntry("you are blocked!")
+				}
+
 				model.IncrementTimeSinceBegin(2)
 			}
 		} else {

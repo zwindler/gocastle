@@ -25,7 +25,7 @@ var Village = Map{
 	Name:        "Village",
 	PlayerStart: Coord{2, 4},
 	spawnNPC: SpawnNPC{
-		{model.Farmer, 10, 15},
+		{model.FemaleFarmer, 10, 15},
 		{model.Wolf, 25, 26},
 		{model.Wolf, 28, 27},
 		{model.Ogre, 30, 25},
