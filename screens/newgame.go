@@ -16,7 +16,7 @@ import (
 
 var (
 	player     = &model.Player
-	currentMap = maps.Town
+	currentMap = maps.Village
 )
 
 const (
