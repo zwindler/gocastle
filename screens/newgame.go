@@ -108,6 +108,7 @@ func ShowNewGameScreen(window fyne.Window) {
 
 					// create a knife, add it to player's inventory, equip it
 					// TODO rework later
+					player.AddObjectToInventory(model.BareHands)
 					knife, err := model.CreateObject(model.HuntingKnife)
 					if err != nil {
 						err = fmt.Errorf("unable to add knife to inventory: %w", err)

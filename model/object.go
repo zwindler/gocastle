@@ -32,18 +32,18 @@ var (
 	}
 
 	BodyArmorCategory = Category{
-		Name:        "BodyArmor",
+		Name:        "Body Armor",
 		Description: "Gear worn to the chest.",
 	}
 
 	HeadGearCategory = Category{
-		Name:        "HeadGear",
+		Name:        "Head Gear",
 		Description: "Head gear (can be hats, helmets,...).",
 	}
 
-	PotionCategory = Category{
-		Name:        "Potion",
-		Description: "Magical potions with various effects.",
+	BeltItemCategory = Category{
+		Name:        "Belt Item",
+		Description: "Consumables that are easily accessible in combat.",
 	}
 
 	HuntingKnife = Object{
@@ -57,6 +57,12 @@ var (
 			},
 		},
 	}
+
+	BareHands = Object{
+		Name:     "Bare Hands",
+		Category: "Weapon",
+		Weight:   0,
+	}
 )
 
 // Allowed categories slice.
@@ -64,7 +70,7 @@ var CategoryList = []Category{
 	WeaponCategory,
 	BodyArmorCategory,
 	HeadGearCategory,
-	PotionCategory,
+	BeltItemCategory,
 }
 
 // CategoryExists checks if the given category exists in the CommonCategories slice.

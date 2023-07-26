@@ -202,6 +202,10 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 	direction, ok := directions[event.Name]
 	if !ok {
+		if event.Name == fyne.KeyI {
+			// Open inventory screen
+			ShowInventoryScreen(currentWindow)
+		}
 		return // Ignore keys that are not part of the directions map
 	}
 	newX := player.Avatar.PosX + direction.dx
