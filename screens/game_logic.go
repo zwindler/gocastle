@@ -49,7 +49,8 @@ func actOnDirectionKey(newX, newY int) {
 					dialogEntry := fmt.Sprintf("%s says: %s", npc.Name, npc.Dialog)
 					addLogEntry(dialogEntry)
 				} else {
-					addLogEntry("you are blocked!")
+					blockEntry := fmt.Sprintf("%s is blocking you", npc.Name)
+					addLogEntry(blockEntry)
 				}
 
 				model.IncrementTimeSinceBegin(2)
