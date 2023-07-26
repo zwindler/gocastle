@@ -22,8 +22,8 @@ type Avatar struct {
 	PosY        int
 }
 
-// createAvatar create a copy of an Avatar on given x,y coordinates
-func createAvatar(avatar Avatar, x, y int) Avatar {
+// CreateAvatar create a copy of an Avatar on given x,y coordinates
+func CreateAvatar(avatar Avatar, x, y int) Avatar {
 	return Avatar{
 		CanvasImage: canvas.NewImageFromFile(avatar.CanvasPath),
 		PosX:        x,

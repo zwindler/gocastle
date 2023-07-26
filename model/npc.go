@@ -84,7 +84,7 @@ var (
 
 // CreateNPC creates a copy of a given NPC at given coordinates
 func CreateNPC(npc NPCStats, x, y int) NPCStats {
-	avatar := createAvatar(npc.Avatar, x, y)
+	avatar := CreateAvatar(npc.Avatar, x, y)
 	return NPCStats{
 		Name:      npc.Name,
 		Pronoun:   npc.Pronoun,

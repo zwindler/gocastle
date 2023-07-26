@@ -248,3 +248,13 @@ func (player *CharacterStats) ComputeTotalWeight() {
 	}
 	player.InventoryWeight = totalWeight
 }
+
+func (player *CharacterStats) DeduceGenderFromAspect(index int) {
+	if index%3 == 0 {
+		player.GenderValue = "Female"
+	} else if index%3 == 1 {
+		player.GenderValue = "Non Binary"
+	} else {
+		player.GenderValue = "Male"
+	}
+}

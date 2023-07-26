@@ -4,10 +4,12 @@ import (
 	"gocastle/maps"
 	"gocastle/model"
 	"log"
+	"strconv"
 
 	"fmt"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
@@ -58,26 +60,52 @@ func ShowNewGameScreen(window fyne.Window) {
 		&model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	characterGenderLabel := widget.NewLabel("Gender")
-	genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
-		model.Player.GenderValue = selected
-	})
+	/*
+		characterGenderLabel := widget.NewLabel("Gender")
+		genderRadioButton := widget.NewRadioGroup([]string{"Female", "Male", "Non-binary"}, func(selected string) {
+			model.Player.GenderValue = selected
+		})*/
+
+	aspect_icon_path := [][]string{
+		{"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
+			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png"},
+		{"static/dark_haired_woman.png", "static/dark_haired_person.png", "static/dark_haired_man.png",
+			"static/scarf_woman.png", "static/turban_person.png", "static/turban_man.png"},
+		{"static/bald_woman.png", "static/bald_person.png", "static/bald_man.png",
+			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png"},
+	}
 
 	characterAspectLabel := widget.NewLabel("Aspect")
-	characterAspect1 = widget.NewRadioGroup([]string{"👩‍🦰", "👨‍🦰", "🧑‍🦰", "👱‍♀️", "👱‍♂️", "👱"}, func(selected string) {
+	characterAspect1 = widget.NewRadioGroup([]string{"1", "2", "3", "4", "5", "6"}, func(selected string) {
 		resetRadioGroups(characterAspect2, characterAspect3)
-		//model.Player.AspectValue = selected
+		if selected != "" {
+			index, _ := strconv.Atoi(selected)
+			// TODO deal with error
+			player.Avatar.CanvasPath = aspect_icon_path[0][index-1]
+			player.DeduceGenderFromAspect(index)
+		}
 	})
 
-	characterAspect2 = widget.NewRadioGroup([]string{"👩‍🦱", "👨‍🦱", "🧑‍🦱", "🧕", "👳‍♂️", "👳"}, func(selected string) {
+	characterAspect2 = widget.NewRadioGroup([]string{"7", "8", "9", "10", "11", "12"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect3)
-		//model.Player.AspectValue = selected
+		if selected != "" {
+			index, _ := strconv.Atoi(selected)
+			// TODO deal with error
+			player.Avatar.CanvasPath = aspect_icon_path[1][index-7]
+			player.DeduceGenderFromAspect(index)
+		}
 	})
 
-	characterAspect3 = widget.NewRadioGroup([]string{"👩‍🦳", "👨‍🦳", "🧑‍🦳", "👩‍🦲", "👨‍🦲", "🧑‍🦲"}, func(selected string) {
+	characterAspect3 = widget.NewRadioGroup([]string{"13", "14", "15", "16", "17", "18"}, func(selected string) {
 		resetRadioGroups(characterAspect1, characterAspect2)
-		//model.Player.AspectValue = selected
+		if selected != "" {
+			index, _ := strconv.Atoi(selected)
+			// TODO deal with error
+			player.Avatar.CanvasPath = aspect_icon_path[2][index-13]
+			player.DeduceGenderFromAspect(index)
+		}
 	})
+	characterAspect3.Resize(fyne.NewSize(10, 10))
 
 	backButton := widget.NewButton("Back", func() {
 		ShowMenuScreen(window)
@@ -87,23 +115,18 @@ func ShowNewGameScreen(window fyne.Window) {
 			content := widget.NewLabel("You still have to choose a name for you character!")
 			dialog.ShowCustom("Character has no name", "Close", content, window)
 		} else {
-			model.Player.CharacterName = characterNameEntry.Text
-			if model.Player.PointsToSpend > 0 {
+			player.CharacterName = characterNameEntry.Text
+			if player.PointsToSpend > 0 {
 				content := widget.NewLabel("You still have available characteristics point to allocate!")
 				dialog.ShowCustom("Points still available", "Close", content, window)
 			} else {
-				if model.Player.GenderValue == "" {
-					content := widget.NewLabel("Character has no gender, please choose one")
-					dialog.ShowCustom("Gender not selected", "Close", content, window)
-				} else {
-					/*if model.Player.AspectValue == nil {
+				if player.Avatar.CanvasPath == "" {
 					content := widget.NewLabel("Character has no aspect, please choose one")
 					dialog.ShowCustom("Aspect not selected", "Close", content, window)
-					} else {*/
+				} else {
 
 					// we are good to go!
-					player.Avatar.PosX = currentMap.PlayerStart.X
-					player.Avatar.PosY = currentMap.PlayerStart.Y
+					player.Avatar = model.CreateAvatar(player.Avatar, currentMap.PlayerStart.X, currentMap.PlayerStart.Y)
 					currentMap.AddNPCs()
 
 					// create a knife, add it to player's inventory, equip it
@@ -120,7 +143,6 @@ func ShowNewGameScreen(window fyne.Window) {
 					player.RefreshStats(true)
 
 					ShowGameScreen(window)
-					//}
 				}
 			}
 		}
@@ -135,11 +157,23 @@ func ShowNewGameScreen(window fyne.Window) {
 		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 
-	characterGenderAspectLabelLine := container.New(layout.NewGridLayout(4),
-		characterGenderLabel, characterAspectLabel, layout.NewSpacer(), layout.NewSpacer())
+	var characterAspectTable []*fyne.Container
+	for column := 0; column < 3; column++ {
+		characterAspectTable = append(characterAspectTable, container.NewWithoutLayout())
+		for row := 0; row < 6; row++ {
+			redHairedWoman := canvas.NewImageFromFile(aspect_icon_path[column][row])
+			redHairedWoman.FillMode = canvas.ImageFillOriginal
+			redHairedWoman.Resize(fyneTileSize)
+			currentPos := fyne.NewPos(0, float32(row)*38)
+			redHairedWoman.Move(currentPos)
+			characterAspectTable[column].Add(redHairedWoman)
+		}
+	}
 
-	characterGenderAspectLine := container.New(layout.NewGridLayout(4),
-		genderRadioButton, characterAspect1, characterAspect2, characterAspect3)
+	characterGenderAspectLine := container.New(layout.NewGridLayout(6),
+		characterAspect1, characterAspectTable[0],
+		characterAspect2, characterAspectTable[1],
+		characterAspect3, characterAspectTable[2])
 
 	lastLine := container.NewHBox(
 		backButton,
@@ -149,7 +183,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	content := container.NewVBox(
 		firstLine,
 		slidersLine,
-		characterGenderAspectLabelLine,
+		characterAspectLabel,
 		characterGenderAspectLine,
 		lastLine,
 	)
