@@ -47,21 +47,10 @@ func ShowGameScreen(window fyne.Window) {
 
 	// generate a scrollable container which contains the map container
 	scrollableMapContainer = container.NewScroll(createMapArea(mapContainer))
-	scrollableMapContainer.Resize(fyne.NewSize(800, 500))
-
-	// already declared in var so has to manipulate it elsewhere
-	// TODO improve this?
-	logsScrollableTextArea.Resize(fyne.NewSize(600, 100))
-	logsScrollableTextArea.Move(fyne.NewPos(0, 501))
-
 	// bottom right corner is the stats box area
 	statsTextArea = createStatsArea()
-	statsTextArea.Resize(fyne.NewSize(200, 100))
-	statsTextArea.Move(fyne.NewPos(601, 501))
-
 	// merge log area and stats area
 	bottom := container.NewBorder(nil, nil, nil, statsTextArea, logsScrollableTextArea)
-
 	// merge map and bottom
 	mainContent = container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
 
