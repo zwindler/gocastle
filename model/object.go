@@ -26,25 +26,7 @@ type Category struct {
 }
 
 var (
-	WeaponCategory = Category{
-		Name:        "Weapon",
-		Description: "Weapons used for combat.",
-	}
-
-	BodyArmorCategory = Category{
-		Name:        "Body Armor",
-		Description: "Gear worn to the chest.",
-	}
-
-	HeadGearCategory = Category{
-		Name:        "Head Gear",
-		Description: "Head gear (can be hats, helmets,...).",
-	}
-
-	BeltItemCategory = Category{
-		Name:        "Belt Item",
-		Description: "Consumables that are easily accessible in combat.",
-	}
+	CategoryList []Category
 
 	HuntingKnife = Object{
 		Name:     "Hunting knife",
@@ -65,12 +47,57 @@ var (
 	}
 )
 
-// Allowed categories slice.
-var CategoryList = []Category{
-	WeaponCategory,
-	BodyArmorCategory,
-	HeadGearCategory,
-	BeltItemCategory,
+// GenerateCategories creates all the categories based on the provided names and descriptions.
+func GenerateCategories(names, descriptions []string) {
+	if len(names) != len(descriptions) {
+		panic("number of names and descriptions should be the same")
+	}
+
+	CategoryList = make([]Category, len(names))
+	for i := range names {
+		CategoryList[i] = Category{
+			Name:        names[i],
+			Description: descriptions[i],
+		}
+	}
+}
+
+// InitializeCategories initializes the categories with their names and descriptions.
+func InitializeCategories() {
+	GenerateCategories(
+		[]string{
+			"Weapon",
+			"Body Armor",
+			"Head Gear",
+			"Belt Item",
+			"Neckwear",
+			"Overgarment",
+			"Shield",
+			"Gauntlets",
+			"Boots",
+			"Purse",
+			"Belt",
+			"Left Ring",
+			"Right Ring",
+			"Bracers",
+		},
+		[]string{
+			"Weapons used for combat.",
+			"Gear worn to the chest.",
+			"Head gear (can be hats, helmets,...).",
+			"Consumables that are easily accessible in combat.",
+			"Items worn around the neck.",
+			"Outer garments like cloaks or capes.",
+			"Shields used for defense.",
+			"Protective gloves for hands.",
+			"Footwear.",
+			"A container for money.",
+			"A belt worn around the waist.",
+			"A ring worn on the left hand.",
+			"A ring worn on the right hand.",
+			"Arm protectors.",
+		},
+	)
 }
 
 // CategoryExists checks if the given category exists in the CommonCategories slice.
