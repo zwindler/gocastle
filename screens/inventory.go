@@ -14,7 +14,7 @@ import (
 // ShowInventoryScreen is the main function of the inventory screen
 func ShowInventoryScreen(window fyne.Window) {
 	// Create a container to hold the dropdown lists for each category
-	inventoryContainer := container.NewVBox()
+	inventoryContainer := container.NewAdaptiveGrid(2)
 
 	// Iterate over each object category and display the dropdown list for the items in that category
 	for _, category := range model.CategoryList {
@@ -31,39 +31,24 @@ func ShowInventoryScreen(window fyne.Window) {
 
 		// Create a dropdown list to display the items in the category
 		itemDropdown := widget.NewSelect(itemsInCategory, func(selected string) {
-			// Find the index of the selected item in the player's inventory
-			itemIndex := -1
 			for i, item := range player.Inventory {
 				if item.Name == selected {
-					itemIndex = i
-					break
-				}
-			}
-
-			// Check if the item is equipped
-			if itemIndex >= 0 {
-				if player.Inventory[itemIndex].Equipped {
-					// If equipped, un-equip the item
-					err := player.UnequipItem(itemIndex)
-					if err != nil {
-						dialog.ShowError(err, window)
-					}
-				} else {
-					// If not equipped, equip the item
-					err := player.EquipItem(itemIndex)
+					player.EquipItem(i)
+				} else if player.Inventory[i].Equipped {
+					// If another item was equipped, un-equip it
+					err := player.UnequipItem(i)
 					if err != nil {
 						dialog.ShowError(err, window)
 					}
 				}
-
-				// Refresh the inventory display after equipping/un-equipping the item
-				//ShowInventoryScreen(window)
 			}
 		})
 
-		// Set the selected item in the dropdown list to the first item in the category (if available)
-		if len(itemsInCategory) > 0 {
-			itemDropdown.SetSelected(itemsInCategory[0])
+		for _, item := range player.Inventory {
+			if item.Equipped {
+				itemDropdown.SetSelected(item.Name)
+				break
+			}
 		}
 
 		// Create a container to hold the category label and the dropdown list
@@ -78,6 +63,8 @@ func ShowInventoryScreen(window fyne.Window) {
 
 	// Create a "Back" button to return to the main menu
 	backButton := widget.NewButton("Back", func() {
+		// gear may have changed, reset all secondary stats
+		player.RefreshStats(false)
 		ShowGameScreen(window)
 	})
 
