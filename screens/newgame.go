@@ -135,6 +135,7 @@ func ShowNewGameScreen(window fyne.Window) {
 					}
 					knifeIndex := player.AddObjectToInventory(knife)
 					player.EquipItem(knifeIndex)
+					player.ChangeGold(10)
 
 					player.RefreshStats(true)
 
