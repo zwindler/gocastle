@@ -4,8 +4,6 @@ package model
 
 import (
 	"fmt"
-
-	"fyne.io/fyne/v2/canvas"
 )
 
 type CharacterStats struct {
@@ -38,18 +36,16 @@ type CharacterStats struct {
 
 	// Inventory
 	Inventory       []Object
-	CurrentGold     int // TODO merge this to inventory
+	CurrentGold     int
 	InventoryWeight int // weight of all player's inventory in grams
+	EquippedWeight  int // same thing for equipped items only
 }
 
 var (
-	PlayerAvatar = Avatar{
-		CanvasImage: canvas.NewImageFromFile("./static/warrior.png"),
-	}
-	Player = CharacterStats{
+	PlayerAvatar = Avatar{}
+	Player       = CharacterStats{
 		// temporary, for dev
 		CharacterName: "zwindler",
-		GenderValue:   "Female",
 		PointsToSpend: 0,
 		// end temporary for dev
 		Avatar: PlayerAvatar,
@@ -184,6 +180,7 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 // return index of latest element in Inventory
 func (player *CharacterStats) AddObjectToInventory(obj Object) int {
 	player.Inventory = append(player.Inventory, obj)
+	player.ComputeWeight()
 	return len(player.Inventory) - 1
 }
 
@@ -192,6 +189,7 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 	if index >= 0 && index < len(player.Inventory) {
 		player.Inventory = append(player.Inventory[:index], player.Inventory[index+1:]...)
 	}
+	player.ComputeWeight()
 }
 
 // EquipItem equips an item in the player's inventory by its index.
@@ -219,6 +217,7 @@ func (player *CharacterStats) EquipItem(index int) error {
 
 		// Equip the selected item
 		player.Inventory[index].Equipped = true
+		player.ComputeWeight()
 		return nil
 	}
 	return fmt.Errorf("invalid item index")
@@ -235,18 +234,24 @@ func (player *CharacterStats) UnequipItem(index int) error {
 
 		// Un-equip the item
 		player.Inventory[index].Equipped = false
+		player.ComputeWeight()
 		return nil
 	}
 	return fmt.Errorf("invalid item index")
 }
 
-// ComputeTotalWeight computes the total weight of the player's inventory.
-func (player *CharacterStats) ComputeTotalWeight() {
+// ComputeWeight computes the total weight of the player's inventory and equipped items weight
+func (player *CharacterStats) ComputeWeight() {
 	totalWeight := 0
+	equippedWeight := 0
 	for _, item := range player.Inventory {
 		totalWeight += item.Weight
+		if item.Equipped {
+			equippedWeight += item.Weight
+		}
 	}
 	player.InventoryWeight = totalWeight
+	player.EquippedWeight = equippedWeight
 }
 
 func (player *CharacterStats) DeduceGenderFromAspect(index int) {
