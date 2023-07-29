@@ -76,10 +76,10 @@ func InitializeCategories() {
 			"Head Gear",
 			"Neckwear",
 			"Shield",
+			"Greaves",
 			"Gauntlets",
 			"Left Ring",
 			"Bracers",
-			"Purse",
 		},
 		[]string{
 			"Outer garments like cloaks or capes.",
@@ -92,10 +92,10 @@ func InitializeCategories() {
 			"Head gear (can be hats, helmets,...).",
 			"Items worn around the neck.",
 			"Shields used for defense.",
+			"Protective armor for legs",
 			"Protective gloves for hands.",
 			"A ring worn on the left hand.",
 			"Arm protectors.",
-			"A container for money.",
 		},
 	)
 }
