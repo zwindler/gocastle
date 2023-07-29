@@ -185,7 +185,6 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		fyne.KeyD:     {1, 0},
 		fyne.KeyC:     {1, 1},
 		fyne.KeyDown:  {0, 1},
-		fyne.KeyS:     {0, 1},
 		fyne.KeyX:     {0, 1},
 		fyne.KeyW:     {-1, 1},
 		fyne.KeyLeft:  {-1, 0},
@@ -198,6 +197,8 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		if event.Name == fyne.KeyI {
 			// Open inventory screen
 			ShowInventoryScreen(currentWindow)
+		} else if event.Name == fyne.KeyS {
+			ShowSaveGameScreen(currentWindow)
 		}
 		return // Ignore keys that are not part of the directions map
 	}
