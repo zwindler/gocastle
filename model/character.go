@@ -120,6 +120,7 @@ func (player *CharacterStats) ChangeXP(XPAmount int) bool {
 func (player *CharacterStats) ChangeGold(GoldAmount int) {
 	// TODO: add some random elements
 	player.CurrentGold = int(player.CurrentGold) + GoldAmount
+	player.ComputeWeight()
 }
 
 // DetermineLevel check player currentXP and increase level if necessary
@@ -250,7 +251,9 @@ func (player *CharacterStats) ComputeWeight() {
 			equippedWeight += item.Weight
 		}
 	}
-	player.InventoryWeight = totalWeight
+
+	// add gold to inventory weight (1g / piece)
+	player.InventoryWeight = totalWeight + player.CurrentGold
 	player.EquippedWeight = equippedWeight
 }
 

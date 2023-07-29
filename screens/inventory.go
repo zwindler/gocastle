@@ -121,10 +121,10 @@ func createInventoryStatsArea() fyne.CanvasObject {
 
 // updateInventoryStatsArea refreshes the values in InventoryStatsArea
 func updateInventoryStatsArea() {
-	totalWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.InventoryWeight/1000))
+	totalWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.InventoryWeight)/1000)
 	totalWeightValueLabel.Refresh()
 
-	equippedWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.EquippedWeight/1000))
+	equippedWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.EquippedWeight)/1000)
 	equippedWeightValueLabel.Refresh()
 
 	goldAmountValueLabel.Text = fmt.Sprintf("%d gold pieces", player.CurrentGold)
