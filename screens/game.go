@@ -33,9 +33,9 @@ var (
 	scrollableMapContainer = container.NewScroll(container.NewWithoutLayout())
 
 	// TODO clean this
-	healthPointsValueLabel = canvas.NewText("10/10", model.TextColor)
-	manaPointsValueLabel   = canvas.NewText("10/10", model.TextColor)
-	timeSpentValueLabel    = canvas.NewText("0d0:0:0", model.TextColor)
+	healthPointsValueLabel *canvas.Text
+	manaPointsValueLabel   *canvas.Text
+	timeSpentValueLabel    *canvas.Text
 
 	currentWindow fyne.Window
 )
@@ -101,6 +101,10 @@ func drawNPCList(mapContainer *fyne.Container) {
 // createStatsArea creates the stats area containing health points, mana points,
 // time spent, and location info.
 func createStatsArea() fyne.CanvasObject {
+	healthPointsValueLabel = canvas.NewText("", model.TextColor)
+	manaPointsValueLabel = canvas.NewText("", model.TextColor)
+	timeSpentValueLabel = canvas.NewText("", model.TextColor)
+
 	// Create an array to store all the canvas.NewText objects
 	statsTextObjects := []*canvas.Text{
 		canvas.NewText("Health Points:", model.TextColor),
@@ -131,10 +135,10 @@ func createStatsArea() fyne.CanvasObject {
 
 // updateStatsArea refreshes the values in StatsArea
 func updateStatsArea() {
-	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentHP, model.Player.MaxHP)
+	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", player.CurrentHP, player.MaxHP)
 	healthPointsValueLabel.Refresh()
 
-	manaPointsValueLabel.Text = fmt.Sprintf("%d/%d", model.Player.CurrentMP, model.Player.MaxMP)
+	manaPointsValueLabel.Text = fmt.Sprintf("%d/%d", player.CurrentMP, player.MaxMP)
 	manaPointsValueLabel.Refresh()
 
 	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
