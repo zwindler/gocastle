@@ -79,7 +79,7 @@ func showLoadFileDialog(window fyne.Window) (string, error) {
 
 // storageFilter filters files to show only JSON files for loading.
 func storageFilter() storage.FileFilter {
-	return storage.NewExtensionFileFilter([]string{".json"})
+	return storage.NewExtensionFileFilter([]string{".sav"})
 }
 
 // loadGameFromFile loads the game data from the specified JSON file.

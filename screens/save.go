@@ -22,7 +22,7 @@ func ShowSaveGameScreen(window fyne.Window) {
 
 	fileNameLabel := widget.NewLabel("Enter file name:")
 	fileNameEntry = widget.NewEntry()
-	fileNameEntry.SetPlaceHolder("game_save.json")
+	fileNameEntry.SetPlaceHolder("game_save.sav")
 
 	backButton := widget.NewButton("Back", func() {
 		ShowGameScreen(window)
