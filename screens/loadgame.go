@@ -5,6 +5,7 @@ package screens
 import (
 	"encoding/json"
 	"fmt"
+	"gocastle/model"
 	"io"
 
 	"fyne.io/fyne/v2"
@@ -32,6 +33,10 @@ func ShowLoadGameScreen(window fyne.Window) error {
 			return
 		}
 		updateLoadedGameData(data)
+		player.Avatar = model.CreateAvatar(player.Avatar, player.Avatar.PosX, player.Avatar.PosY)
+		currentMap.AddNPCs()
+		model.InitializeCategories()
+		player.RefreshStats(true)
 		ShowGameScreen(window)
 	}, window)
 	// only show .json files
