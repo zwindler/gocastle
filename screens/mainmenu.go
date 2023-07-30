@@ -1,6 +1,8 @@
 package screens
 
 import (
+	"gocastle/model"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -14,6 +16,9 @@ func ShowMenuScreen(window fyne.Window) {
 	backgroundImage := canvas.NewImageFromFile("static/castle_back.png")
 	backgroundImage.FillMode = canvas.ImageFillStretch
 	backgroundImage.SetMinSize(fyne.NewSize(800, 600))
+
+	// Initialize a few things here
+	model.InitializeCategories()
 
 	// Create buttons
 	newGameButton := widget.NewButton("New Game", func() {

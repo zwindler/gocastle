@@ -34,7 +34,6 @@ func ShowLoadGameScreen(window fyne.Window) error {
 		}
 		updateLoadedGameData(data)
 		model.InitializeCategories()
-		player.RefreshStats(true)
 		ShowGameScreen(window)
 	}, window)
 	// only show .json files
