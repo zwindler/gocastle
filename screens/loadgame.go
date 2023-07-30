@@ -33,8 +33,6 @@ func ShowLoadGameScreen(window fyne.Window) error {
 			return
 		}
 		updateLoadedGameData(data)
-		player.Avatar = model.CreateAvatar(player.Avatar, player.Avatar.PosX, player.Avatar.PosY)
-		currentMap.AddNPCs()
 		model.InitializeCategories()
 		player.RefreshStats(true)
 		ShowGameScreen(window)
@@ -61,7 +59,7 @@ func loadGameFromFile(r io.Reader) (map[string]interface{}, error) {
 // updateLoadedGameData updates the player and currentMap with the loaded data.
 func updateLoadedGameData(data map[string]interface{}) error {
 	// Update player
-	playerData, ok := data["player"].(map[string]interface{})
+	playerData, ok := data["Player"].(map[string]interface{})
 	if !ok {
 		return fmt.Errorf("invalid player data")
 	}
@@ -70,7 +68,7 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	}
 
 	// Update currentMap
-	mapData, ok := data["map"].(map[string]interface{})
+	mapData, ok := data["CurrentMap"].(map[string]interface{})
 	if !ok {
 		return fmt.Errorf("invalid map data")
 	}
