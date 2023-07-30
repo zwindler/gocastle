@@ -15,11 +15,13 @@ import (
 func ShowSaveGameScreen(window fyne.Window) {
 	// Get the data to save
 	gameData := struct {
-		Player     model.CharacterStats
-		CurrentMap maps.Map
+		Player         model.CharacterStats
+		CurrentMap     maps.Map
+		TimeSinceBegin int
 	}{
-		Player:     *player,
-		CurrentMap: currentMap,
+		Player:         *player,
+		CurrentMap:     currentMap,
+		TimeSinceBegin: model.TimeSinceBegin,
 	}
 
 	// Show file save dialog

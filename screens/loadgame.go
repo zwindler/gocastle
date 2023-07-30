@@ -55,7 +55,7 @@ func loadGameFromFile(r io.Reader) (map[string]interface{}, error) {
 	return data, nil
 }
 
-// updateLoadedGameData updates the player and currentMap with the loaded data.
+// updateLoadedGameData updates the player, currentMap and TimeSinceBegin with the loaded data.
 func updateLoadedGameData(data map[string]interface{}) error {
 	// Update player
 	playerData, ok := data["Player"].(map[string]interface{})
@@ -73,6 +73,15 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	}
 	if err := updateMapData(mapData); err != nil {
 		return fmt.Errorf("failed to update map data: %w", err)
+	}
+
+	// Update currentMap
+	mapTime, ok := data["TimeSinceBegin"].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("invalid time data")
+	}
+	if err := updateTimeData(mapTime); err != nil {
+		return fmt.Errorf("failed to update time data: %w", err)
 	}
 
 	return nil
@@ -97,6 +106,18 @@ func updateMapData(data map[string]interface{}) error {
 		return err
 	}
 	if err := json.Unmarshal(jsonData, &currentMap); err != nil {
+		return err
+	}
+	return nil
+}
+
+// updateTimeData updates the currentMap data with the loaded data.
+func updateTimeData(data map[string]interface{}) error {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(jsonData, &model.TimeSinceBegin); err != nil {
 		return err
 	}
 	return nil
