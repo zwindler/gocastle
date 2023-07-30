@@ -4,73 +4,38 @@ package screens
 
 import (
 	"encoding/json"
-	"fmt"
-	"os"
-
+	"gocastle/maps"
 	"gocastle/model"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/widget"
 )
 
 // ShowSaveGameScreen is the main function of the save game screen
 func ShowSaveGameScreen(window fyne.Window) {
-	var fileNameEntry *widget.Entry
+	// Get the data to save
+	gameData := struct {
+		Player     model.CharacterStats
+		CurrentMap maps.Map
+	}{
+		Player:     *player,
+		CurrentMap: currentMap,
+	}
 
-	fileNameLabel := widget.NewLabel("Enter file name:")
-	fileNameEntry = widget.NewEntry()
-	fileNameEntry.SetPlaceHolder("game_save.sav")
+	// Show file save dialog
+	dialog.ShowFileSave(func(writer fyne.URIWriteCloser, err error) {
+		if err == nil && writer != nil {
+			defer writer.Close()
 
-	backButton := widget.NewButton("Back", func() {
-		ShowGameScreen(window)
-	})
+			// Create JSON encoder
+			encoder := json.NewEncoder(writer)
 
-	validateButton := widget.NewButton("Validate", func() {
-		if fileNameEntry.Text == "" {
-			content := widget.NewLabel("Please enter a valid file name.")
-			dialog.ShowCustom("Invalid File Name", "Close", content, window)
-		} else {
-			saveData := make(map[string]interface{})
-			saveData["player"] = model.Player
-			saveData["map"] = currentMap
-
-			err := saveGameToFile(fileNameEntry.Text, saveData)
-			if err != nil {
-				content := widget.NewLabel(fmt.Sprintf("Error saving game: %s", err))
-				dialog.ShowCustom("Error Saving Game", "Close", content, window)
+			// Write game data to JSON file
+			if err := encoder.Encode(gameData); err != nil {
+				dialog.ShowError(err, window)
 			} else {
-				content := widget.NewLabel("Game saved successfully.")
-				dialog.ShowCustom("Game Saved", "Close", content, window)
+				dialog.ShowInformation("Game Saved", "Game data has been successfully saved.", window)
 			}
 		}
-	})
-
-	content := container.NewVBox(
-		fileNameLabel,
-		fileNameEntry,
-		layout.NewSpacer(),
-		container.NewHBox(layout.NewSpacer(), backButton, validateButton, layout.NewSpacer()),
-	)
-
-	window.SetContent(content)
-}
-
-// saveGameToFile saves the game data to a JSON file.
-func saveGameToFile(fileName string, data map[string]interface{}) error {
-	file, err := os.Create(fileName)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(data)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	}, window)
 }

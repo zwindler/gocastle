@@ -5,59 +5,15 @@ package screens
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-
-	"gocastle/maps"
-	"gocastle/model"
+	"io"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
-	"fyne.io/fyne/v2/widget"
 )
 
-// ShowLoadGameScreen is the main function of the load game screen
-func ShowLoadGameScreen(window fyne.Window) {
-	titleLabel := widget.NewLabel("Load Game Screen")
-	backButton := widget.NewButton("Back", func() {
-		ShowMenuScreen(window)
-	})
-
-	loadButton := widget.NewButton("Load Game", func() {
-		fileName, err := showLoadFileDialog(window)
-		if err != nil {
-			dialog.ShowError(err, window)
-			return
-		}
-
-		data, err := loadGameFromFile(fileName)
-		if err != nil {
-			dialog.ShowError(err, window)
-			return
-		}
-
-		// Update player and currentMap with the loaded data
-		if err := updateLoadedGameData(data); err != nil {
-			dialog.ShowError(err, window)
-			return
-		}
-
-		dialog.ShowInformation("Game Loaded", "Game loaded successfully!", window)
-		ShowGameScreen(window)
-	})
-
-	content := container.NewVBox(
-		titleLabel,
-		backButton,
-		loadButton,
-	)
-
-	window.SetContent(content)
-}
-
-// showLoadFileDialog displays a file dialog to select the file to load.
-func showLoadFileDialog(window fyne.Window) (string, error) {
+// ShowLoadGameScreen displays a file dialog to select the file to load.
+func ShowLoadGameScreen(window fyne.Window) error {
 	fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 		if err != nil {
 			dialog.ShowError(err, window)
@@ -69,30 +25,27 @@ func showLoadFileDialog(window fyne.Window) (string, error) {
 		}
 
 		defer reader.Close()
+
+		data, err := loadGameFromFile(reader)
+		if err != nil {
+			dialog.ShowError(err, window)
+			return
+		}
+		updateLoadedGameData(data)
+		ShowGameScreen(window)
 	}, window)
 	// only show .json files
-	fd.SetFilter(storageFilter())
+	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	fd.Show()
 
-	return fd.FilePath(), nil
-}
-
-// storageFilter filters files to show only JSON files for loading.
-func storageFilter() storage.FileFilter {
-	return storage.NewExtensionFileFilter([]string{".sav"})
+	return nil
 }
 
 // loadGameFromFile loads the game data from the specified JSON file.
-func loadGameFromFile(fileName string) (map[string]interface{}, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
+func loadGameFromFile(r io.Reader) (map[string]interface{}, error) {
 	var data map[string]interface{}
-	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&data)
+	decoder := json.NewDecoder(r)
+	err := decoder.Decode(&data)
 	if err != nil {
 		return nil, err
 	}
@@ -112,12 +65,12 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	}
 
 	// Update currentMap
-	mapData, ok := data["village"].(map[string]interface{})
+	mapData, ok := data["map"].(map[string]interface{})
 	if !ok {
-		return fmt.Errorf("invalid village data")
+		return fmt.Errorf("invalid map data")
 	}
 	if err := updateMapData(mapData); err != nil {
-		return fmt.Errorf("failed to update village data: %w", err)
+		return fmt.Errorf("failed to update map data: %w", err)
 	}
 
 	return nil
@@ -129,7 +82,7 @@ func updatePlayerData(data map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(jsonData, &model.Player); err != nil {
+	if err := json.Unmarshal(jsonData, &player); err != nil {
 		return err
 	}
 	return nil
@@ -141,7 +94,7 @@ func updateMapData(data map[string]interface{}) error {
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(jsonData, &maps.Village); err != nil {
+	if err := json.Unmarshal(jsonData, &currentMap); err != nil {
 		return err
 	}
 	return nil
