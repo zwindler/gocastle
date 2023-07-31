@@ -76,14 +76,15 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	}
 
 	// Update currentMap
-	mapTime, ok := data["TimeSinceBegin"].(map[string]interface{})
+	timeData, ok := data["TimeSinceBegin"].(float64)
 	if !ok {
-		return fmt.Errorf("invalid time data")
-	}
-	if err := updateTimeData(mapTime); err != nil {
-		return fmt.Errorf("failed to update time data: %w", err)
+		// Handle the case when the "TimeSinceBegin" key is not a float64 (or not present)
+		// You can choose to show an error or set a default value, as needed.
+		return fmt.Errorf("error: TimeSinceBegin is not present or not a valid float64 value")
 	}
 
+	// Convert the float64 value to int (assuming model.TimeSinceBegin is of type int)
+	model.TimeSinceBegin = int(timeData)
 	return nil
 }
 
@@ -106,18 +107,6 @@ func updateMapData(data map[string]interface{}) error {
 		return err
 	}
 	if err := json.Unmarshal(jsonData, &currentMap); err != nil {
-		return err
-	}
-	return nil
-}
-
-// updateTimeData updates the currentMap data with the loaded data.
-func updateTimeData(data map[string]interface{}) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	if err := json.Unmarshal(jsonData, &model.TimeSinceBegin); err != nil {
 		return err
 	}
 	return nil
