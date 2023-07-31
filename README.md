@@ -4,7 +4,7 @@
 
 This project is my journey to creating a graphical game while learning Golang
 
-Every session, I'll add an entry in this file telling what I did and what I learned (see [DEV_LOG.md](DEV_LOG.md))
+Every session, I'll add an entry in this file telling what I did and what I learned (see [developpement_diary/](developpement_diary/))
 
 ## Prerequisites 
 
