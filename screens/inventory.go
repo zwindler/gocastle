@@ -5,6 +5,7 @@ package screens
 import (
 	"fmt"
 	"gocastle/model"
+	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -23,7 +24,7 @@ var (
 // ShowInventoryScreen is the main function of the inventory screen
 func ShowInventoryScreen(window fyne.Window) {
 	// Load the background image
-	backgroundImage := canvas.NewImageFromFile("static/inventory.png")
+	backgroundImage := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/inventory.png"))
 	backgroundImage.FillMode = canvas.ImageFillContain
 
 	// Create a container to hold the dropdown lists for each category

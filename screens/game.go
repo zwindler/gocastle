@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gocastle/maps"
 	"gocastle/model"
+	"gocastle/utils"
 	"log"
 
 	"fyne.io/fyne/v2"
@@ -81,7 +82,7 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	}
 
 	// create a transparent filler to trick scrollable containers
-	limits := canvas.NewImageFromFile("static/transparent_tile.png")
+	limits := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/transparent_tile.png"))
 	limits.FillMode = canvas.ImageFillStretch
 	limits.SetMinSize(fyne.NewSize(float32(mapColumns)*16, float32(mapRows)*16))
 

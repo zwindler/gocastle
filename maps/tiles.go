@@ -2,11 +2,11 @@ package maps
 
 import (
 	"fmt"
+	"gocastle/utils"
 	"image"
 	"image/draw"
 	_ "image/jpeg" // Import image/jpeg to support JPEG images
 	_ "image/png"  // Import image/png to support PNG images
-	"os"
 )
 
 type TileInfo struct {
@@ -45,7 +45,7 @@ var (
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset
 func extractTileFromTileset(x, y int, filePath string) (image.Image, error) {
-	file, err := os.Open(filePath)
+	file, err := utils.EmbeddedImages.Open(filePath)
 	if err != nil {
 		fmt.Println("Error opening image:", err)
 		return nil, err

@@ -25,7 +25,7 @@ type NPCsOnCurrentMap struct {
 
 var (
 	FemaleFarmerAvatar = Avatar{
-		CanvasPath: "./static/female-farmer.png",
+		CanvasPath: "static/female-farmer.png",
 	}
 	FemaleFarmer = NPCStats{
 		Name:      "Farmer",
@@ -38,7 +38,7 @@ var (
 	}
 
 	FemaleMageAvatar = Avatar{
-		CanvasPath: "./static/woman-mage.png",
+		CanvasPath: "static/woman-mage.png",
 	}
 	FemaleMage = NPCStats{
 		Name:      "Mage",
@@ -52,7 +52,7 @@ var (
 	}
 
 	WolfAvatar = Avatar{
-		CanvasPath: "./static/wolf.png",
+		CanvasPath: "static/wolf.png",
 	}
 	Wolf = NPCStats{
 		Name:      "Wolf",
@@ -66,7 +66,7 @@ var (
 	}
 
 	OgreAvatar = Avatar{
-		CanvasPath: "./static/ogre.png",
+		CanvasPath: "static/ogre.png",
 	}
 	Ogre = NPCStats{
 		Name:      "Ogre",

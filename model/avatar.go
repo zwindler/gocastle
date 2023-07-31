@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gocastle/utils"
 	"math"
 
 	"fyne.io/fyne/v2"
@@ -25,7 +26,7 @@ type Avatar struct {
 // CreateAvatar create a copy of an Avatar on given x,y coordinates
 func CreateAvatar(avatar Avatar, x, y int) Avatar {
 	return Avatar{
-		CanvasImage: canvas.NewImageFromFile(avatar.CanvasPath),
+		CanvasImage: canvas.NewImageFromImage(utils.GetImageFromEmbed(avatar.CanvasPath)),
 		PosX:        x,
 		PosY:        y,
 	}
