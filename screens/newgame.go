@@ -121,8 +121,13 @@ func ShowNewGameScreen(window fyne.Window) {
 				} else {
 
 					// we are good to go!
+
+					// init map
 					player.Avatar = model.CreateAvatar(player.Avatar, currentMap.PlayerStart.X, currentMap.PlayerStart.Y)
 					currentMap.AddNPCs()
+
+					// set currentHP/MP = max
+					player.RefreshStats(true)
 
 					// create a knife, add it to player's inventory, equip it
 					// TODO rework later
