@@ -2,6 +2,7 @@ package screens
 
 import (
 	"gocastle/model"
+	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -13,7 +14,9 @@ import (
 // ShowMenuScreen is the main function of the main screen
 func ShowMenuScreen(window fyne.Window) {
 	// Load the background image
-	backgroundImage := canvas.NewImageFromFile("static/castle_back.png")
+
+	backgroundImage := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/castle_back.png"))
+
 	backgroundImage.FillMode = canvas.ImageFillStretch
 	backgroundImage.SetMinSize(fyne.NewSize(800, 600))
 
