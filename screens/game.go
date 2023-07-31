@@ -59,7 +59,6 @@ func ShowGameScreen(window fyne.Window) {
 
 	// TODO create a separate function for this
 	// set player on map and draw it
-	player.RefreshStats(false)
 	player.Avatar.DrawAvatar(mapContainer)
 	centerMapOnPlayer()
 	drawNPCList(mapContainer)
