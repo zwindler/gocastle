@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gocastle/model"
+	"gocastle/utils"
 	"io"
 
 	"fyne.io/fyne/v2"
@@ -14,7 +15,7 @@ import (
 )
 
 // ShowLoadGameScreen displays a file dialog to select the file to load.
-func ShowLoadGameScreen(window fyne.Window) error {
+func ShowLoadGameScreen(window fyne.Window) {
 	fd := dialog.NewFileOpen(func(reader fyne.URIReadCloser, err error) {
 		if err != nil {
 			dialog.ShowError(err, window)
@@ -33,16 +34,19 @@ func ShowLoadGameScreen(window fyne.Window) error {
 			return
 		}
 		updateLoadedGameData(data)
-	
+
 		// initialise game objects but don't reset to start
 		initGame(window, false)
 
 	}, window)
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
+	location, err := utils.GetBaseDirectory()
+	if err != nil {
+		dialog.ShowError(err, window)
+	}
+	fd.SetLocation(location)
 	fd.Show()
-
-	return nil
 }
 
 // loadGameFromFile loads the game data from the specified JSON file.

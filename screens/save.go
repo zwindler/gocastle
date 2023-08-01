@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"gocastle/maps"
 	"gocastle/model"
+	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
@@ -54,5 +55,10 @@ func ShowSaveGameScreen(window fyne.Window) {
 	// only allow .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	fd.SetFileName("backup.sav")
+	location, err := utils.GetBaseDirectory()
+	if err != nil {
+		dialog.ShowError(err, window)
+	}
+	fd.SetLocation(location)
 	fd.Show()
 }
