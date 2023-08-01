@@ -13,14 +13,24 @@ import (
 
 // ShowSaveGameScreen is the main function of the save game screen
 func ShowSaveGameScreen(window fyne.Window) {
+	// Remove Image from character before saving
+	playerSaveData := *player
+	playerSaveData.Avatar.CanvasImage.Image = nil
+
+	// Remove Images from NPCs before saving
+	mapSaveData := currentMap
+	for index := range mapSaveData.NPCList.List {
+		mapSaveData.NPCList.List[index].Avatar.CanvasImage.Image = nil
+	}
+
 	// Get the data to save
 	gameData := struct {
 		Player         model.CharacterStats
 		CurrentMap     maps.Map
 		TimeSinceBegin int
 	}{
-		Player:         *player,
-		CurrentMap:     currentMap,
+		Player:         playerSaveData,
+		CurrentMap:     mapSaveData,
 		TimeSinceBegin: model.TimeSinceBegin,
 	}
 
