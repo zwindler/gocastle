@@ -38,7 +38,7 @@ func ShowLoadGameScreen(window fyne.Window) error {
 		initGame(window, false)
 
 	}, window)
-	// only show .json files
+	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	fd.Show()
 

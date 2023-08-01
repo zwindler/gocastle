@@ -9,6 +9,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 )
 
 // ShowSaveGameScreen is the main function of the save game screen
@@ -35,14 +36,14 @@ func ShowSaveGameScreen(window fyne.Window) {
 	}
 
 	// Show file save dialog
-	dialog.ShowFileSave(func(writer fyne.URIWriteCloser, err error) {
+	fd := dialog.NewFileSave(func(writer fyne.URIWriteCloser, err error) {
 		if err == nil && writer != nil {
 			defer writer.Close()
 
 			// Create JSON encoder
 			encoder := json.NewEncoder(writer)
 
-			// Write game data to JSON file
+			// Write game data to JSON .sav file
 			if err := encoder.Encode(gameData); err != nil {
 				dialog.ShowError(err, window)
 			} else {
@@ -50,4 +51,8 @@ func ShowSaveGameScreen(window fyne.Window) {
 			}
 		}
 	}, window)
+	// only allow .sav files
+	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
+	fd.SetFileName("backup.sav")
+	fd.Show()
 }
