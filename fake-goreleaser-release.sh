@@ -16,7 +16,7 @@ cp fyne-cross/dist/linux-arm64/gocastle.tar.xz build/gocastle.arm64.tar.xz
 
 # windows
 fyne-cross windows -app-id fr.zwindler.gocastle
-cp fyne-cross/dist/windows-amd64/gocastle.exe.zip build/gocastle_windows_amd64_v1/gocastle.exe.zip
+cp fyne-cross/dist/windows-amd64/gocastle.exe.zip build/gocastle.exe.zip
 
 # macos TODO
 # fyne-cross darwin -arch=amd64,arm64 --macosx-sdk-path /home/zwindler/sources/gocastle/bin/SDKs -app-id fr.zwindler.gocastle
@@ -27,6 +27,7 @@ rm -rf fyne-cross/
 # unzip archives
 cd build/
 unzip gocastle.exe.zip && rm gocastle.exe.zip
+mv build/usr/local/bin/gocastle.exe build/
 tar xJf gocastle.amd64.tar.xz
 mv usr/local/bin/gocastle ./gocastle.amd64
 rm gocastle.amd64.tar.xz
