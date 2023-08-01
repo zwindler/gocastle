@@ -4,7 +4,6 @@ import (
 	"gocastle/maps"
 	"gocastle/model"
 	"gocastle/utils"
-	"log"
 	"strconv"
 
 	"fmt"
@@ -120,29 +119,9 @@ func ShowNewGameScreen(window fyne.Window) {
 					content := widget.NewLabel("Character has no aspect, please choose one")
 					dialog.ShowCustom("Aspect not selected", "Close", content, window)
 				} else {
-
 					// we are good to go!
-
-					// init map
-					player.Avatar = model.CreateAvatar(player.Avatar, currentMap.PlayerStart.X, currentMap.PlayerStart.Y)
-					currentMap.AddNPCs()
-
-					// set currentHP/MP = max
-					player.RefreshStats(true)
-
-					// create a knife, add it to player's inventory, equip it
-					// TODO rework later
-					player.AddObjectToInventory(model.BareHands)
-					knife, err := model.CreateObject(model.HuntingKnife)
-					if err != nil {
-						err = fmt.Errorf("unable to add knife to inventory: %w", err)
-						log.Fatalf("NewGame error: %s", err)
-					}
-					knifeIndex := player.AddObjectToInventory(knife)
-					player.EquipItem(knifeIndex)
-					player.ChangeGold(10)
-
-					ShowGameScreen(window)
+					// initialise game objects for the first time
+					initGame(window, true)
 				}
 			}
 		}

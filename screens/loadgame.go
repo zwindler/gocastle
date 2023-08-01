@@ -33,8 +33,10 @@ func ShowLoadGameScreen(window fyne.Window) error {
 			return
 		}
 		updateLoadedGameData(data)
-		model.InitializeCategories()
-		ShowGameScreen(window)
+	
+		// initialise game objects but don't reset to start
+		initGame(window, false)
+
 	}, window)
 	// only show .json files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
