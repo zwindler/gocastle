@@ -1,5 +1,5 @@
 clean:
-	rm bin/gocastle
+	rm -f bin/gocastle
 
 build: clean
 	go build -o bin/gocastle
