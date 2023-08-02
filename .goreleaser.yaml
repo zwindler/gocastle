@@ -3,7 +3,7 @@
 before:
   hooks:
     - go mod tidy
-    - ./fake-goreleaser-release.sh
+    - ./fyne-cross-releases.sh
 builds:
   - env:
       - CGO_ENABLE=1
@@ -14,7 +14,12 @@ builds:
     goarch:
       - amd64
       - arm64
-    skip: true
+    gobinary: ./fake-releaser.sh
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: android
+        goarch: amd64
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
