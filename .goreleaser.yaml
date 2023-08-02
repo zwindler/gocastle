@@ -3,17 +3,16 @@
 before:
   hooks:
     - go mod tidy
-    - ./fyne-cross-releases.sh
 builds:
   - env:
       - CGO_ENABLE=1
     goos:
       - linux
-      - windows
-      - android
+      #- windows
+      #- android
     goarch:
       - amd64
-      - arm64
+    #  - arm64
     gobinary: ./fake-releaser.sh
     ignore:
       - goos: windows
