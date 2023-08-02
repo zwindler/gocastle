@@ -14,5 +14,5 @@ func GetBaseDirectory() (fyne.ListableURI, error) {
 		return nil, err
 	}
 	absoluteDirPath := filepath.Dir(executablePath)
-	return storage.ListerForURI(storage.NewFileURI("file://" + absoluteDirPath))
+	return storage.ListerForURI(storage.NewFileURI(absoluteDirPath))
 }

@@ -55,6 +55,7 @@ func ShowSaveGameScreen(window fyne.Window) {
 	// only allow .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	fd.SetFileName("backup.sav")
+	// TODO: don't change path for iOS, Android, Flatpak
 	location, err := utils.GetBaseDirectory()
 	if err != nil {
 		dialog.ShowError(err, window)

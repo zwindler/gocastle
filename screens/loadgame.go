@@ -42,6 +42,7 @@ func ShowLoadGameScreen(window fyne.Window) {
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	location, err := utils.GetBaseDirectory()
+	// TODO: don't change path for iOS, Android, Flatpak
 	if err != nil {
 		dialog.ShowError(err, window)
 	}
