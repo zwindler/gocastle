@@ -12,6 +12,12 @@ Every session, I'll add an entry in this file telling what I did and what I lear
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
 ```
 
+Also, for building releases, you need goreleaser and fyne-cross
+
+```bash
+go install github.com/fyne-io/fyne-cross@latest
+```
+
 ## Build, test, release
 
 Build only
@@ -36,5 +42,5 @@ goreleaser --clean
 Test release (against code not tagged)
 
 ```bash
-goreleaser build --snapshot --clean
+goreleaser --snapshot --clean
 ```
