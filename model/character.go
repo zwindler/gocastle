@@ -179,10 +179,19 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 
 // AddObjectToInventory adds an object to the player's inventory.
 // return index of latest element in Inventory
-func (player *CharacterStats) AddObjectToInventory(obj Object) int {
+func (player *CharacterStats) AddObjectToInventory(obj Object, equip bool) int {
 	player.Inventory = append(player.Inventory, obj)
+	index := len(player.Inventory) - 1
+
+	// TODO rework
+	player.Inventory[index].InInventory = true
+
+	if equip {
+		player.EquipItem(index)
+	}
+
 	player.ComputeWeight()
-	return len(player.Inventory) - 1
+	return index
 }
 
 // RemoveObjectFromInventory removes an object from the player's inventory by its index.

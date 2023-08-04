@@ -63,6 +63,13 @@ func ShowGameScreen(window fyne.Window) {
 	player.Avatar.DrawAvatar(mapContainer)
 	centerMapOnPlayer()
 	drawNPCList(mapContainer)
+
+	knife2, err := model.CreateObject(model.HuntingKnife, 10, 10)
+	if err != nil {
+		err = fmt.Errorf("unable to create knife: %w", err)
+		log.Fatalf("NewGame error: %s", err)
+	}
+	knife2.DrawObject(mapContainer)
 }
 
 // createMapArea generates a fyne container containing the map tiles

@@ -2,7 +2,13 @@
 
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"gocastle/utils"
+
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+)
 
 // ObjectStat represents a specific stat of an object.
 type ObjectStat struct {
@@ -12,11 +18,16 @@ type ObjectStat struct {
 
 // Object represents an object with its properties.
 type Object struct {
-	Name     string       // Object name.
-	Category string       // Object category.
-	Weight   int          // Object weight in grams
-	Equipped bool         // Is object equipped
-	Stats    []ObjectStat // Object stats (e.g., strength, health, etc.).
+	Name        string        // Object name.
+	Category    string        // Object category.
+	Weight      int           // Object weight in grams
+	InInventory bool          // Is Object in inventory
+	Equipped    bool          // Is Object equipped
+	PosX        int           // Object position
+	PosY        int           // Object position
+	Stats       []ObjectStat  // Object stats (e.g., strength, health, etc.).
+	CanvasImage *canvas.Image // Object image
+	CanvasPath  string        // Image path for Object
 }
 
 // Category represents a common object category.
@@ -38,6 +49,7 @@ var (
 				Modifier: 2,
 			},
 		},
+		CanvasPath: "static/knife.png",
 	}
 
 	BareHands = Object{
@@ -112,7 +124,8 @@ func CategoryExists(categoryName string) bool {
 
 // CreateObject creates a copy of the given object and returns it.
 // It also validates the category before creating the object.
-func CreateObject(obj Object) (Object, error) {
+// x,y = 1000 means in inventory
+func CreateObject(obj Object, x, y int) (Object, error) {
 	// Validate the category.
 	if !CategoryExists(obj.Category) {
 		return Object{}, fmt.Errorf("category '%s' does not exist", obj.Category)
@@ -120,9 +133,15 @@ func CreateObject(obj Object) (Object, error) {
 
 	// Create a new Object with the same properties.
 	newObject := Object{
-		Name:     obj.Name,
-		Category: obj.Category,
-		Weight:   obj.Weight,
+		Name:        obj.Name,
+		Category:    obj.Category,
+		Weight:      obj.Weight,
+		CanvasPath:  obj.CanvasPath,
+		CanvasImage: canvas.NewImageFromImage(utils.GetImageFromEmbed(obj.CanvasPath)),
+		PosX:        x,
+		PosY:        y,
+		Equipped:    false,
+		InInventory: false,
 	}
 
 	// Copy the ObjectStat slice.
@@ -134,4 +153,26 @@ func CreateObject(obj Object) (Object, error) {
 	}
 
 	return newObject, nil
+}
+
+// DrawObject displays an object's image on the mapContainer
+func (subject *Object) DrawObject(mapContainer *fyne.Container) {
+	// don't put object in container is object is in inventory
+	if !subject.InInventory {
+		subject.CanvasImage.FillMode = canvas.ImageFillOriginal
+		subject.CanvasImage.Resize(fyneTileSize)
+
+		subject.MoveObject(subject.PosX, subject.PosY)
+
+		mapContainer.Add(subject.CanvasImage)
+	}
+}
+
+// MoveObject moves object's coordinates and updates image position on map
+func (subject *Object) MoveObject(futurePosX int, futurePosY int) {
+	// assign new values for subject position
+	subject.PosX = futurePosX
+	subject.PosY = futurePosY
+
+	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
 }
