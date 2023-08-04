@@ -13,6 +13,7 @@ type Map struct {
 	PlayerStart Coord
 	spawnNPC    SpawnNPC
 	NPCList     model.NPCsOnCurrentMap
+	ObjectList  []*model.Object
 	MapMatrix   [][]int
 }
 

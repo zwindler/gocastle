@@ -63,13 +63,7 @@ func ShowGameScreen(window fyne.Window) {
 	player.Avatar.DrawAvatar(mapContainer)
 	centerMapOnPlayer()
 	drawNPCList(mapContainer)
-
-	knife2, err := model.CreateObject(model.HuntingKnife, 10, 10)
-	if err != nil {
-		err = fmt.Errorf("unable to create knife: %w", err)
-		log.Fatalf("NewGame error: %s", err)
-	}
-	knife2.DrawObject(mapContainer)
+	drawObjectList(mapContainer)
 }
 
 // createMapArea generates a fyne container containing the map tiles
@@ -104,6 +98,14 @@ func drawNPCList(mapContainer *fyne.Container) {
 	for index := range currentMap.NPCList.List {
 		npc := &currentMap.NPCList.List[index]
 		npc.Avatar.DrawAvatar(mapContainer)
+	}
+}
+
+// drawObjectList draws the "Objects on map" images on the mapContainer
+func drawObjectList(mapContainer *fyne.Container) {
+	// Loop through the ObjectList slice and create/draw each Object
+	for _, object := range currentMap.ObjectList {
+		object.DrawObject(mapContainer)
 	}
 }
 
