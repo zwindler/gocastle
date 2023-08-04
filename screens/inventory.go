@@ -91,8 +91,7 @@ func ShowInventoryScreen(window fyne.Window) {
 	// Create the content container to hold the inventory items and the back button
 	inventoryContainer := container.NewBorder(nil, nil, inventoryContainerLeft, inventoryContainerRight, backgroundImage)
 
-	floorFakeContainer := widget.NewLabel("The floor once I implement it")
-	floorContainer := container.NewVBox(floorFakeContainer)
+	floorContainer := displayFloorItems()
 	floorScroll := container.NewVScroll(floorContainer)
 	bottomRightColumn := container.NewVBox(inventoryStatsArea, backButton)
 	rightColumn := container.NewBorder(nil, bottomRightColumn, nil, nil, floorScroll)
@@ -130,4 +129,30 @@ func updateInventoryStatsArea() {
 
 	goldAmountValueLabel.Text = fmt.Sprintf("%d gold pieces", player.CurrentGold)
 	goldAmountValueLabel.Refresh()
+}
+
+func displayFloorItems() (floorVBox *fyne.Container) {
+	floorVBox = container.NewVBox()
+	for _, item := range currentMap.ObjectList {
+		if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
+			// item is on the same tile as player, display it in inventory
+			currentItemContainer := container.NewVBox()
+			nameLabel := widget.NewLabel(item.Name)
+			takeButton := widget.NewButton("Take", func() {
+				player.AddObjectToInventory(*item, false)
+				// Remove object from currentMap ObjectList
+				currentMap.FindObjectToRemove(item)
+				// Remove current container as well from floor container
+				floorVBox.Remove(currentItemContainer)
+				// TODO Refresh items in inventory
+			})
+			detailsButton := widget.NewButton("Details", func() {
+				// TODO display object statistics
+			})
+			currentItemContainer.Add(nameLabel)
+			currentItemContainer.Add(container.NewGridWithColumns(2, takeButton, detailsButton))
+			floorVBox.Add(currentItemContainer)
+		}
+	}
+	return floorVBox
 }

@@ -122,3 +122,20 @@ func (currentMap *Map) AddNPCs() {
 	}
 
 }
+
+// FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object
+func (currentMap *Map) FindObjectToRemove(object *model.Object) {
+	var indexToRemove int = -1
+	for i, obj := range currentMap.ObjectList {
+		if obj == object {
+			indexToRemove = i
+			break
+		}
+	}
+
+	// If the object was found, remove it from the slice
+	if indexToRemove >= 0 {
+		// Remove the object from the slice
+		currentMap.ObjectList = append(currentMap.ObjectList[:indexToRemove], currentMap.ObjectList[indexToRemove+1:]...)
+	}
+}
