@@ -17,10 +17,11 @@ var (
 )
 
 type Avatar struct {
-	CanvasImage *canvas.Image
-	CanvasPath  string
-	PosX        int
-	PosY        int
+	CanvasImage          *canvas.Image
+	CanvasPath           string
+	PosX                 int
+	PosY                 int
+	ObjectInMapContainer *fyne.CanvasObject
 }
 
 // CreateAvatar create a copy of an Avatar on given x,y coordinates
@@ -34,12 +35,16 @@ func CreateAvatar(avatar Avatar, x, y int) Avatar {
 }
 
 // MoveAvatar moves avatar's coordinates and updates image position on map
-func (subject *Avatar) MoveAvatar(futurePosX int, futurePosY int) {
+func (subject *Avatar) MoveAvatar(mapContainer *fyne.Container, futurePosX, futurePosY int) {
 	// assign new values for subject position
 	subject.PosX = futurePosX
 	subject.PosY = futurePosY
 
 	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+
+	// remove/re-add Avatar from mapContainer to redraw it on top
+	mapContainer.Remove(*subject.ObjectInMapContainer)
+	mapContainer.Add(*subject.ObjectInMapContainer)
 }
 
 // DrawAvatar displays an avatar's image on the mapContainer
@@ -47,9 +52,13 @@ func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
 	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
 	subject.CanvasImage.Resize(fyneTileSize)
 
-	subject.MoveAvatar(subject.PosX, subject.PosY)
-
 	mapContainer.Add(subject.CanvasImage)
+
+	// determine Object in fyne.container.Objects slice
+	avatarInMapContainer := &mapContainer.Objects[len(mapContainer.Objects)-1]
+	subject.ObjectInMapContainer = avatarInMapContainer
+
+	subject.MoveAvatar(mapContainer, subject.PosX, subject.PosY)
 }
 
 // DistanceFromAvatar computes the distance between 2 Avatars

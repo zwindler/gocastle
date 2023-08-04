@@ -59,7 +59,7 @@ func actOnDirectionKey(newX, newY int) {
 			// no NPC found on our path, let's check if we can move
 			if currentMap.CheckTileIsWalkable(newX, newY) {
 				// path is free, let's move (3sec cost)
-				player.Avatar.MoveAvatar(newX, newY)
+				player.Avatar.MoveAvatar(mapContainer, newX, newY)
 				model.IncrementTimeSinceBegin(3)
 			} else {
 				// you "hit" a wall, but lost 2s
@@ -108,7 +108,7 @@ func newTurnForNPCs() {
 					}
 					// no ones in our NPC's way
 				} else if currentMap.CheckTileIsWalkable(newX, newY) {
-					npc.Avatar.MoveAvatar(newX, newY)
+					npc.Avatar.MoveAvatar(mapContainer, newX, newY)
 				}
 			}
 		}

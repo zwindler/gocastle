@@ -101,7 +101,8 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 // drawNPCList draws the NPC's Avatars images on the mapContainer
 func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
-	for _, npc := range currentMap.NPCList.List {
+	for index := range currentMap.NPCList.List {
+		npc := &currentMap.NPCList.List[index]
 		npc.Avatar.DrawAvatar(mapContainer)
 	}
 }
