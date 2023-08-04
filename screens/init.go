@@ -23,13 +23,20 @@ func initGame(window fyne.Window, start bool) {
 		player.AddObjectToInventory(model.BareHands, true)
 		player.ChangeGold(10)
 
+		// TODO rework
 		// create a knife, drop it in field next to player start
 		knife, err := model.CreateObject(model.HuntingKnife, 10, 10)
 		if err != nil {
 			err = fmt.Errorf("unable to create knife: %w", err)
 			log.Fatalf("NewGame error: %s", err)
 		}
+		sword, err := model.CreateObject(model.BluntSword, 20, 20)
+		if err != nil {
+			err = fmt.Errorf("unable to create knife: %w", err)
+			log.Fatalf("NewGame error: %s", err)
+		}
 		currentMap.ObjectList = append(currentMap.ObjectList, &knife)
+		currentMap.ObjectList = append(currentMap.ObjectList, &sword)
 
 		// set coordinates to "Village" map starting coordinates
 		X, Y = currentMap.PlayerStart.X, currentMap.PlayerStart.Y

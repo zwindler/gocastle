@@ -52,6 +52,19 @@ var (
 		CanvasPath: "static/knife.png",
 	}
 
+	BluntSword = Object{
+		Name:     "Blunt sword",
+		Category: "Weapon",
+		Weight:   1500,
+		Stats: []ObjectStat{
+			{
+				Name:     "physicalDamage",
+				Modifier: 4,
+			},
+		},
+		CanvasPath: "static/sword.png",
+	}
+
 	BareHands = Object{
 		Name:     "Bare Hands",
 		Category: "Weapon",
