@@ -22,7 +22,7 @@ func initGame(window fyne.Window, start bool) {
 	if start {
 		player.ChangeGold(10)
 
-		// TODO rework
+		// TODO put it in map like spawnNPC
 		// create a knife, drop it in field next to player start
 		knife, err := model.CreateObject(model.HuntingKnife, 10, 10)
 		if err != nil {

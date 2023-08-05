@@ -24,7 +24,7 @@ func actOnDirectionKey(newX, newY int) {
 			// if yes, is the NPC hostile?
 			if npc.Hostile {
 				// let's attack!
-				// TODO make this depending on gear
+				// TODO add some randomization
 				addLogEntry(npc.HandleNPCDamage(player.PhysicalDamage))
 				npc.CurrentHP = npc.CurrentHP - player.PhysicalDamage
 				if npc.IsNPCDead() {
