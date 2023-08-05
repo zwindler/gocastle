@@ -19,7 +19,14 @@ var (
 	totalWeightValueLabel    *canvas.Text
 	equippedWeightValueLabel *canvas.Text
 	goldAmountValueLabel     *canvas.Text
+
+	itemDropdowns []dropdown
 )
+
+type dropdown struct {
+	category model.Category
+	widget   *widget.Select
+}
 
 // ShowInventoryScreen is the main function of the inventory screen
 func ShowInventoryScreen(window fyne.Window) {
@@ -30,6 +37,7 @@ func ShowInventoryScreen(window fyne.Window) {
 	// Create a container to hold the dropdown lists for each category
 	inventoryContainerLeft := container.NewVBox()
 	inventoryContainerRight := container.NewVBox()
+	inventoryStatsArea := createInventoryStatsArea()
 
 	// Iterate over each object category and display the dropdown list for the items in that category
 	for index, category := range model.CategoryList {
@@ -45,23 +53,30 @@ func ShowInventoryScreen(window fyne.Window) {
 		}
 
 		// Create a dropdown list to display the items in the category
-		itemDropdown := widget.NewSelect(itemsInCategory, func(selected string) {
-			for i, item := range player.Inventory {
-				if item.Name == selected {
-					player.EquipItem(i)
-				} else if player.Inventory[i].Equipped {
-					// If another item was equipped, un-equip it
-					err := player.UnequipItem(i)
-					if err != nil {
-						dialog.ShowError(err, window)
+		itemDropdown := dropdown{
+			category: category,
+			widget: widget.NewSelect(itemsInCategory, func(selected string) {
+				for i, item := range player.Inventory {
+					if item.Name == selected {
+						player.EquipItem(i)
+					} else if player.Inventory[i].Equipped {
+						// If another item was equipped, un-equip it
+						err := player.UnequipItem(i)
+						if err != nil {
+							dialog.ShowError(err, window)
+						}
 					}
 				}
-			}
-		})
+				updateInventoryStatsArea()
+			}),
+		}
+
+		// add the pointer of this widget in the list of items
+		itemDropdowns = append(itemDropdowns, itemDropdown)
 
 		for _, item := range player.Inventory {
 			if item.Equipped {
-				itemDropdown.SetSelected(item.Name)
+				itemDropdown.widget.SetSelected(item.Name)
 				break
 			}
 		}
@@ -69,7 +84,7 @@ func ShowInventoryScreen(window fyne.Window) {
 		// Create a container to hold the category label and the dropdown list
 		categoryContainer := container.NewVBox(
 			categoryLabel,
-			itemDropdown,
+			itemDropdown.widget,
 		)
 
 		// Add the category container to the left of right inventory container
@@ -86,7 +101,6 @@ func ShowInventoryScreen(window fyne.Window) {
 		player.RefreshStats(false)
 		ShowGameScreen(window)
 	})
-	inventoryStatsArea := createInventoryStatsArea()
 
 	// Create the content container to hold the inventory items and the back button
 	inventoryContainer := container.NewBorder(nil, nil, inventoryContainerLeft, inventoryContainerRight, backgroundImage)
@@ -145,6 +159,8 @@ func displayFloorItems() (floorVBox *fyne.Container) {
 				// Remove current container as well from floor container
 				floorVBox.Remove(currentItemContainer)
 				// TODO Refresh items in inventory
+				RefreshDropdownContent(item.Category, item.Name)
+				updateInventoryStatsArea()
 			})
 			detailsButton := widget.NewButton("Details", func() {
 				// TODO display object statistics
@@ -155,4 +171,14 @@ func displayFloorItems() (floorVBox *fyne.Container) {
 		}
 	}
 	return floorVBox
+}
+
+func RefreshDropdownContent(categoryName string, newItem string) {
+	for _, dropdown := range itemDropdowns {
+		if dropdown.category.Name == categoryName {
+			dropdown.widget.Options = append(dropdown.widget.Options, newItem)
+			dropdown.widget.Refresh()
+			return
+		}
+	}
 }
