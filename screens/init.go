@@ -20,7 +20,6 @@ func initGame(window fyne.Window, start bool) {
 
 	// create player Avatar
 	if start {
-		player.AddObjectToInventory(model.BareHands, true)
 		player.ChangeGold(10)
 
 		// TODO rework
@@ -32,7 +31,7 @@ func initGame(window fyne.Window, start bool) {
 		}
 		sword, err := model.CreateObject(model.BluntSword, 20, 20)
 		if err != nil {
-			err = fmt.Errorf("unable to create knife: %w", err)
+			err = fmt.Errorf("unable to create sword: %w", err)
 			log.Fatalf("NewGame error: %s", err)
 		}
 		currentMap.ObjectList = append(currentMap.ObjectList, &knife)

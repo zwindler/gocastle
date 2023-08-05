@@ -137,7 +137,6 @@ func CategoryExists(categoryName string) bool {
 
 // CreateObject creates a copy of the given object and returns it.
 // It also validates the category before creating the object.
-// x,y = 1000 means in inventory
 func CreateObject(obj Object, x, y int) (Object, error) {
 	// Validate the category.
 	if !CategoryExists(obj.Category) {
@@ -170,7 +169,7 @@ func CreateObject(obj Object, x, y int) (Object, error) {
 
 // DrawObject displays an object's image on the mapContainer
 func (subject *Object) DrawObject(mapContainer *fyne.Container) {
-	// don't put object in container is object is in inventory
+	// don't put object in container if object is in inventory
 	if !subject.InInventory {
 		subject.CanvasImage.FillMode = canvas.ImageFillOriginal
 		subject.CanvasImage.Resize(fyneTileSize)
