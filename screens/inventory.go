@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -56,15 +55,9 @@ func ShowInventoryScreen(window fyne.Window) {
 		itemDropdown := dropdown{
 			category: category,
 			widget: widget.NewSelect(itemsInCategory, func(selected string) {
-				for i, item := range player.Inventory {
+				for _, item := range player.Inventory {
 					if item.Name == selected {
-						player.EquipItem(i)
-					} else if player.Inventory[i].Equipped {
-						// If another item was equipped, un-equip it
-						err := player.UnequipItem(i)
-						if err != nil {
-							dialog.ShowError(err, window)
-						}
+						player.EquipItem(item)
 					}
 				}
 				updateInventoryStatsArea()
@@ -146,34 +139,30 @@ func updateInventoryStatsArea() {
 }
 
 func displayFloorItems() (floorVBox *fyne.Container) {
-	floorVBox = container.NewVBox()
-	for _, item := range currentMap.ObjectList {
-		if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
-			// item is on the same tile as player, display it in inventory
-			currentItemContainer := container.NewVBox()
-			nameLabel := widget.NewLabel(item.Name)
-			takeButton := widget.NewButton("Take", func() {
-				player.AddObjectToInventory(*item, false)
-				
-				// Remove object from currentMap ObjectList
-				currentMap.FindObjectToRemove(item)
-				
-				// Remove current container as well from floor container
-				floorVBox.Remove(currentItemContainer)
-				
-				// Refresh items in inventory
-				RefreshDropdownContent(item.Category, item.Name)
-				updateInventoryStatsArea()
-			})
-			detailsButton := widget.NewButton("Details", func() {
-				// TODO display object statistics
-			})
-			currentItemContainer.Add(nameLabel)
-			currentItemContainer.Add(container.NewGridWithColumns(2, takeButton, detailsButton))
-			floorVBox.Add(currentItemContainer)
-		}
-	}
-	return floorVBox
+    floorVBox = container.NewVBox()
+    for _, item := range currentMap.ObjectList {
+        if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
+            currentItemContainer := container.NewVBox()
+            nameLabel := widget.NewLabel(item.Name)
+            
+            // Create a copy of the item variable for use in the closure
+            itemCopy := item
+            
+            // Use a closure to pass arguments to the takeButton's callback function
+            takeButton := widget.NewButton("Take", func() {
+                takeItemFromFloor(itemCopy, floorVBox, currentItemContainer)
+            })
+            
+            detailsButton := widget.NewButton("Details", func() {
+                // TODO display object statistics
+            })
+            
+            currentItemContainer.Add(nameLabel)
+            currentItemContainer.Add(container.NewGridWithColumns(2, takeButton, detailsButton))
+            floorVBox.Add(currentItemContainer)
+        }
+    }
+    return floorVBox
 }
 
 func RefreshDropdownContent(categoryName string, newItem string) {
@@ -184,4 +173,18 @@ func RefreshDropdownContent(categoryName string, newItem string) {
 			return
 		}
 	}
+}
+
+func takeItemFromFloor(item *model.Object, floorVBox, currentItemContainer *fyne.Container) {
+	player.AddObjectToInventory(item, false)
+
+	// Remove object from currentMap ObjectList
+	currentMap.FindObjectToRemove(item)
+
+	// Remove current container as well from floor container
+	floorVBox.Remove(currentItemContainer)
+
+	// Refresh items in inventory
+	RefreshDropdownContent(item.Category, item.Name)
+	updateInventoryStatsArea()
 }

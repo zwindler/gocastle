@@ -35,7 +35,7 @@ type CharacterStats struct {
 	Armor          int
 
 	// Inventory
-	Inventory       []Object
+	Inventory       []*Object
 	CurrentGold     int
 	InventoryWeight int // weight of all player's inventory in grams
 	EquippedWeight  int // same thing for equipped items only
@@ -178,20 +178,12 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 }
 
 // AddObjectToInventory adds an object to the player's inventory.
-// return index of latest element in Inventory
-func (player *CharacterStats) AddObjectToInventory(obj Object, equip bool) int {
+func (player *CharacterStats) AddObjectToInventory(obj *Object, equip bool) {
 	player.Inventory = append(player.Inventory, obj)
-	index := len(player.Inventory) - 1
-
-	// TODO rework
-	player.Inventory[index].InInventory = true
-
-	if equip {
-		player.EquipItem(index)
-	}
+	obj.InInventory = true
+	obj.Equipped = equip
 
 	player.ComputeWeight()
-	return index
 }
 
 // RemoveObjectFromInventory removes an object from the player's inventory by its index.
@@ -202,52 +194,37 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 	player.ComputeWeight()
 }
 
-// EquipItem equips an item in the player's inventory by its index.
+// EquipItem equips an item in the player's inventory.
 // If the item is already equipped or the category doesn't exist, it returns an error.
 // If another item of the same category is equipped, un-equip it
-func (player *CharacterStats) EquipItem(index int) error {
-	if index >= 0 && index < len(player.Inventory) {
-		item := &player.Inventory[index]
-		if item.Equipped {
-			return fmt.Errorf("item '%s' is already equipped", item.Name)
-		}
-		if !CategoryExists(item.Category) {
-			return fmt.Errorf("category '%s' does not exist", item.Category)
-		}
-
-		// Check if there is already an equipped item in the same category
-		// if true, un-equip it
-		for i, equippedItem := range player.Inventory {
-			if equippedItem.Equipped && equippedItem.Category == item.Category {
-				// Un-equip the already equipped item
-				player.Inventory[i].Equipped = false
-				break
-			}
-		}
-
-		// Equip the selected item
-		player.Inventory[index].Equipped = true
-		player.ComputeWeight()
-		return nil
+func (player *CharacterStats) EquipItem(item *Object) error {
+	if !CategoryExists(item.Category) {
+		return fmt.Errorf("category '%s' does not exist", item.Category)
 	}
-	return fmt.Errorf("invalid item index")
+	if item.Equipped {
+		return fmt.Errorf("item '%s' is already equipped", item.Name)
+	}
+
+	// Check if there is already an equipped item in the same category
+	// if true, un-equip it
+	for i, otherItem := range player.Inventory {
+		if otherItem.Equipped && otherItem.Category == item.Category {
+			// Un-equip the already equipped item
+			player.Inventory[i].Equipped = false
+			break
+		}
+	}
+
+	// Equip the selected item
+	item.Equipped = true
+	player.ComputeWeight()
+	return nil
 }
 
-// UnequipItem un-equips an item in the player's inventory by its index.
-// If the item is not equipped, it returns an error.
-func (player *CharacterStats) UnequipItem(index int) error {
-	if index >= 0 && index < len(player.Inventory) {
-		item := &player.Inventory[index]
-		if !item.Equipped {
-			return fmt.Errorf("item '%s' is not equipped", item.Name)
-		}
-
-		// Un-equip the item
-		player.Inventory[index].Equipped = false
-		player.ComputeWeight()
-		return nil
-	}
-	return fmt.Errorf("invalid item index")
+// UnequipItem un-equips an item in the player's inventory.
+func (player *CharacterStats) UnequipItem(item *Object) {
+	item.Equipped = false
+	player.ComputeWeight()
 }
 
 // ComputeWeight computes the total weight of the player's inventory and equipped items weight
