@@ -154,11 +154,14 @@ func displayFloorItems() (floorVBox *fyne.Container) {
 			nameLabel := widget.NewLabel(item.Name)
 			takeButton := widget.NewButton("Take", func() {
 				player.AddObjectToInventory(*item, false)
+				
 				// Remove object from currentMap ObjectList
 				currentMap.FindObjectToRemove(item)
+				
 				// Remove current container as well from floor container
 				floorVBox.Remove(currentItemContainer)
-				// TODO Refresh items in inventory
+				
+				// Refresh items in inventory
 				RefreshDropdownContent(item.Category, item.Name)
 				updateInventoryStatsArea()
 			})
