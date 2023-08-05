@@ -17,11 +17,8 @@ func actOnDirectionKey(newX, newY int) {
 		model.IncrementTimeSinceBegin(2)
 	} else {
 		// let's check if we find a NPC on our path
-		if npcId := currentMap.NPCList.GetNPCAtPosition(newX, newY); npcId != -1 {
-			// get the real NPC from the list, not a copy
-			// TODO improve this
-			npc := &currentMap.NPCList.List[npcId]
-			// if yes, is the NPC hostile?
+		if npc := currentMap.GetNPCAtPosition(newX, newY); npc != nil {
+			// yes, but is the NPC hostile?
 			if npc.Hostile {
 				// let's attack!
 				// TODO add some randomization
@@ -38,7 +35,7 @@ func actOnDirectionKey(newX, newY int) {
 						}, currentWindow)
 					}
 					player.ChangeGold(npc.LootGold)
-					currentMap.NPCList.RemoveNPCByIndex(npcId)
+					currentMap.RemoveNPC(npc)
 				}
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
@@ -72,9 +69,8 @@ func actOnDirectionKey(newX, newY int) {
 
 // newTurnForNPCs manages all the map's NPCs actions
 func newTurnForNPCs() {
-	// for all NPCs, move on a random adjacent tile
-	for index := range currentMap.NPCList.List {
-		npc := &currentMap.NPCList.List[index]
+	// for all NPCs, move
+	for _, npc := range currentMap.NPCList {
 
 		var newX, newY int
 		if npc.Hostile && npc.Avatar.DistanceFromAvatar(&player.Avatar) <= 10 {
@@ -92,8 +88,7 @@ func newTurnForNPCs() {
 			// before doing anything, check if we aren't out of bounds
 			if !currentMap.CheckOutOfBounds(newX, newY) {
 				// let's check if we find another NPC on our NPC's path
-				if npcId := currentMap.NPCList.GetNPCAtPosition(newX, newY); npcId != -1 {
-					otherNPC := &currentMap.NPCList.List[npcId]
+				if otherNPC := currentMap.GetNPCAtPosition(newX, newY); otherNPC != nil {
 					if (npc.Hostile && !otherNPC.Hostile) ||
 						(!npc.Hostile && otherNPC.Hostile) {
 						// TODO hostile NPC should attack friendly NPC

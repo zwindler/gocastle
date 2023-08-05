@@ -19,9 +19,6 @@ type NPCStats struct {
 	LootXP    int
 	LootGold  int
 }
-type NPCsOnCurrentMap struct {
-	List []NPCStats
-}
 
 var (
 	FemaleFarmerAvatar = Avatar{
@@ -83,9 +80,9 @@ var (
 )
 
 // CreateNPC creates a copy of a given NPC at given coordinates
-func CreateNPC(npc NPCStats, x, y int) NPCStats {
+func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 	avatar := CreateAvatar(npc.Avatar, x, y)
-	return NPCStats{
+	return &NPCStats{
 		Name:      npc.Name,
 		Pronoun:   npc.Pronoun,
 		Avatar:    avatar,
@@ -127,17 +124,6 @@ func (npc *NPCStats) IsNPCDead() bool {
 	return (npc.CurrentHP <= 0)
 }
 
-// For a given NPCsOnCurrentMap, check all NPCs if one is located on x,y
-func (NPCList *NPCsOnCurrentMap) GetNPCAtPosition(x, y int) int {
-	// find if a NPC matches our destination
-	for index, npc := range NPCList.List {
-		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
-			return index
-		}
-	}
-	return -1
-}
-
 // randomizeGoldLoot generates a random amount of gold within a specified range.
 func randomizeGoldLoot(goldAmount int) int {
 	if goldAmount <= 0 {
@@ -154,16 +140,4 @@ func randomizeGoldLoot(goldAmount int) int {
 	randomizedGold := int(float64(goldAmount) * multiplier)
 
 	return randomizedGold
-}
-
-// For a given NPCsOnCurrentMap, remove NPC by list id and hide CanvasImage
-func (NPCList *NPCsOnCurrentMap) RemoveNPCByIndex(index int) {
-	// Check if the index is within the valid range of the slice.
-	if index >= 0 && index < len(NPCList.List) {
-		// Remove NPC image from map
-		NPCList.List[index].Avatar.CanvasImage.Hidden = true
-		// Use slicing to remove the element at the specified index.
-		NPCList.List = append(NPCList.List[:index], NPCList.List[index+1:]...)
-	}
-
 }

@@ -12,7 +12,7 @@ type Map struct {
 	Name        string
 	PlayerStart Coord
 	spawnNPC    SpawnNPC
-	NPCList     model.NPCsOnCurrentMap
+	NPCList     []*model.NPCStats
 	ObjectList  []*model.Object
 	MapMatrix   [][]int
 }
@@ -118,7 +118,7 @@ func (currentMap *Map) AddNPCs() {
 	// Loop through the NPC data slice and create/draw each NPC
 	for _, data := range currentMap.spawnNPC {
 		npc := model.CreateNPC(data.npc, data.x, data.y)
-		currentMap.NPCList.List = append(currentMap.NPCList.List, npc)
+		currentMap.NPCList = append(currentMap.NPCList, npc)
 	}
 
 }
@@ -135,7 +135,37 @@ func (currentMap *Map) FindObjectToRemove(object *model.Object) {
 
 	// If the object was found, remove it from the slice
 	if indexToRemove >= 0 {
-		// Remove the object from the slice
 		currentMap.ObjectList = append(currentMap.ObjectList[:indexToRemove], currentMap.ObjectList[indexToRemove+1:]...)
 	}
+}
+
+// For a given map, remove NPC by list id and hide CanvasImage
+func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
+	var indexToRemove int = -1
+	for i, npc := range currentMap.NPCList {
+		if npc == npcToRemove {
+			indexToRemove = i
+			break
+		}
+	}
+
+	// If the npc was found, remove it from the slice
+	if indexToRemove >= 0 {
+		// remove NPC image from fyne map
+		currentMap.NPCList[indexToRemove].Avatar.CanvasImage.Hidden = true
+		// remove NPC from NPCList slice
+		currentMap.NPCList = append(currentMap.NPCList[:indexToRemove], currentMap.NPCList[indexToRemove+1:]...)
+	}
+}
+
+// For a given NPCsOnCurrentMap, check if NPCs are located on x,y
+// return nil if none or pointer to npc
+func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
+	// find if a NPC matches our destination
+	for _, npc := range currentMap.NPCList {
+		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
+			return npc
+		}
+	}
+	return nil
 }
