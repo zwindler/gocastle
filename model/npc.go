@@ -25,57 +25,141 @@ var (
 		CanvasPath: "static/female-farmer.png",
 	}
 	FemaleFarmer = NPCStats{
-		Name:      "Farmer",
-		Avatar:    FemaleFarmerAvatar,
-		Dialog:    "Hello, my name is Mylène :-)",
-		Pronoun:   "she",
-		Hostile:   false,
-		MaxHP:     10,
-		CurrentHP: 10,
+		Name:    "Farmer",
+		Avatar:  FemaleFarmerAvatar,
+		Dialog:  "Hello, my name is Mylène :-)",
+		Pronoun: "she",
+		Hostile: false,
+		MaxHP:   10,
 	}
 
 	FemaleMageAvatar = Avatar{
 		CanvasPath: "static/woman-mage.png",
 	}
 	FemaleMage = NPCStats{
-		Name:      "Mage",
-		Avatar:    FemaleMageAvatar,
-		Pronoun:   "she",
-		Hostile:   false,
-		MaxHP:     15,
-		CurrentHP: 15,
-		MaxMP:     20,
-		CurrentMP: 20,
+		Name:    "Mage",
+		Avatar:  FemaleMageAvatar,
+		Pronoun: "she",
+		Hostile: false,
+		MaxHP:   15,
+		MaxMP:   20,
+	}
+
+	KoboldAvatar = Avatar{
+		CanvasPath: "static/kobold-short.png",
+	}
+	Kobold = NPCStats{
+		Name:     "Kobold",
+		Avatar:   KoboldAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		MaxHP:    4,
+		LootXP:   30,
+		LootGold: 2,
+	}
+
+	GoblinAvatar = Avatar{
+		CanvasPath: "static/goblin-short.png",
+	}
+	Goblin = NPCStats{
+		Name:     "Goblin",
+		Avatar:   GoblinAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		MaxHP:    6,
+		LootXP:   50,
+		LootGold: 4,
+	}
+
+	GiantAntAvatar = Avatar{
+		CanvasPath: "static/giant-ant.png",
+	}
+	GiantAnt = NPCStats{
+		Name:     "Giant Ant",
+		Avatar:   GiantAntAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		MaxHP:    10,
+		LootXP:   60,
+		LootGold: 0,
+	}
+
+	OrkAvatar = Avatar{
+		CanvasPath: "static/ork-short.png",
+	}
+	Ork = NPCStats{
+		Name:     "Ork",
+		Avatar:   OrkAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		MaxHP:    14,
+		LootXP:   80,
+		LootGold: 10,
 	}
 
 	WolfAvatar = Avatar{
 		CanvasPath: "static/wolf.png",
 	}
 	Wolf = NPCStats{
-		Name:      "Wolf",
-		Avatar:    WolfAvatar,
-		Pronoun:   "it",
-		Hostile:   true,
-		MaxHP:     10,
-		CurrentHP: 10,
-		LootXP:    100,
-		LootGold:  0,
+		Name:     "Wolf",
+		Avatar:   WolfAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		MaxHP:    10,
+		LootXP:   100,
+		LootGold: 0,
+	}
+
+	GiantRedAntAvatar = Avatar{
+		CanvasPath: "static/giant-red-ant.png",
+	}
+	GiantRedAnt = NPCStats{
+		Name:     "Giant Red Ant",
+		Avatar:   GiantRedAntAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		MaxHP:    20,
+		LootXP:   150,
+		LootGold: 0,
+	}
+
+	MimicAvatar = Avatar{
+		CanvasPath: "static/mimic.png",
+	}
+	Mimic = NPCStats{
+		Name:     "Mimic",
+		Avatar:   MimicAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		MaxHP:    25,
+		LootXP:   300,
+		LootGold: 500,
 	}
 
 	OgreAvatar = Avatar{
 		CanvasPath: "static/ogre.png",
 	}
 	Ogre = NPCStats{
-		Name:      "Ogre",
-		Avatar:    OgreAvatar,
-		Pronoun:   "he",
-		Hostile:   true,
-		MaxHP:     25,
-		CurrentHP: 25,
-		MaxMP:     0,
-		CurrentMP: 0,
-		LootXP:    500,
-		LootGold:  100,
+		Name:     "Ogre",
+		Avatar:   OgreAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		MaxHP:    35,
+		LootXP:   500,
+		LootGold: 100,
+	}
+
+	MinotaurAvatar = Avatar{
+		CanvasPath: "static/minotaur-short.png",
+	}
+	Minotaur = NPCStats{
+		Name:     "Minotaur",
+		Avatar:   MinotaurAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		MaxHP:    50,
+		LootXP:   1000,
+		LootGold: 300,
 	}
 )
 
@@ -83,17 +167,29 @@ var (
 func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 	avatar := CreateAvatar(npc.Avatar, x, y)
 	return &NPCStats{
-		Name:      npc.Name,
-		Pronoun:   npc.Pronoun,
-		Avatar:    avatar,
-		Dialog:    npc.Dialog,
-		Hostile:   npc.Hostile,
-		MaxHP:     npc.MaxHP,
-		CurrentHP: npc.CurrentHP,
-		MaxMP:     npc.MaxMP,
-		CurrentMP: npc.CurrentMP,
-		LootXP:    npc.LootXP,
-		LootGold:  randomizeGoldLoot(npc.LootGold),
+		Name:    npc.Name,
+		Pronoun: npc.Pronoun,
+		Avatar:  avatar,
+		Dialog:  npc.Dialog,
+		Hostile: npc.Hostile,
+		MaxHP:   npc.MaxHP,
+		CurrentHP: func() int {
+			if npc.CurrentHP == 0 {
+				return npc.MaxHP
+			} else {
+				return npc.CurrentHP
+			}
+		}(),
+		MaxMP: npc.MaxMP,
+		CurrentMP: func() int {
+			if npc.CurrentMP == 0 {
+				return npc.MaxMP
+			} else {
+				return npc.CurrentMP
+			}
+		}(),
+		LootXP:   npc.LootXP,
+		LootGold: randomizeGoldLoot(npc.LootGold),
 	}
 }
 

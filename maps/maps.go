@@ -30,6 +30,13 @@ var Village = Map{
 		{model.Wolf, 25, 26},
 		{model.Wolf, 28, 27},
 		{model.Ogre, 30, 25},
+		{model.Mimic, 31, 26},
+		{model.Ork, 32, 24},
+		{model.Kobold, 33, 23},
+		{model.Goblin, 34, 25},
+		{model.GiantAnt, 36, 23},
+		{model.GiantRedAnt, 37, 25},
+		{model.Minotaur, 38, 20},
 	},
 	MapMatrix: [][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
