@@ -44,3 +44,5 @@ Test release (against code not tagged)
 ```bash
 goreleaser --snapshot --clean
 ```
+
+Note: for darwin compilation, we need fyne-cross which requires having locally the XCode SDK, especially `Command_Line_Tools_for_Xcode_12.4.dmg`. [Download it here](https://developer.apple.com/download/all/?q=Command%20Line%20Tools). See [fyne-cross documentation for more information](https://github.com/fyne-io/fyne-cross/blob/master/README.md).
