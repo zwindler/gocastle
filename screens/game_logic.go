@@ -2,6 +2,7 @@ package screens
 
 import (
 	"fmt"
+	"gocastle/maps"
 	"gocastle/model"
 	"math/rand"
 
@@ -58,6 +59,19 @@ func actOnDirectionKey(newX, newY int) {
 				// path is free, let's move (3sec cost)
 				player.Avatar.MoveAvatar(mapContainer, newX, newY)
 				model.IncrementTimeSinceBegin(3)
+
+				// this tile could be special, check if it is
+				tile := currentMap.CheckTileIsSpecial(newX, newY)
+				if tile != maps.NotSpecialTile {
+					if tile.Type == "MapTransition" {
+						currentMap = maps.AllTheMaps[tile.Destination.Map]
+						player.Avatar.PosX = tile.Destination.X
+						player.Avatar.PosY = tile.Destination.Y
+						ShowGameScreen(currentWindow)
+					}
+					// TODO handle error
+				}
+
 			} else {
 				// you "hit" a wall, but lost 2s
 				addLogEntry("you are blocked!")
