@@ -18,25 +18,25 @@ type Map struct {
 }
 
 type SpawnNPC []struct {
-	npc  model.NPCStats
-	x, y int
+	npc         model.NPCStats
+	coordinates Coord
 }
 
 var Village = Map{
 	Name:        "Village",
 	PlayerStart: Coord{2, 4},
 	spawnNPC: SpawnNPC{
-		{model.FemaleFarmer, 10, 15},
-		{model.Wolf, 25, 26},
-		{model.Wolf, 28, 27},
-		{model.Ogre, 30, 25},
-		{model.Mimic, 31, 26},
-		{model.Ork, 32, 24},
-		{model.Kobold, 33, 23},
-		{model.Goblin, 34, 25},
-		{model.GiantAnt, 36, 23},
-		{model.GiantRedAnt, 37, 25},
-		{model.Minotaur, 38, 20},
+		{model.FemaleFarmer, Coord{10, 15}},
+		{model.Wolf, Coord{25, 26}},
+		{model.Wolf, Coord{28, 27}},
+		{model.Ogre, Coord{30, 25}},
+		{model.Mimic, Coord{31, 26}},
+		{model.Ork, Coord{32, 24}},
+		{model.Kobold, Coord{33, 23}},
+		{model.Goblin, Coord{34, 25}},
+		{model.GiantAnt, Coord{36, 23}},
+		{model.GiantRedAnt, Coord{37, 25}},
+		{model.Minotaur, Coord{38, 20}},
 	},
 	MapMatrix: [][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
@@ -124,7 +124,7 @@ func (currentMap *Map) AddNPCs() {
 
 	// Loop through the NPC data slice and create/draw each NPC
 	for _, data := range currentMap.spawnNPC {
-		npc := model.CreateNPC(data.npc, data.x, data.y)
+		npc := model.CreateNPC(data.npc, data.coordinates.X, data.coordinates.Y)
 		currentMap.NPCList = append(currentMap.NPCList, npc)
 	}
 
