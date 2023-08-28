@@ -1,7 +1,7 @@
 package maps
 
 import (
-	"gocastle/model"
+	"github.com/zwindler/gocastle/model"
 )
 
 var (

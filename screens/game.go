@@ -2,15 +2,16 @@ package screens
 
 import (
 	"fmt"
-	"gocastle/maps"
-	"gocastle/model"
-	"gocastle/utils"
 	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+
+	"github.com/zwindler/gocastle/maps"
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 const (
@@ -28,12 +29,12 @@ var (
 	statsTextArea fyne.CanvasObject
 
 	// I have to declare these here because I can't use *widget.Scroll as type :-(
-	// It's a shame because I redeclare them later
+	// It's a shame because I redeclare them later.
 	logsArea               = container.NewVBox()
 	logsScrollableTextArea = container.NewVScroll(logsArea)
 	scrollableMapContainer = container.NewScroll(container.NewWithoutLayout())
 
-	// TODO clean this
+	// TODO clean this.
 	healthPointsValueLabel *canvas.Text
 	manaPointsValueLabel   *canvas.Text
 	timeSpentValueLabel    *canvas.Text
@@ -41,7 +42,7 @@ var (
 	currentWindow fyne.Window
 )
 
-// ShowGameScreen is the main function of the game screen
+// ShowGameScreen is the main function of the game screen.
 func ShowGameScreen(window fyne.Window) {
 	currentWindow = window
 	mapContainer = container.NewWithoutLayout()
@@ -66,7 +67,7 @@ func ShowGameScreen(window fyne.Window) {
 	drawObjectList(mapContainer)
 }
 
-// createMapArea generates a fyne container containing the map tiles
+// createMapArea generates a fyne container containing the map tiles.
 func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 	mapRows, mapColumns = currentMap.GetMapSize()
 	imageMatrix := createMapMatrix(mapRows, mapColumns)
@@ -92,7 +93,7 @@ func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
 		layout.NewSpacer(), limits)
 }
 
-// drawNPCList draws the NPC's Avatars images on the mapContainer
+// drawNPCList draws the NPC's Avatars images on the mapContainer.
 func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
 	for _, npc := range currentMap.NPCList {
@@ -100,7 +101,7 @@ func drawNPCList(mapContainer *fyne.Container) {
 	}
 }
 
-// drawObjectList draws the "Objects on map" images on the mapContainer
+// drawObjectList draws the "Objects on map" images on the mapContainer.
 func drawObjectList(mapContainer *fyne.Container) {
 	// Loop through the ObjectList slice and create/draw each Object
 	for _, object := range currentMap.ObjectList {
@@ -143,7 +144,7 @@ func createStatsArea() fyne.CanvasObject {
 	return statsTextArea
 }
 
-// updateStatsArea refreshes the values in StatsArea
+// updateStatsArea refreshes the values in StatsArea.
 func updateStatsArea() {
 	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", player.CurrentHP, player.MaxHP)
 	healthPointsValueLabel.Refresh()
@@ -155,7 +156,7 @@ func updateStatsArea() {
 	timeSpentValueLabel.Refresh()
 }
 
-// createMapMatrix creates the tiles matrix ([][]*canvas.Image)
+// createMapMatrix creates the tiles matrix ([][]*canvas.Image).
 func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	matrix := make([][]*canvas.Image, numRows)
 
@@ -185,7 +186,7 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 	return matrix
 }
 
-// mapKeyListener is the main loop function in this screen
+// mapKeyListener is the main loop function in this screen.
 func mapKeyListener(event *fyne.KeyEvent) {
 	directions := map[fyne.KeyName]struct{ dx, dy int }{
 		fyne.KeyUp:    {0, -1},
@@ -222,7 +223,7 @@ func mapKeyListener(event *fyne.KeyEvent) {
 	newTurnForNPCs()
 }
 
-// centerMapOnPlayer will center scrollable map focus on player as best it can
+// centerMapOnPlayer will center scrollable map focus on player as best it can.
 func centerMapOnPlayer() {
 	// the idea is to focus on the player position
 	// but we need various informations to compute this
@@ -249,7 +250,6 @@ func centerMapOnPlayer() {
 	// The easiest way to do this is to remove half of the screen width/height
 	// (but make sure before it's always >= 0)
 
-	//fmt.Printf("%f %f", containerX, containerY)
 	if x < containerX/2 {
 		x = containerX / 2
 	}
@@ -260,7 +260,7 @@ func centerMapOnPlayer() {
 	scrollableMapContainer.Refresh()
 }
 
-// addLogEntry adds entries in the Log scrollable screen
+// addLogEntry adds entries in the Log scrollable screen.
 func addLogEntry(logString string) {
 	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
 	logsEntry := canvas.NewText(fullLogString, model.TextColor)

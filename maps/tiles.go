@@ -2,9 +2,11 @@ package maps
 
 import (
 	"fmt"
-	"gocastle/utils"
 	"image"
 	"image/draw"
+
+	"github.com/zwindler/gocastle/utils"
+
 	_ "image/jpeg" // Import image/jpeg to support JPEG images
 	_ "image/png"  // Import image/png to support PNG images
 )
@@ -15,35 +17,33 @@ type TileInfo struct {
 	IsWalkable bool
 }
 
-var (
-	TilesTypes = []TileInfo{
-		{X: 0, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: true},      //0, grass
-		{X: 192, Y: 0, filePath: "static/tilea3_MACK.png", IsWalkable: false},   //1, upper left straw roof
-		{X: 192, Y: 32, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //2, lower left straw roof
-		{X: 192, Y: 64, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //3, upper left wooden wall
-		{X: 192, Y: 96, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //4, lower left wooden wall
-		{X: 224, Y: 0, filePath: "static/tilea3_MACK.png", IsWalkable: false},   //5, upper right straw roof
-		{X: 224, Y: 32, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //6, lower right straw roof
-		{X: 224, Y: 64, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //7, upper right wooden wall
-		{X: 224, Y: 96, filePath: "static/tilea3_MACK.png", IsWalkable: false},  //8, lower right wooden wall
-		{X: 0, Y: 0, filePath: "static/transparent_tile.png", IsWalkable: true}, //9, transparent
-		{X: 0, Y: 96, filePath: "static/tilea2_MACK.png", IsWalkable: true},     //10, some flowers
-		{X: 32, Y: 96, filePath: "static/tilea2_MACK.png", IsWalkable: true},    //11, more flowers
-		{X: 64, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},   //12, upper left wooden border
-		{X: 64, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: false},    //13, wooden border
-		{X: 64, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},   //14, down left wooden border
-		{X: 96, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: false},    //15, wooden border
-		{X: 96, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},   //16, upper right wooden border
-		{X: 96, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},   //17, down right wooden border
-		{X: 64, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   //18 upper left high grass
-		{X: 64, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   //19 down left high grass
-		{X: 96, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   //20 upper right high grass
-		{X: 96, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   //21 down right high grass
-		{X: 80, Y: 144, filePath: "static/tilea2_MACK.png", IsWalkable: true},   //22 center high grass
-	}
-)
+var TilesTypes = []TileInfo{
+	{X: 0, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: true},      // 0, grass
+	{X: 192, Y: 0, filePath: "static/tilea3_MACK.png", IsWalkable: false},   // 1, upper left straw roof
+	{X: 192, Y: 32, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 2, lower left straw roof
+	{X: 192, Y: 64, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 3, upper left wooden wall
+	{X: 192, Y: 96, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 4, lower left wooden wall
+	{X: 224, Y: 0, filePath: "static/tilea3_MACK.png", IsWalkable: false},   // 5, upper right straw roof
+	{X: 224, Y: 32, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 6, lower right straw roof
+	{X: 224, Y: 64, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 7, upper right wooden wall
+	{X: 224, Y: 96, filePath: "static/tilea3_MACK.png", IsWalkable: false},  // 8, lower right wooden wall
+	{X: 0, Y: 0, filePath: "static/transparent_tile.png", IsWalkable: true}, // 9, transparent
+	{X: 0, Y: 96, filePath: "static/tilea2_MACK.png", IsWalkable: true},     // 10, some flowers
+	{X: 32, Y: 96, filePath: "static/tilea2_MACK.png", IsWalkable: true},    // 11, more flowers
+	{X: 64, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},   // 12, upper left wooden border
+	{X: 64, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: false},    // 13, wooden border
+	{X: 64, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},   // 14, down left wooden border
+	{X: 96, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: false},    // 15, wooden border
+	{X: 96, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},   // 16, upper right wooden border
+	{X: 96, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},   // 17, down right wooden border
+	{X: 64, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 18 upper left high grass
+	{X: 64, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 19 down left high grass
+	{X: 96, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 20 upper right high grass
+	{X: 96, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 21 down right high grass
+	{X: 80, Y: 144, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 22 center high grass
+}
 
-// extractTileFromTileset extracts a subimage from coordinates on a tileset
+// extractTileFromTileset extracts a subimage from coordinates on a tileset.
 func extractTileFromTileset(x, y int, filePath string) (image.Image, error) {
 	file, err := utils.EmbeddedImages.Open(filePath)
 	if err != nil {
@@ -67,7 +67,7 @@ func extractTileFromTileset(x, y int, filePath string) (image.Image, error) {
 	return partImage, nil
 }
 
-// LoadTilesFromTileset load all tiles from []TileInfo and store them in a []image.Image
+// LoadTilesFromTileset load all tiles from []TileInfo and store them in a []image.Image.
 func LoadTilesFromTileset(tiles []TileInfo) ([]image.Image, error) {
 	var images []image.Image
 

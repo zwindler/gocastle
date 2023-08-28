@@ -1,12 +1,8 @@
 package screens
 
 import (
-	"gocastle/maps"
-	"gocastle/model"
-	"gocastle/utils"
-	"strconv"
-
 	"fmt"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -14,6 +10,10 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+
+	"github.com/zwindler/gocastle/maps"
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 var (
@@ -26,11 +26,13 @@ const (
 	maxStat = 20
 )
 
-// ShowNewGameScreen is the main function of the new game screen
+// ShowNewGameScreen is the main function of the new game screen.
 func ShowNewGameScreen(window fyne.Window) {
-	var characterAspect1 *widget.RadioGroup
-	var characterAspect2 *widget.RadioGroup
-	var characterAspect3 *widget.RadioGroup
+	var (
+		characterAspect1 *widget.RadioGroup
+		characterAspect2 *widget.RadioGroup
+		characterAspect3 *widget.RadioGroup
+	)
 
 	characterNameLabel := widget.NewLabelWithStyle("Character's name", 0, fyne.TextStyle{Bold: true, Italic: true})
 	characterNameEntry := widget.NewEntry()
@@ -61,13 +63,19 @@ func ShowNewGameScreen(window fyne.Window) {
 		&model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	aspect_icon_path := [][]string{
-		{"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
-			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png"},
-		{"static/dark_haired_woman.png", "static/dark_haired_person.png", "static/dark_haired_man.png",
-			"static/scarf_woman.png", "static/turban_person.png", "static/turban_man.png"},
-		{"static/bald_woman.png", "static/bald_person.png", "static/bald_man.png",
-			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png"},
+	aspectIconPath := [][]string{
+		{
+			"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
+			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png",
+		},
+		{
+			"static/dark_haired_woman.png", "static/dark_haired_person.png", "static/dark_haired_man.png",
+			"static/scarf_woman.png", "static/turban_person.png", "static/turban_man.png",
+		},
+		{
+			"static/bald_woman.png", "static/bald_person.png", "static/bald_man.png",
+			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png",
+		},
 	}
 
 	characterAspectLabel := widget.NewLabelWithStyle("Aspect", 0, fyne.TextStyle{Bold: true, Italic: true})
@@ -76,7 +84,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[0][index-1]
+			player.Avatar.CanvasPath = aspectIconPath[0][index-1]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -86,7 +94,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[1][index-7]
+			player.Avatar.CanvasPath = aspectIconPath[1][index-7]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -96,7 +104,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[2][index-13]
+			player.Avatar.CanvasPath = aspectIconPath[2][index-13]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -140,7 +148,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	for column := 0; column < 3; column++ {
 		characterAspectTable = append(characterAspectTable, container.NewWithoutLayout())
 		for row := 0; row < 6; row++ {
-			image := canvas.NewImageFromImage(utils.GetImageFromEmbed(aspect_icon_path[column][row]))
+			image := canvas.NewImageFromImage(utils.GetImageFromEmbed(aspectIconPath[column][row]))
 			image.FillMode = canvas.ImageFillOriginal
 			image.Resize(fyneTileSize)
 			currentPos := fyne.NewPos(0, float32(row)*38)
@@ -169,16 +177,18 @@ func ShowNewGameScreen(window fyne.Window) {
 	window.SetContent(mainContent)
 }
 
-// createSliderWithCallback is the callback function for sliders in newgame screen
-func createSliderWithCallback(characteristic string, min float64, max float64,
-	value *int, pointsToSpend *int,
-	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
+// createSliderWithCallback is the callback function for sliders in newgame screen.
+// _ parameter is pointsToSpend because we don't need it here.
+func createSliderWithCallback(characteristic string, min, max float64, //nolint:unparam // TODO: min is a constant
+	value, _ *int,
+	valueLabel, pointsToSpendLabel *widget.Label,
+) *widget.Slider {
 	slider := widget.NewSlider(min, max)
 	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {
 		intV := int(v)
 		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
-			model.Player.PointsToSpend = model.Player.PointsToSpend - (intV - *value)
+			model.Player.PointsToSpend -= (intV - *value)
 			*value = intV
 		} else {
 			slider.Value = float64(*value)
@@ -191,7 +201,7 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 	return slider
 }
 
-// resetRadioGroups is a helper function for resetting unselected radio groups
+// resetRadioGroups is a helper function for resetting unselected radio groups.
 func resetRadioGroups(groups ...*widget.RadioGroup) {
 	for _, group := range groups {
 		group.SetSelected("")

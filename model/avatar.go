@@ -1,20 +1,19 @@
 package model
 
 import (
-	"gocastle/utils"
 	"math"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+
+	"github.com/zwindler/gocastle/utils"
 )
 
 const (
 	tileSize = 32
 )
 
-var (
-	fyneTileSize = fyne.NewSize(tileSize, tileSize)
-)
+var fyneTileSize = fyne.NewSize(tileSize, tileSize)
 
 type Avatar struct {
 	CanvasImage          *canvas.Image
@@ -24,7 +23,7 @@ type Avatar struct {
 	ObjectInMapContainer *fyne.CanvasObject
 }
 
-// CreateAvatar create a copy of an Avatar on given x,y coordinates
+// CreateAvatar create a copy of an Avatar on given x,y coordinates.
 func CreateAvatar(avatar Avatar, x, y int) Avatar {
 	return Avatar{
 		CanvasPath:  avatar.CanvasPath,
@@ -34,7 +33,7 @@ func CreateAvatar(avatar Avatar, x, y int) Avatar {
 	}
 }
 
-// MoveAvatar moves avatar's coordinates and updates image position on map
+// MoveAvatar moves avatar's coordinates and updates image position on map.
 func (subject *Avatar) MoveAvatar(mapContainer *fyne.Container, futurePosX, futurePosY int) {
 	// assign new values for subject position
 	subject.PosX = futurePosX
@@ -47,7 +46,7 @@ func (subject *Avatar) MoveAvatar(mapContainer *fyne.Container, futurePosX, futu
 	mapContainer.Add(*subject.ObjectInMapContainer)
 }
 
-// DrawAvatar displays an avatar's image on the mapContainer
+// DrawAvatar displays an avatar's image on the mapContainer.
 func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
 	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
 	subject.CanvasImage.Resize(fyneTileSize)
@@ -61,14 +60,14 @@ func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
 	subject.MoveAvatar(mapContainer, subject.PosX, subject.PosY)
 }
 
-// DistanceFromAvatar computes the distance between 2 Avatars
+// DistanceFromAvatar computes the distance between 2 Avatars.
 func (subject *Avatar) DistanceFromAvatar(subject2 *Avatar) float64 {
 	dx := float64(subject.PosX - subject2.PosX)
 	dy := float64(subject.PosY - subject2.PosY)
 	return math.Sqrt(dx*dx + dy*dy)
 }
 
-// MoveAvatarTowardsAvatar is a trivial pathfinding algorithm for NPCs
+// MoveAvatarTowardsAvatar is a trivial pathfinding algorithm for NPCs.
 func (subject *Avatar) MoveAvatarTowardsAvatar(subject2 *Avatar) (int, int) {
 	// Calculate the distance between the Avatar and the other Avatar in the x and y directions
 	deltaX := subject2.PosX - subject.PosX

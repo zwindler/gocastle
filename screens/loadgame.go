@@ -5,13 +5,14 @@ package screens
 import (
 	"encoding/json"
 	"fmt"
-	"gocastle/model"
-	"gocastle/utils"
 	"io"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 // ShowLoadGameScreen displays a file dialog to select the file to load.
@@ -33,11 +34,13 @@ func ShowLoadGameScreen(window fyne.Window) {
 			dialog.ShowError(err, window)
 			return
 		}
-		updateLoadedGameData(data)
+		if err := updateLoadedGameData(data); err != nil {
+			dialog.ShowError(err, window)
+			return
+		}
 
 		// initialise game objects but don't reset to start
 		initGame(window, false)
-
 	}, window)
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
@@ -51,15 +54,8 @@ func ShowLoadGameScreen(window fyne.Window) {
 }
 
 // loadGameFromFile loads the game data from the specified JSON file.
-func loadGameFromFile(r io.Reader) (map[string]interface{}, error) {
-	var data map[string]interface{}
-	decoder := json.NewDecoder(r)
-	err := decoder.Decode(&data)
-	if err != nil {
-		return nil, err
-	}
-
-	return data, nil
+func loadGameFromFile(r io.Reader) (data map[string]interface{}, err error) {
+	return data, json.NewDecoder(r).Decode(&data)
 }
 
 // updateLoadedGameData updates the player, currentMap and TimeSinceBegin with the loaded data.

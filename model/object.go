@@ -4,10 +4,11 @@ package model
 
 import (
 	"fmt"
-	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
+
+	"github.com/zwindler/gocastle/utils"
 )
 
 // ObjectStat represents a specific stat of an object.
@@ -167,7 +168,7 @@ func CreateObject(obj Object, x, y int) (Object, error) {
 	return newObject, nil
 }
 
-// DrawObject displays an object's image on the mapContainer
+// DrawObject displays an object's image on the mapContainer.
 func (subject *Object) DrawObject(mapContainer *fyne.Container) {
 	// don't put object in container if object is in inventory
 	if !subject.InInventory {
@@ -180,8 +181,8 @@ func (subject *Object) DrawObject(mapContainer *fyne.Container) {
 	}
 }
 
-// MoveObject moves object's coordinates and updates image position on map
-func (subject *Object) MoveObject(futurePosX int, futurePosY int) {
+// MoveObject moves object's coordinates and updates image position on map.
+func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 	// assign new values for subject position
 	subject.PosX = futurePosX
 	subject.PosY = futurePosY
