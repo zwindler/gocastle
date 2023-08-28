@@ -1,4 +1,4 @@
-module gocastle
+module github.com/zwindler/gocastle
 
 go 1.18
 

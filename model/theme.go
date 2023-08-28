@@ -7,9 +7,7 @@ import (
 	"fyne.io/fyne/v2/theme"
 )
 
-var (
-	TextColor color.Color
-)
+var TextColor color.Color
 
 type CustomTheme struct{}
 

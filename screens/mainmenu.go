@@ -1,17 +1,17 @@
 package screens
 
 import (
-	"gocastle/model"
-	"gocastle/utils"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
-// ShowMenuScreen is the main function of the main screen
+// ShowMenuScreen is the main function of the main screen.
 func ShowMenuScreen(window fyne.Window) {
 	// Load the background image
 
@@ -45,5 +45,4 @@ func ShowMenuScreen(window fyne.Window) {
 	window.SetContent(container.New(layout.NewMaxLayout(),
 		backgroundImage,
 		menu))
-
 }

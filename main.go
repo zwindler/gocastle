@@ -1,12 +1,13 @@
 package main
 
 import (
-	"gocastle/model"
-	"gocastle/screens"
 	"image/color"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/screens"
 )
 
 func main() {

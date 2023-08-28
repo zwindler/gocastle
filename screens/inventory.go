@@ -4,17 +4,18 @@ package screens
 
 import (
 	"fmt"
-	"gocastle/model"
-	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 var (
-	// TODO clean this
+	// TODO clean this.
 	totalWeightValueLabel    *canvas.Text
 	equippedWeightValueLabel *canvas.Text
 	goldAmountValueLabel     *canvas.Text
@@ -27,7 +28,7 @@ type dropdown struct {
 	widget   *widget.Select
 }
 
-// ShowInventoryScreen is the main function of the inventory screen
+// ShowInventoryScreen is the main function of the inventory screen.
 func ShowInventoryScreen(window fyne.Window) {
 	// Load the background image
 	backgroundImage := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/inventory.png"))
@@ -106,7 +107,7 @@ func ShowInventoryScreen(window fyne.Window) {
 	window.SetContent(content)
 }
 
-// createInventoryStatsArea creates the stats area containing inventory weight and gold amount
+// createInventoryStatsArea creates the stats area containing inventory weight and gold amount.
 func createInventoryStatsArea() fyne.CanvasObject {
 	totalWeightValueLabel = canvas.NewText("", model.TextColor)
 	equippedWeightValueLabel = canvas.NewText("", model.TextColor)
@@ -126,7 +127,7 @@ func createInventoryStatsArea() fyne.CanvasObject {
 	return container.NewHBox(labels, values)
 }
 
-// updateInventoryStatsArea refreshes the values in InventoryStatsArea
+// updateInventoryStatsArea refreshes the values in InventoryStatsArea.
 func updateInventoryStatsArea() {
 	totalWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.InventoryWeight)/1000)
 	totalWeightValueLabel.Refresh()
@@ -139,33 +140,33 @@ func updateInventoryStatsArea() {
 }
 
 func displayFloorItems() (floorVBox *fyne.Container) {
-    floorVBox = container.NewVBox()
-    for _, item := range currentMap.ObjectList {
-        if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
-            currentItemContainer := container.NewVBox()
-            nameLabel := widget.NewLabel(item.Name)
-            
-            // Create a copy of the item variable for use in the closure
-            itemCopy := item
-            
-            // Use a closure to pass arguments to the takeButton's callback function
-            takeButton := widget.NewButton("Take", func() {
-                takeItemFromFloor(itemCopy, floorVBox, currentItemContainer)
-            })
-            
-            detailsButton := widget.NewButton("Details", func() {
-                // TODO display object statistics
-            })
-            
-            currentItemContainer.Add(nameLabel)
-            currentItemContainer.Add(container.NewGridWithColumns(2, takeButton, detailsButton))
-            floorVBox.Add(currentItemContainer)
-        }
-    }
-    return floorVBox
+	floorVBox = container.NewVBox()
+	for _, item := range currentMap.ObjectList {
+		if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
+			currentItemContainer := container.NewVBox()
+			nameLabel := widget.NewLabel(item.Name)
+
+			// Create a copy of the item variable for use in the closure
+			itemCopy := item
+
+			// Use a closure to pass arguments to the takeButton's callback function
+			takeButton := widget.NewButton("Take", func() {
+				takeItemFromFloor(itemCopy, floorVBox, currentItemContainer)
+			})
+
+			detailsButton := widget.NewButton("Details", func() {
+				// TODO display object statistics
+			})
+
+			currentItemContainer.Add(nameLabel)
+			currentItemContainer.Add(container.NewGridWithColumns(2, takeButton, detailsButton))
+			floorVBox.Add(currentItemContainer)
+		}
+	}
+	return floorVBox
 }
 
-func RefreshDropdownContent(categoryName string, newItem string) {
+func RefreshDropdownContent(categoryName, newItem string) {
 	for _, dropdown := range itemDropdowns {
 		if dropdown.category.Name == categoryName {
 			dropdown.widget.Options = append(dropdown.widget.Options, newItem)

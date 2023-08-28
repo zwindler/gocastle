@@ -2,16 +2,14 @@ package model
 
 import "fmt"
 
-var (
-	TimeSinceBegin int = 0
-)
+var TimeSinceBegin int = 0
 
-// IncrementTimeSinceBegin is a helper function to handle in-game time
+// IncrementTimeSinceBegin is a helper function to handle in-game time.
 func IncrementTimeSinceBegin(value int) {
 	TimeSinceBegin += value
 }
 
-// FormatDuration is a helper function that returns a string to get nice logs
+// FormatDuration is a helper function that returns a string to get nice logs.
 func FormatDuration(seconds int, format string) string {
 	if seconds < 0 {
 		return "Invalid duration"

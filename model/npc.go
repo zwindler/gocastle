@@ -163,7 +163,7 @@ var (
 	}
 )
 
-// CreateNPC creates a copy of a given NPC at given coordinates
+// CreateNPC creates a copy of a given NPC at given coordinates.
 func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 	avatar := CreateAvatar(npc.Avatar, x, y)
 	return &NPCStats{
@@ -193,7 +193,7 @@ func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 	}
 }
 
-// HandleNPCDamage returns strings for having nice logs during combat with NPCs
+// HandleNPCDamage returns strings for having nice logs during combat with NPCs.
 func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	newHP := npc.CurrentHP - damageDealt
 
@@ -215,7 +215,7 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
-// IsNPCDead checks if NPC's HP <= 0
+// IsNPCDead checks if NPC's HP <= 0.
 func (npc *NPCStats) IsNPCDead() bool {
 	return (npc.CurrentHP <= 0)
 }

@@ -2,13 +2,14 @@ package screens
 
 import (
 	"fmt"
-	"gocastle/model"
 	"math/rand"
 
 	"fyne.io/fyne/v2/dialog"
+
+	"github.com/zwindler/gocastle/model"
 )
 
-// actOnDirectionKey take player's new coordinates and act on it
+// actOnDirectionKey take player's new coordinates and act on it.
 func actOnDirectionKey(newX, newY int) {
 	// before doing anything, check if we aren't out of bounds
 	if currentMap.CheckOutOfBounds(newX, newY) {
@@ -39,7 +40,6 @@ func actOnDirectionKey(newX, newY int) {
 				}
 				// attacking costs 5 seconds
 				model.IncrementTimeSinceBegin(5)
-
 			} else {
 				// NPC is not hostile, we don't want to hurt them, but lost 2s
 				if npc.Dialog != "" {
@@ -67,11 +67,10 @@ func actOnDirectionKey(newX, newY int) {
 	}
 }
 
-// newTurnForNPCs manages all the map's NPCs actions
+// newTurnForNPCs manages all the map's NPCs actions.
 func newTurnForNPCs() {
 	// for all NPCs, move
 	for _, npc := range currentMap.NPCList {
-
 		var newX, newY int
 		if npc.Hostile && npc.Avatar.DistanceFromAvatar(&player.Avatar) <= 10 {
 			// player is near, move toward him/her
@@ -80,7 +79,6 @@ func newTurnForNPCs() {
 			// move randomly
 			newX = npc.Avatar.PosX + rand.Intn(3) - 1
 			newY = npc.Avatar.PosY + rand.Intn(3) - 1
-
 		}
 
 		// don't check / try to move if coordinates stay the same

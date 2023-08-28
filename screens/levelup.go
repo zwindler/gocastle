@@ -1,17 +1,17 @@
 package screens
 
 import (
-	"gocastle/model"
-
 	"fmt"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+
+	"github.com/zwindler/gocastle/model"
 )
 
-// showLevelUpScreen is the main function for the level-up screen
+// showLevelUpScreen is the main function for the level-up screen.
 func showLevelUpScreen() *fyne.Container {
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
 	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
@@ -46,10 +46,11 @@ func showLevelUpScreen() *fyne.Container {
 		pointsToSpendValue, strengthRange, constitutionRange, intelligenceRange, dexterityRange)
 }
 
-// createSliderLevelUpWithCallback is the callback function for characteristics sliders
-func createSliderLevelUpWithCallback(characteristic string, min float64, max float64,
+// createSliderLevelUpWithCallback is the callback function for characteristics sliders.
+func createSliderLevelUpWithCallback(characteristic string, min, max float64,
 	value *int, currentValue int, pointsToSpend *int,
-	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
+	valueLabel, pointsToSpendLabel *widget.Label,
+) *widget.Slider {
 	slider := widget.NewSlider(min, max)
 	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {

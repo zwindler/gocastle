@@ -5,13 +5,14 @@ package screens
 import (
 	"encoding/json"
 	"fmt"
-	"gocastle/model"
-	"gocastle/utils"
 	"io"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 // ShowLoadGameScreen displays a file dialog to select the file to load.
@@ -37,7 +38,6 @@ func ShowLoadGameScreen(window fyne.Window) {
 
 		// initialise game objects but don't reset to start
 		initGame(window, false)
-
 	}, window)
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))

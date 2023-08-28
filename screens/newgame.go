@@ -1,12 +1,8 @@
 package screens
 
 import (
-	"gocastle/maps"
-	"gocastle/model"
-	"gocastle/utils"
-	"strconv"
-
 	"fmt"
+	"strconv"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -14,6 +10,10 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+
+	"github.com/zwindler/gocastle/maps"
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
 var (
@@ -26,7 +26,7 @@ const (
 	maxStat = 20
 )
 
-// ShowNewGameScreen is the main function of the new game screen
+// ShowNewGameScreen is the main function of the new game screen.
 func ShowNewGameScreen(window fyne.Window) {
 	var characterAspect1 *widget.RadioGroup
 	var characterAspect2 *widget.RadioGroup
@@ -62,12 +62,18 @@ func ShowNewGameScreen(window fyne.Window) {
 		dexterityLabel, pointsToSpendValue)
 
 	aspect_icon_path := [][]string{
-		{"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
-			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png"},
-		{"static/dark_haired_woman.png", "static/dark_haired_person.png", "static/dark_haired_man.png",
-			"static/scarf_woman.png", "static/turban_person.png", "static/turban_man.png"},
-		{"static/bald_woman.png", "static/bald_person.png", "static/bald_man.png",
-			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png"},
+		{
+			"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
+			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png",
+		},
+		{
+			"static/dark_haired_woman.png", "static/dark_haired_person.png", "static/dark_haired_man.png",
+			"static/scarf_woman.png", "static/turban_person.png", "static/turban_man.png",
+		},
+		{
+			"static/bald_woman.png", "static/bald_person.png", "static/bald_man.png",
+			"static/white_haired_woman.png", "static/white_haired_person.png", "static/white_haired_man.png",
+		},
 	}
 
 	characterAspectLabel := widget.NewLabelWithStyle("Aspect", 0, fyne.TextStyle{Bold: true, Italic: true})
@@ -169,10 +175,11 @@ func ShowNewGameScreen(window fyne.Window) {
 	window.SetContent(mainContent)
 }
 
-// createSliderWithCallback is the callback function for sliders in newgame screen
-func createSliderWithCallback(characteristic string, min float64, max float64,
-	value *int, pointsToSpend *int,
-	valueLabel, pointsToSpendLabel *widget.Label) *widget.Slider {
+// createSliderWithCallback is the callback function for sliders in newgame screen.
+func createSliderWithCallback(characteristic string, min, max float64,
+	value, pointsToSpend *int,
+	valueLabel, pointsToSpendLabel *widget.Label,
+) *widget.Slider {
 	slider := widget.NewSlider(min, max)
 	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {
@@ -191,7 +198,7 @@ func createSliderWithCallback(characteristic string, min float64, max float64,
 	return slider
 }
 
-// resetRadioGroups is a helper function for resetting unselected radio groups
+// resetRadioGroups is a helper function for resetting unselected radio groups.
 func resetRadioGroups(groups ...*widget.RadioGroup) {
 	for _, group := range groups {
 		group.SetSelected("")
