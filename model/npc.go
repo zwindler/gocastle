@@ -163,7 +163,7 @@ var (
 	}
 )
 
-// CreateNPC creates a copy of a given NPC at given coordinates
+// CreateNPC creates a copy of a given NPC at given coordinates.
 func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 	avatar := CreateAvatar(npc.Avatar, x, y)
 	return &NPCStats{
@@ -176,24 +176,22 @@ func CreateNPC(npc NPCStats, x, y int) *NPCStats {
 		CurrentHP: func() int {
 			if npc.CurrentHP == 0 {
 				return npc.MaxHP
-			} else {
-				return npc.CurrentHP
 			}
+			return npc.CurrentHP
 		}(),
 		MaxMP: npc.MaxMP,
 		CurrentMP: func() int {
 			if npc.CurrentMP == 0 {
 				return npc.MaxMP
-			} else {
-				return npc.CurrentMP
 			}
+			return npc.CurrentMP
 		}(),
 		LootXP:   npc.LootXP,
 		LootGold: randomizeGoldLoot(npc.LootGold),
 	}
 }
 
-// HandleNPCDamage returns strings for having nice logs during combat with NPCs
+// HandleNPCDamage returns strings for having nice logs during combat with NPCs.
 func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	newHP := npc.CurrentHP - damageDealt
 
@@ -201,7 +199,7 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	// I want to give player additional information, but not every time!
 	// only when NPC are going from above 80% live to under 80%, for example
 	var additionalInfo string
-	if newHP <= 0 {
+	if newHP <= 0 { //nolint:gocritic // TODO Improve this
 		additionalInfo = fmt.Sprintf("%s is dead.", npc.Name)
 	} else if newHP > 0 && newHP <= int(0.2*float64(npc.MaxHP)) && npc.CurrentHP > int(0.2*float64(npc.MaxHP)) {
 		additionalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
@@ -215,7 +213,7 @@ func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
-// IsNPCDead checks if NPC's HP <= 0
+// IsNPCDead checks if NPC's HP <= 0.
 func (npc *NPCStats) IsNPCDead() bool {
 	return (npc.CurrentHP <= 0)
 }
@@ -230,7 +228,7 @@ func randomizeGoldLoot(goldAmount int) int {
 	rand.Seed(time.Now().UnixNano())
 
 	// Generate a random multiplier between 0.5 and 1.5 (inclusive)
-	multiplier := rand.Float64() + 0.5
+	multiplier := rand.Float64() + 0.5 //nolint:gosec
 
 	// Calculate the randomized gold amount
 	randomizedGold := int(float64(goldAmount) * multiplier)

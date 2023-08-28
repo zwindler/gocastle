@@ -49,7 +49,7 @@ var (
 		PointsToSpend: 0,
 		// end temporary for dev
 		Avatar: PlayerAvatar,
-		//PointsToSpend:     10,
+		// PointsToSpend:     10,
 		StrengthValue:     10,
 		ConstitutionValue: 10,
 		IntelligenceValue: 10,
@@ -69,29 +69,27 @@ var (
 		4500, // Level 10
 	}
 
-	// basic base secondary characteristics
+	// basic base secondary characteristics.
 	baseHP             = 8
 	baseMP             = 8
 	basePhysicalDamage = 2
 )
 
-// GetMaxHP changes player maxHP depending of player's level and constitution
+// GetMaxHP changes player maxHP depending of player's level and constitution.
 func (player *CharacterStats) GetMaxHP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 constitution point above 10 every level
-	maxHP := baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
-	player.MaxHP = int(maxHP)
+	player.MaxHP = baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
 }
 
-// GetMaxMP changes player maxMP depending of player's level and intelligence
+// GetMaxMP changes player maxMP depending of player's level and intelligence.
 func (player *CharacterStats) GetMaxMP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 intelligence point above 10 every level
-	maxMP := baseMP + (4 * (player.Level - 1)) + (player.IntelligenceValue-10)/3*player.Level
-	player.MaxMP = int(maxMP)
+	player.MaxMP = baseMP + (4 * (player.Level - 1)) + (player.IntelligenceValue-10)/3*player.Level
 }
 
-// DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear
+// DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear.
 func (player *CharacterStats) DeterminePhysicalDamage() {
 	damage := basePhysicalDamage + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
 
@@ -106,35 +104,33 @@ func (player *CharacterStats) DeterminePhysicalDamage() {
 		}
 	}
 
-	player.PhysicalDamage = int(damage)
+	player.PhysicalDamage = damage
 }
 
-// ChangeXP changes XP player from XPAmount, could be negative, return true if leveled up
-func (player *CharacterStats) ChangeXP(XPAmount int) bool {
-	player.CurrentXP = player.CurrentXP + XPAmount
+// ChangeXP changes XP player from XPAmount, could be negative, return true if leveled up.
+func (player *CharacterStats) ChangeXP(xpAmount int) bool {
+	player.CurrentXP += xpAmount
 	// Since we change XP, check if level changes
 	return player.DetermineLevel()
 }
 
-// ChangeGold changes amount of gold of player from GoldAmount, could be negative
-func (player *CharacterStats) ChangeGold(GoldAmount int) {
+// ChangeGold changes amount of gold of player from GoldAmount, could be negative.
+func (player *CharacterStats) ChangeGold(goldAmount int) {
 	// TODO: add some random elements
-	player.CurrentGold = int(player.CurrentGold) + GoldAmount
+	player.CurrentGold += goldAmount
 	player.ComputeWeight()
 }
 
 // DetermineLevel check player currentXP and increase level if necessary
 // You can't loose levels even if you lost XP (by design). Returns true if
-// player leveled up
+// player leveled up.
 func (player *CharacterStats) DetermineLevel() bool {
 	for i, requiredXP := range xpTable {
-		//fmt.Printf("Current XP %d", player.CurrentXP)
 		if player.CurrentXP >= requiredXP {
 			// we are still above threshold, continue
-			//fmt.Printf("%d continue", i)
+
 			continue
 		} else {
-			//fmt.Printf("%d stop", i)
 			// we are bellow next threshold, that's our level
 			if i > player.Level {
 				// only change level if it's greater than current
@@ -142,7 +138,7 @@ func (player *CharacterStats) DetermineLevel() bool {
 
 				// increase PointsToSpend by 2 per new levels
 				// it shouldn't be more than 2 points each time when the game is finished/balanced
-				player.PointsToSpend = player.PointsToSpend + 2*(i-player.Level)
+				player.PointsToSpend += 2 * (i - player.Level)
 
 				// set new level
 				player.Level = i
@@ -156,13 +152,13 @@ func (player *CharacterStats) DetermineLevel() bool {
 	return false
 }
 
-// CollideWithPlayer returns true if we are going to collide with player, false instead
-func (playerAvatar *Avatar) CollideWithPlayer(futurePosX int, futurePosY int) bool {
-	return (playerAvatar.PosX == futurePosX && playerAvatar.PosY == futurePosY)
+// CollideWithPlayer returns true if we are going to collide with player, false instead.
+func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
+	return (subject.PosX == futurePosX && subject.PosY == futurePosY)
 }
 
 // RefreshStats is used when characters stats are modified, which in turn
-// changes basic stats for player. If heal is true, reset HP/MP to 100%max
+// changes basic stats for player. If heal is true, reset HP/MP to 100%max.
 func (player *CharacterStats) RefreshStats(heal bool) {
 	// Max HP changes during level up
 	player.GetMaxHP()
@@ -196,7 +192,7 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 
 // EquipItem equips an item in the player's inventory.
 // If the item is already equipped or the category doesn't exist, it returns an error.
-// If another item of the same category is equipped, un-equip it
+// If another item of the same category is equipped, un-equip it.
 func (player *CharacterStats) EquipItem(item *Object) error {
 	if !CategoryExists(item.Category) {
 		return fmt.Errorf("category '%s' does not exist", item.Category)
@@ -227,7 +223,7 @@ func (player *CharacterStats) UnequipItem(item *Object) {
 	player.ComputeWeight()
 }
 
-// ComputeWeight computes the total weight of the player's inventory and equipped items weight
+// ComputeWeight computes the total weight of the player's inventory and equipped items weight.
 func (player *CharacterStats) ComputeWeight() {
 	totalWeight := 0
 	equippedWeight := 0
@@ -244,11 +240,12 @@ func (player *CharacterStats) ComputeWeight() {
 }
 
 func (player *CharacterStats) DeduceGenderFromAspect(index int) {
-	if index%3 == 0 {
+	switch index % 3 {
+	case 0:
 		player.GenderValue = "Female"
-	} else if index%3 == 1 {
+	case 1:
 		player.GenderValue = "Non Binary"
-	} else {
+	default:
 		player.GenderValue = "Male"
 	}
 }

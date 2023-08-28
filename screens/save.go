@@ -4,16 +4,17 @@ package screens
 
 import (
 	"encoding/json"
-	"gocastle/maps"
-	"gocastle/model"
-	"gocastle/utils"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
+
+	"github.com/zwindler/gocastle/maps"
+	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/utils"
 )
 
-// ShowSaveGameScreen is the main function of the save game screen
+// ShowSaveGameScreen is the main function of the save game screen.
 func ShowSaveGameScreen(window fyne.Window) {
 	// Remove Images from character & inventory before saving
 	playerSaveData := *player

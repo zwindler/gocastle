@@ -2,13 +2,14 @@ package screens
 
 import (
 	"fmt"
-	"gocastle/model"
 	"log"
 
 	"fyne.io/fyne/v2"
+
+	"github.com/zwindler/gocastle/model"
 )
 
-// initGame will initialise all needed variables before start game (start=true) or load game (start=false)
+// initGame will initialise all needed variables before start game (start=true) or load game (start=false).
 func initGame(window fyne.Window, start bool) {
 	var X, Y int
 

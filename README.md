@@ -6,7 +6,7 @@ This project is my journey to creating a graphical game while learning Golang
 
 Every session, I'll add an entry in this file telling what I did and what I learned (see [developpement_diary/](developpement_diary/))
 
-## Prerequisites 
+## Prerequisites
 
 ```bash
 sudo apt-get install golang gcc libgl1-mesa-dev xorg-dev
@@ -17,6 +17,8 @@ Also, for building releases, you need goreleaser and fyne-cross
 ```bash
 go install github.com/fyne-io/fyne-cross@latest
 ```
+
+For the development, you need to install [Golangci-lint](https://golangci-lint.run/usage/install/#local-installation)
 
 ## Build, test, release
 
