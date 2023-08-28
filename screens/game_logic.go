@@ -24,7 +24,7 @@ func actOnDirectionKey(newX, newY int) {
 				// let's attack!
 				// TODO add some randomization
 				addLogEntry(npc.HandleNPCDamage(player.PhysicalDamage))
-				npc.CurrentHP = npc.CurrentHP - player.PhysicalDamage
+				npc.CurrentHP -= player.PhysicalDamage
 				if npc.IsNPCDead() {
 					if player.ChangeXP(npc.LootXP) {
 						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", player.Level)
@@ -77,8 +77,8 @@ func newTurnForNPCs() {
 			newX, newY = npc.Avatar.MoveAvatarTowardsAvatar(&player.Avatar)
 		} else {
 			// move randomly
-			newX = npc.Avatar.PosX + rand.Intn(3) - 1
-			newY = npc.Avatar.PosY + rand.Intn(3) - 1
+			newX = npc.Avatar.PosX + rand.Intn(3) - 1 //nolint:gosec
+			newY = npc.Avatar.PosY + rand.Intn(3) - 1 //nolint:gosec
 		}
 
 		// don't check / try to move if coordinates stay the same

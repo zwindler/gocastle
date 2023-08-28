@@ -58,7 +58,9 @@ func ShowInventoryScreen(window fyne.Window) {
 			widget: widget.NewSelect(itemsInCategory, func(selected string) {
 				for _, item := range player.Inventory {
 					if item.Name == selected {
-						player.EquipItem(item)
+						if err := player.EquipItem(item); err != nil {
+							fmt.Printf("Error equipping item: %s\n", err)
+						}
 					}
 				}
 				updateInventoryStatsArea()

@@ -16,7 +16,6 @@ linters:
     - errname # Checks that sentinel errors are prefixed with the `Err` and error types are suffixed with the `Error`. [fast: false, auto-fix: false]
     - execinquery # execinquery is a linter about query string checker in Query function which reads your Go src files and warning it finds [fast: false, auto-fix: false]
     - exportloopref # checks for pointers to enclosing loop variables [fast: false, auto-fix: false]
-    - forbidigo # Forbids identifiers [fast: true, auto-fix: false]
     - gci # Gci controls golang package import order and makes it always deterministic. [fast: true, auto-fix: false]
     - goconst # Finds repeated strings that could be replaced by a constant [fast: true, auto-fix: false]
     - gocritic # Provides diagnostics that check for bugs, performance and style issues. [fast: false, auto-fix: false]
@@ -62,6 +61,7 @@ linters:
     - bodyclose # checks whether HTTP response body is closed successfully
 
   disable:
+    - forbidigo # Forbids identifiers [fast: true, auto-fix: false]
     - dupl # Tool for code clone detection [fast: true, auto-fix: false]
     - varcheck # Finds unused global variables and constants [fast: false, auto-fix: false]
     - deadcode # Finds unused code [fast: false, auto-fix: false]

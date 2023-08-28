@@ -28,9 +28,11 @@ const (
 
 // ShowNewGameScreen is the main function of the new game screen.
 func ShowNewGameScreen(window fyne.Window) {
-	var characterAspect1 *widget.RadioGroup
-	var characterAspect2 *widget.RadioGroup
-	var characterAspect3 *widget.RadioGroup
+	var (
+		characterAspect1 *widget.RadioGroup
+		characterAspect2 *widget.RadioGroup
+		characterAspect3 *widget.RadioGroup
+	)
 
 	characterNameLabel := widget.NewLabelWithStyle("Character's name", 0, fyne.TextStyle{Bold: true, Italic: true})
 	characterNameEntry := widget.NewEntry()
@@ -61,7 +63,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		&model.Player.DexterityValue, &model.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
-	aspect_icon_path := [][]string{
+	aspectIconPath := [][]string{
 		{
 			"static/red_haired_woman.png", "static/red_haired_person.png", "static/red_haired_man.png",
 			"static/blond_haired_woman.png", "static/blond_haired_person.png", "static/blond_haired_man.png",
@@ -82,7 +84,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[0][index-1]
+			player.Avatar.CanvasPath = aspectIconPath[0][index-1]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -92,7 +94,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[1][index-7]
+			player.Avatar.CanvasPath = aspectIconPath[1][index-7]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -102,7 +104,7 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspect_icon_path[2][index-13]
+			player.Avatar.CanvasPath = aspectIconPath[2][index-13]
 			player.DeduceGenderFromAspect(index)
 		}
 	})
@@ -146,7 +148,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	for column := 0; column < 3; column++ {
 		characterAspectTable = append(characterAspectTable, container.NewWithoutLayout())
 		for row := 0; row < 6; row++ {
-			image := canvas.NewImageFromImage(utils.GetImageFromEmbed(aspect_icon_path[column][row]))
+			image := canvas.NewImageFromImage(utils.GetImageFromEmbed(aspectIconPath[column][row]))
 			image.FillMode = canvas.ImageFillOriginal
 			image.Resize(fyneTileSize)
 			currentPos := fyne.NewPos(0, float32(row)*38)
@@ -176,8 +178,9 @@ func ShowNewGameScreen(window fyne.Window) {
 }
 
 // createSliderWithCallback is the callback function for sliders in newgame screen.
-func createSliderWithCallback(characteristic string, min, max float64,
-	value, pointsToSpend *int,
+// _ parameter is pointsToSpend because we don't need it here.
+func createSliderWithCallback(characteristic string, min, max float64, //nolint:unparam // TODO: min is a constant
+	value, _ *int,
 	valueLabel, pointsToSpendLabel *widget.Label,
 ) *widget.Slider {
 	slider := widget.NewSlider(min, max)
@@ -185,7 +188,7 @@ func createSliderWithCallback(characteristic string, min, max float64,
 	slider.OnChanged = func(v float64) {
 		intV := int(v)
 		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
-			model.Player.PointsToSpend = model.Player.PointsToSpend - (intV - *value)
+			model.Player.PointsToSpend -= (intV - *value)
 			*value = intV
 		} else {
 			slider.Value = float64(*value)

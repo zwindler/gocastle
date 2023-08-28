@@ -79,16 +79,14 @@ var (
 func (player *CharacterStats) GetMaxHP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 constitution point above 10 every level
-	maxHP := baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
-	player.MaxHP = int(maxHP)
+	player.MaxHP = baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
 }
 
 // GetMaxMP changes player maxMP depending of player's level and intelligence.
 func (player *CharacterStats) GetMaxMP() {
 	// 8 + 4 by level +
 	// bonus point for every 3 intelligence point above 10 every level
-	maxMP := baseMP + (4 * (player.Level - 1)) + (player.IntelligenceValue-10)/3*player.Level
-	player.MaxMP = int(maxMP)
+	player.MaxMP = baseMP + (4 * (player.Level - 1)) + (player.IntelligenceValue-10)/3*player.Level
 }
 
 // DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear.
@@ -106,20 +104,20 @@ func (player *CharacterStats) DeterminePhysicalDamage() {
 		}
 	}
 
-	player.PhysicalDamage = int(damage)
+	player.PhysicalDamage = damage
 }
 
 // ChangeXP changes XP player from XPAmount, could be negative, return true if leveled up.
-func (player *CharacterStats) ChangeXP(XPAmount int) bool {
-	player.CurrentXP = player.CurrentXP + XPAmount
+func (player *CharacterStats) ChangeXP(xpAmount int) bool {
+	player.CurrentXP += xpAmount
 	// Since we change XP, check if level changes
 	return player.DetermineLevel()
 }
 
 // ChangeGold changes amount of gold of player from GoldAmount, could be negative.
-func (player *CharacterStats) ChangeGold(GoldAmount int) {
+func (player *CharacterStats) ChangeGold(goldAmount int) {
 	// TODO: add some random elements
-	player.CurrentGold = int(player.CurrentGold) + GoldAmount
+	player.CurrentGold += goldAmount
 	player.ComputeWeight()
 }
 
@@ -140,7 +138,7 @@ func (player *CharacterStats) DetermineLevel() bool {
 
 				// increase PointsToSpend by 2 per new levels
 				// it shouldn't be more than 2 points each time when the game is finished/balanced
-				player.PointsToSpend = player.PointsToSpend + 2*(i-player.Level)
+				player.PointsToSpend += 2 * (i - player.Level)
 
 				// set new level
 				player.Level = i
@@ -155,8 +153,8 @@ func (player *CharacterStats) DetermineLevel() bool {
 }
 
 // CollideWithPlayer returns true if we are going to collide with player, false instead.
-func (playerAvatar *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
-	return (playerAvatar.PosX == futurePosX && playerAvatar.PosY == futurePosY)
+func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
+	return (subject.PosX == futurePosX && subject.PosY == futurePosY)
 }
 
 // RefreshStats is used when characters stats are modified, which in turn
@@ -242,11 +240,12 @@ func (player *CharacterStats) ComputeWeight() {
 }
 
 func (player *CharacterStats) DeduceGenderFromAspect(index int) {
-	if index%3 == 0 {
+	switch index % 3 {
+	case 0:
 		player.GenderValue = "Female"
-	} else if index%3 == 1 {
+	case 1:
 		player.GenderValue = "Non Binary"
-	} else {
+	default:
 		player.GenderValue = "Male"
 	}
 }

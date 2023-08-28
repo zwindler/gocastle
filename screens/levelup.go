@@ -47,8 +47,9 @@ func showLevelUpScreen() *fyne.Container {
 }
 
 // createSliderLevelUpWithCallback is the callback function for characteristics sliders.
-func createSliderLevelUpWithCallback(characteristic string, min, max float64,
-	value *int, currentValue int, pointsToSpend *int,
+// _ parameter is pointsToSpend because we don't need it here.
+func createSliderLevelUpWithCallback(characteristic string, min, max float64, //nolint:unparam // TODO: min is a constant
+	value *int, currentValue int, _ *int,
 	valueLabel, pointsToSpendLabel *widget.Label,
 ) *widget.Slider {
 	slider := widget.NewSlider(min, max)
@@ -62,7 +63,7 @@ func createSliderLevelUpWithCallback(characteristic string, min, max float64,
 
 			// we only allow modification if new value is greater or equal than current value
 			if intV >= currentValue {
-				model.Player.PointsToSpend = model.Player.PointsToSpend - (intV - *value)
+				model.Player.PointsToSpend -= (intV - *value)
 				*value = intV
 			}
 		} else {
