@@ -55,8 +55,7 @@ func ShowLoadGameScreen(window fyne.Window) {
 
 // loadGameFromFile loads the game data from the specified JSON file.
 func loadGameFromFile(r io.Reader) (data map[string]interface{}, err error) {
-	err = json.NewDecoder(r).Decode(&data)
-	return data, err
+	return data, json.NewDecoder(r).Decode(&data)
 }
 
 // updateLoadedGameData updates the player, currentMap and TimeSinceBegin with the loaded data.
