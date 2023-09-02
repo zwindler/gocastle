@@ -70,9 +70,18 @@ func updateLoadedGameData(data map[string]interface{}) error {
 		return err
 	}
 
+	player = &loadedData.Player
+
 	// Assign the unmarshaled maps to the maps.AllTheMaps variable
 	maps.AllTheMaps = loadedData.AllTheMaps
-	player = &loadedData.Player
+	// NPCs and Objects were saved without their Image, refresh it
+	for indexMap := range maps.AllTheMaps {
+		for _, npc := range maps.AllTheMaps[indexMap].NPCList {
+			npc.Avatar.RefreshAvatar()
+		}
+
+	}
+
 	model.TimeSinceBegin = loadedData.TimeSinceBegin
 
 	return nil

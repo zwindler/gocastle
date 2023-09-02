@@ -36,6 +36,11 @@ func CreateAvatar(avatar Avatar, coord Coord) Avatar {
 	}
 }
 
+// RefreshAvatar allows to refresh Avatar Image in case it was removed (save/load).
+func (subject *Avatar) RefreshAvatar() {
+	subject.CanvasImage = canvas.NewImageFromImage(utils.GetImageFromEmbed(subject.CanvasPath))
+}
+
 // MoveAvatar moves avatar's coordinates and updates image position on map.
 func (subject *Avatar) MoveAvatar(mapContainer *fyne.Container, futurePosX, futurePosY int) {
 	// assign new values for subject position
