@@ -29,13 +29,21 @@ type SpecialTile struct {
 var NotSpecialTile = SpecialTile{"NA", Coord{}, Coord{}}
 
 // GetMapSize return number of rows and number of columns of a given map.
-func (currentMap *Map) GetMapSize() (int, int) {
-	mapColumns := 0
-	mapRows := len(currentMap.MapMatrix)
-	if mapRows > 0 {
-		mapColumns = len(currentMap.MapMatrix[0])
+func (currentMap *Map) GetMapSize() (mapRows, mapColumns int) {
+	return currentMap.getRows(), currentMap.getColumns()
+}
+
+// getRows returns the number of rows of a given map.
+func (currentMap *Map) getRows() int {
+	return len(currentMap.MapMatrix)
+}
+
+// getColumns returns the number of columns of a given map.
+func (currentMap *Map) getColumns() int {
+	if currentMap.getRows() == 0 {
+		return 0
 	}
-	return mapRows, mapColumns
+	return len(currentMap.MapMatrix[0])
 }
 
 // CheckOutOfBounds checks if x, y coordinates are out of map bounds.
@@ -67,7 +75,7 @@ func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 
 // FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.
 func (currentMap *Map) FindObjectToRemove(object *model.Object) {
-	var indexToRemove int = -1
+	indexToRemove := -1
 	for i, obj := range currentMap.ObjectList {
 		if obj == object {
 			indexToRemove = i
