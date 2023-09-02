@@ -5,7 +5,7 @@ import "github.com/zwindler/gocastle/model"
 var (
 	Village = Map{
 		Name:        "Village",
-		PlayerStart: model.Coord{2, 4, 0},
+		PlayerStart: model.Coord{X: 2, Y: 4, Map: 0},
 		MapMatrix: [][]int{
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
 			{0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0},
@@ -44,7 +44,7 @@ var (
 			{0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10},
 		},
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{0, 0, 0}, model.Coord{5, 0, 1}},
+			{"MapTransition", model.Coord{X: 0, Y: 0, Map: 0}, model.Coord{X: 5, Y: 0, Map: 1}},
 		},
 	}
 	ToTheOldMine = Map{
@@ -62,7 +62,7 @@ var (
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		},
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{0, 0, 1}, model.Coord{2, 4, 0}},
+			{"MapTransition", model.Coord{X: 0, Y: 0, Map: 1}, model.Coord{X: 2, Y: 4, Map: 0}},
 		},
 	}
 
