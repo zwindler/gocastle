@@ -12,19 +12,10 @@ type Coord struct {
 type Map struct {
 	Name           string
 	PlayerStart    Coord
-	spawnNPC       SpawnNPC
 	NPCList        []*model.NPCStats
 	ObjectList     []*model.Object
 	MapMatrix      [][]int
 	MapTransitions []SpecialTile
-}
-
-// This structure helps putting NPCs on the map in a mon concise way
-// This will only be used to populate NPCList using AddNPCs() function.
-type SpawnNPC []struct {
-	npc model.NPCStats
-	// TODO, change this to Coord type
-	x, y int
 }
 
 // This structure is used to specify tiles that have special meaning, like
@@ -72,18 +63,6 @@ func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 		}
 	}
 	return NotSpecialTile
-}
-
-// AddNPCs adds NPCs on a map from spawnNPC struct.
-func (currentMap *Map) AddNPCs() {
-	// TODO: add info about NPCs in maps for fixed maps
-	// for generated maps, I'll have to create this randomly
-
-	// Loop through the NPC data slice and create/draw each NPC
-	for _, data := range currentMap.spawnNPC {
-		npc := model.CreateNPC(data.npc, data.x, data.y)
-		currentMap.NPCList = append(currentMap.NPCList, npc)
-	}
 }
 
 // FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.

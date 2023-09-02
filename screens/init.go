@@ -1,12 +1,15 @@
 package screens
 
 import (
-	"fmt"
-	"log"
-
 	"fyne.io/fyne/v2"
 
+	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+)
+
+var (
+	player     = &model.Player
+	currentMap = &maps.AllTheMaps[0]
 )
 
 // initGame will initialise all needed variables before start game (start=true) or load game (start=false).
@@ -23,20 +26,15 @@ func initGame(window fyne.Window, start bool) {
 	if start {
 		player.ChangeGold(10)
 
-		// TODO put it in map like spawnNPC
-		// create a knife, drop it in field next to player start
-		knife, err := model.CreateObject(model.HuntingKnife, 10, 10)
-		if err != nil {
-			err = fmt.Errorf("unable to create knife: %w", err)
-			log.Fatalf("NewGame error: %s", err)
-		}
-		sword, err := model.CreateObject(model.BluntSword, 20, 20)
-		if err != nil {
-			err = fmt.Errorf("unable to create sword: %w", err)
-			log.Fatalf("NewGame error: %s", err)
-		}
-		currentMap.ObjectList = append(currentMap.ObjectList, &knife)
-		currentMap.ObjectList = append(currentMap.ObjectList, &sword)
+		// TODO rework this
+		knife, _ := model.CreateObject(model.HuntingKnife, 10, 10)
+		sword, _ := model.CreateObject(model.BluntSword, 20, 20)
+		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife, &sword)
+		farmer := model.CreateNPC(model.FemaleFarmer, 10, 15)
+		wolf1 := model.CreateNPC(model.Wolf, 25, 26)
+		wolf2 := model.CreateNPC(model.Wolf, 28, 27)
+		ogre := model.CreateNPC(model.Ogre, 30, 25)
+		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, wolf1, wolf2, ogre)
 
 		// set coordinates to "Village" map starting coordinates
 		X, Y = currentMap.PlayerStart.X, currentMap.PlayerStart.Y
@@ -45,9 +43,6 @@ func initGame(window fyne.Window, start bool) {
 		X, Y = player.Avatar.PosX, player.Avatar.PosY
 	}
 	player.Avatar = model.CreateAvatar(player.Avatar, X, Y)
-
-	// create NPCs avatars
-	currentMap.AddNPCs()
 
 	ShowGameScreen(window)
 }
