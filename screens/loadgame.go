@@ -79,7 +79,9 @@ func updateLoadedGameData(data map[string]interface{}) error {
 		for _, npc := range maps.AllTheMaps[indexMap].NPCList {
 			npc.Avatar.RefreshAvatar()
 		}
-
+		for _, object := range maps.AllTheMaps[indexMap].ObjectList {
+			object.RefreshObject()
+		}
 	}
 
 	model.TimeSinceBegin = loadedData.TimeSinceBegin

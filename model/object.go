@@ -187,3 +187,8 @@ func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 
 	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
 }
+
+// RefreshObject allows to refresh Object Image in case it was removed (save/load).
+func (subject *Object) RefreshObject() {
+	subject.CanvasImage = canvas.NewImageFromImage(utils.GetImageFromEmbed(subject.CanvasPath))
+}
