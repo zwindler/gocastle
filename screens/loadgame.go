@@ -74,61 +74,6 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	maps.AllTheMaps = loadedData.AllTheMaps
 	player = &loadedData.Player
 	model.TimeSinceBegin = loadedData.TimeSinceBegin
-	/*
-		// Update player
-		playerData, ok := data["Player"].(map[string]interface{})
-		if !ok {
-			return fmt.Errorf("invalid player data")
-		}
-		if err := updatePlayerData(playerData); err != nil {
-			return fmt.Errorf("failed to update player data: %w", err)
-		}
-
-		// Update AllTheMaps
-		mapData, ok := data["AllTheMaps"].([]map[string]interface{})
-		if !ok {
-			return fmt.Errorf("invalid map data")
-		}
-		if err := updateMapData(mapData); err != nil {
-			return fmt.Errorf("failed to update map data: %w", err)
-		}
-
-		// Update currentMap
-		timeData, ok := data["TimeSinceBegin"].(float64)
-		if !ok {
-			// Handle the case when the "TimeSinceBegin" key is not a float64 (or not present)
-			// You can choose to show an error or set a default value, as needed.
-			return fmt.Errorf("error: TimeSinceBegin is not present or not a valid float64 value")
-		}
-		// Convert the float64 value to int (assuming model.TimeSinceBegin is of type int)
-		model.TimeSinceBegin = int(timeData)
-	*/
 
 	return nil
 }
-
-/*
-// updatePlayerData updates the player data with the loaded data.
-func updatePlayerData(data map[string]interface{}) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	if err := json.Unmarshal(jsonData, &player); err != nil {
-		return err
-	}
-	return nil
-}
-
-// updateMapData updates the currentMap data with the loaded data.
-func updateMapData(data []map[string]interface{}) error {
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-	if err := json.Unmarshal(jsonData, &maps.AllTheMaps); err != nil {
-		return err
-	}
-	return nil
-}
-*/
