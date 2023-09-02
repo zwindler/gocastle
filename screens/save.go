@@ -24,7 +24,7 @@ func ShowSaveGameScreen(window fyne.Window) {
 	}
 
 	// Remove Images from NPCs & Objects before saving
-	mapSaveData := currentMap
+	mapSaveData := *currentMap
 	for index := range mapSaveData.NPCList {
 		mapSaveData.NPCList[index].Avatar.CanvasImage.Image = nil
 	}

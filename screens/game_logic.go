@@ -64,7 +64,7 @@ func actOnDirectionKey(newX, newY int) {
 				tile := currentMap.CheckTileIsSpecial(newX, newY)
 				if tile != maps.NotSpecialTile {
 					if tile.Type == "MapTransition" {
-						currentMap = maps.AllTheMaps[tile.Destination.Map]
+						currentMap = &maps.AllTheMaps[tile.Destination.Map]
 						player.Avatar.PosX = tile.Destination.X
 						player.Avatar.PosY = tile.Destination.Y
 						ShowGameScreen(currentWindow)
