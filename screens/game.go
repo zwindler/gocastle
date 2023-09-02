@@ -213,8 +213,8 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		}
 		return // Ignore keys that are not part of the directions map
 	}
-	newX := player.Avatar.PosX + direction.dx
-	newY := player.Avatar.PosY + direction.dy
+	newX := player.Avatar.Coord.X + direction.dx
+	newY := player.Avatar.Coord.Y + direction.dy
 
 	actOnDirectionKey(newX, newY)
 
@@ -229,8 +229,8 @@ func centerMapOnPlayer() {
 	// but we need various informations to compute this
 
 	// Let's start by getting the player real coordinates in pixels
-	x := float32(tileSize * player.Avatar.PosX)
-	y := float32(tileSize * player.Avatar.PosY)
+	x := float32(tileSize * player.Avatar.Coord.X)
+	y := float32(tileSize * player.Avatar.Coord.Y)
 
 	// we also need window size (because by default it's 800x600
 	// but it can be resized!)

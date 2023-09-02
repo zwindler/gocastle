@@ -27,22 +27,22 @@ func initGame(window fyne.Window, start bool) {
 		player.ChangeGold(10)
 
 		// TODO rework this
-		knife, _ := model.CreateObject(model.HuntingKnife, 10, 10)
-		sword, _ := model.CreateObject(model.BluntSword, 20, 20)
+		knife, _ := model.CreateObject(model.HuntingKnife, model.Coord{10, 10, 0})
+		sword, _ := model.CreateObject(model.BluntSword, model.Coord{20, 20, 0})
 		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife, &sword)
-		farmer := model.CreateNPC(model.FemaleFarmer, 10, 15)
-		wolf1 := model.CreateNPC(model.Wolf, 25, 26)
-		wolf2 := model.CreateNPC(model.Wolf, 28, 27)
-		ogre := model.CreateNPC(model.Ogre, 30, 25)
+		farmer := model.CreateNPC(model.FemaleFarmer, model.Coord{10, 15, 0})
+		wolf1 := model.CreateNPC(model.Wolf, model.Coord{25, 26, 0})
+		wolf2 := model.CreateNPC(model.Wolf, model.Coord{28, 27, 0})
+		ogre := model.CreateNPC(model.Ogre, model.Coord{30, 25, 0})
 		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, wolf1, wolf2, ogre)
 
 		// set coordinates to "Village" map starting coordinates
 		X, Y = currentMap.PlayerStart.X, currentMap.PlayerStart.Y
 	} else {
 		// we are loading game, set position to current position
-		X, Y = player.Avatar.PosX, player.Avatar.PosY
+		X, Y = player.Avatar.Coord.X, player.Avatar.Coord.Y
 	}
-	player.Avatar = model.CreateAvatar(player.Avatar, X, Y)
+	player.Avatar = model.CreateAvatar(player.Avatar, model.Coord{X, Y, 0})
 
 	ShowGameScreen(window)
 }

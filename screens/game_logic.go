@@ -65,8 +65,8 @@ func actOnDirectionKey(newX, newY int) {
 				if tile != maps.NotSpecialTile {
 					if tile.Type == "MapTransition" {
 						currentMap = &maps.AllTheMaps[tile.Destination.Map]
-						player.Avatar.PosX = tile.Destination.X
-						player.Avatar.PosY = tile.Destination.Y
+						player.Avatar.Coord.X = tile.Destination.X
+						player.Avatar.Coord.Y = tile.Destination.Y
 						ShowGameScreen(currentWindow)
 					}
 					// TODO handle error
@@ -90,12 +90,12 @@ func newTurnForNPCs() {
 			newX, newY = npc.Avatar.MoveAvatarTowardsAvatar(&player.Avatar)
 		} else {
 			// move randomly
-			newX = npc.Avatar.PosX + rand.Intn(3) - 1 //nolint:gosec
-			newY = npc.Avatar.PosY + rand.Intn(3) - 1 //nolint:gosec
+			newX = npc.Avatar.Coord.X + rand.Intn(3) - 1 //nolint:gosec
+			newY = npc.Avatar.Coord.Y + rand.Intn(3) - 1 //nolint:gosec
 		}
 
 		// don't check / try to move if coordinates stay the same
-		if newX != npc.Avatar.PosX || newY != npc.Avatar.PosY {
+		if newX != npc.Avatar.Coord.X || newY != npc.Avatar.Coord.Y {
 			// before doing anything, check if we aren't out of bounds
 			if !currentMap.CheckOutOfBounds(newX, newY) {
 				// let's check if we find another NPC on our NPC's path

@@ -4,14 +4,9 @@ import (
 	"github.com/zwindler/gocastle/model"
 )
 
-type Coord struct {
-	X, Y int
-	Map  int
-}
-
 type Map struct {
 	Name           string
-	PlayerStart    Coord
+	PlayerStart    model.Coord
 	NPCList        []*model.NPCStats
 	ObjectList     []*model.Object
 	MapMatrix      [][]int
@@ -22,11 +17,11 @@ type Map struct {
 // map transitions or traps.
 type SpecialTile struct {
 	Type        string
-	Pos         Coord
-	Destination Coord
+	Pos         model.Coord
+	Destination model.Coord
 }
 
-var NotSpecialTile = SpecialTile{"NA", Coord{}, Coord{}}
+var NotSpecialTile = SpecialTile{"NA", model.Coord{}, model.Coord{}}
 
 // GetMapSize return number of rows and number of columns of a given map.
 func (currentMap *Map) GetMapSize() (mapRows, mapColumns int) {
@@ -113,7 +108,7 @@ func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
 func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
 	// find if a NPC matches our destination
 	for _, npc := range currentMap.NPCList {
-		if npc.Avatar.PosX == x && npc.Avatar.PosY == y {
+		if npc.Avatar.Coord.X == x && npc.Avatar.Coord.Y == y {
 			return npc
 		}
 	}
