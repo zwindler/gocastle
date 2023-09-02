@@ -71,7 +71,6 @@ func actOnDirectionKey(newX, newY int) {
 					}
 					// TODO handle error
 				}
-
 			} else {
 				// you "hit" a wall, but lost 2s
 				addLogEntry("you are blocked!")

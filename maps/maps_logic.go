@@ -20,7 +20,7 @@ type Map struct {
 }
 
 // This structure helps putting NPCs on the map in a mon concise way
-// This will only be used to populate NPCList using AddNPCs() function
+// This will only be used to populate NPCList using AddNPCs() function.
 type SpawnNPC []struct {
 	npc model.NPCStats
 	// TODO, change this to Coord type
@@ -28,7 +28,7 @@ type SpawnNPC []struct {
 }
 
 // This structure is used to specify tiles that have special meaning, like
-// map transitions or traps
+// map transitions or traps.
 type SpecialTile struct {
 	Type        string
 	Pos         Coord
@@ -37,7 +37,7 @@ type SpecialTile struct {
 
 var NotSpecialTile = SpecialTile{"NA", Coord{}, Coord{}}
 
-// GetMapSize return number of rows and number of columns of a given map
+// GetMapSize return number of rows and number of columns of a given map.
 func (currentMap *Map) GetMapSize() (int, int) {
 	mapColumns := 0
 	mapRows := len(currentMap.MapMatrix)
@@ -47,8 +47,8 @@ func (currentMap *Map) GetMapSize() (int, int) {
 	return mapRows, mapColumns
 }
 
-// CheckOutOfBounds checks if x, y coordinates are out of map bounds
-func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
+// CheckOutOfBounds checks if x, y coordinates are out of map bounds.
+func (currentMap *Map) CheckOutOfBounds(futurePosX, futurePosY int) bool {
 	mapRows, mapColumns := currentMap.GetMapSize()
 	if futurePosX >= 0 && futurePosX < mapColumns &&
 		futurePosY >= 0 && futurePosY < mapRows {
@@ -57,24 +57,24 @@ func (currentMap *Map) CheckOutOfBounds(futurePosX int, futurePosY int) bool {
 	return true
 }
 
-// CheckTileIsWalkable checks if, for a given map, x,y coordinates are considered walkable
-func (currentMap *Map) CheckTileIsWalkable(futurePosX int, futurePosY int) bool {
+// CheckTileIsWalkable checks if, for a given map, x,y coordinates are considered walkable.
+func (currentMap *Map) CheckTileIsWalkable(futurePosX, futurePosY int) bool {
 	return TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
 }
 
 // CheckTileIsSpecial checks if, for a given map, x,y coordinates are special
-// If so, return the SpecialTile do deal with effect
-func (currentMap *Map) CheckTileIsSpecial(PosX, PosY int) SpecialTile {
+// If so, return the SpecialTile do deal with effect.
+func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 	// for now, only deal with map transitions
 	for _, tile := range currentMap.MapTransitions {
-		if tile.Pos.X == PosX && tile.Pos.Y == PosY {
+		if tile.Pos.X == posX && tile.Pos.Y == posY {
 			return tile
 		}
 	}
 	return NotSpecialTile
 }
 
-// AddNPCs adds NPCs on a map from spawnNPC struct
+// AddNPCs adds NPCs on a map from spawnNPC struct.
 func (currentMap *Map) AddNPCs() {
 	// TODO: add info about NPCs in maps for fixed maps
 	// for generated maps, I'll have to create this randomly
@@ -84,10 +84,9 @@ func (currentMap *Map) AddNPCs() {
 		npc := model.CreateNPC(data.npc, data.x, data.y)
 		currentMap.NPCList = append(currentMap.NPCList, npc)
 	}
-
 }
 
-// FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object
+// FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.
 func (currentMap *Map) FindObjectToRemove(object *model.Object) {
 	var indexToRemove int = -1
 	for i, obj := range currentMap.ObjectList {
@@ -103,7 +102,7 @@ func (currentMap *Map) FindObjectToRemove(object *model.Object) {
 	}
 }
 
-// For a given map, remove NPC by list id and hide CanvasImage
+// For a given map, remove NPC by list id and hide CanvasImage.
 func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
 	var indexToRemove int = -1
 	for i, npc := range currentMap.NPCList {
@@ -123,7 +122,7 @@ func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
 }
 
 // For a given NPCsOnCurrentMap, check if NPCs are located on x,y
-// return nil if none or pointer to npc
+// return nil if none or pointer to npc.
 func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
 	// find if a NPC matches our destination
 	for _, npc := range currentMap.NPCList {

@@ -96,6 +96,6 @@ var (
 		},
 	}
 
-	// Slice containing all the maps of the game
+	// Slice containing all the maps of the game.
 	AllTheMaps = []Map{Village, ToTheOldMine}
 )
