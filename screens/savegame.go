@@ -14,32 +14,39 @@ import (
 	"github.com/zwindler/gocastle/utils"
 )
 
+type savedGameData struct {
+	Player         model.CharacterStats
+	AllTheMaps     []maps.Map
+	TimeSinceBegin int
+}
+
 // ShowSaveGameScreen is the main function of the save game screen.
 func ShowSaveGameScreen(window fyne.Window) {
 	// Remove Images from character & inventory before saving
 	playerSaveData := *player
 	playerSaveData.Avatar.CanvasImage.Image = nil
+	playerSaveData.Avatar.ObjectInMapContainer = nil
+
 	for index := range playerSaveData.Inventory {
 		playerSaveData.Inventory[index].CanvasImage = nil
 	}
 
-	// Remove Images from NPCs & Objects before saving
-	mapSaveData := *currentMap
-	for index := range mapSaveData.NPCList {
-		mapSaveData.NPCList[index].Avatar.CanvasImage.Image = nil
-	}
-	for index := range mapSaveData.ObjectList {
-		mapSaveData.ObjectList[index].CanvasImage.Image = nil
+	// Remove Images from NPCs & Objects before saving + ObjectInMapContainer variable
+	mapSaveData := maps.AllTheMaps
+	for indexMap := range mapSaveData {
+		for index := range mapSaveData[indexMap].NPCList {
+			mapSaveData[indexMap].NPCList[index].Avatar.CanvasImage.Image = nil
+			mapSaveData[indexMap].NPCList[index].Avatar.ObjectInMapContainer = nil
+		}
+		for index := range mapSaveData[indexMap].ObjectList {
+			mapSaveData[indexMap].ObjectList[index].CanvasImage.Image = nil
+		}
 	}
 
 	// Get the data to save
-	gameData := struct {
-		Player         model.CharacterStats
-		CurrentMap     maps.Map
-		TimeSinceBegin int
-	}{
+	gameData := savedGameData{
 		Player:         playerSaveData,
-		CurrentMap:     mapSaveData,
+		AllTheMaps:     mapSaveData,
 		TimeSinceBegin: model.TimeSinceBegin,
 	}
 
