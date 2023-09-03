@@ -41,6 +41,11 @@ var TilesTypes = []TileInfo{
 	{X: 96, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 20 upper right high grass
 	{X: 96, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 21 down right high grass
 	{X: 80, Y: 144, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 22 center high grass
+	{X: 224, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: true},    // 23 sand (one tile)
+	{X: 192, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 24 sand (with grass upper left)
+	{X: 224, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 25 sand (with grass upper right)
+	{X: 192, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 26 sand (with grass lower left)
+	{X: 224, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 27 sand (with grass lower right)
 }
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset.
