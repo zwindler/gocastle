@@ -11,14 +11,8 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
-	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/utils"
-)
-
-var (
-	player     = &model.Player
-	currentMap = maps.Village
 )
 
 const (

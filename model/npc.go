@@ -164,8 +164,8 @@ var (
 )
 
 // CreateNPC creates a copy of a given NPC at given coordinates.
-func CreateNPC(npc NPCStats, x, y int) *NPCStats {
-	avatar := CreateAvatar(npc.Avatar, x, y)
+func CreateNPC(npc NPCStats, coord Coord) *NPCStats {
+	avatar := CreateAvatar(npc.Avatar, coord)
 	return &NPCStats{
 		Name:    npc.Name,
 		Pronoun: npc.Pronoun,

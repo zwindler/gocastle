@@ -144,7 +144,7 @@ func updateInventoryStatsArea() {
 func displayFloorItems() (floorVBox *fyne.Container) {
 	floorVBox = container.NewVBox()
 	for _, item := range currentMap.ObjectList {
-		if item.PosX == player.Avatar.PosX && item.PosY == player.Avatar.PosY {
+		if item.Coord.X == player.Avatar.Coord.X && item.Coord.Y == player.Avatar.Coord.Y {
 			currentItemContainer := container.NewVBox()
 			nameLabel := widget.NewLabel(item.Name)
 

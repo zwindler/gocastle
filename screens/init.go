@@ -1,18 +1,19 @@
 package screens
 
 import (
-	"fmt"
-	"log"
-
 	"fyne.io/fyne/v2"
 
+	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+)
+
+var (
+	player     = &model.Player
+	currentMap = &maps.AllTheMaps[0]
 )
 
 // initGame will initialise all needed variables before start game (start=true) or load game (start=false).
 func initGame(window fyne.Window, start bool) {
-	var X, Y int
-
 	// refresh player stats (heal or not depending on "start")
 	player.RefreshStats(start)
 
@@ -23,31 +24,22 @@ func initGame(window fyne.Window, start bool) {
 	if start {
 		player.ChangeGold(10)
 
-		// TODO put it in map like spawnNPC
-		// create a knife, drop it in field next to player start
-		knife, err := model.CreateObject(model.HuntingKnife, 10, 10)
-		if err != nil {
-			err = fmt.Errorf("unable to create knife: %w", err)
-			log.Fatalf("NewGame error: %s", err)
-		}
-		sword, err := model.CreateObject(model.BluntSword, 20, 20)
-		if err != nil {
-			err = fmt.Errorf("unable to create sword: %w", err)
-			log.Fatalf("NewGame error: %s", err)
-		}
-		currentMap.ObjectList = append(currentMap.ObjectList, &knife)
-		currentMap.ObjectList = append(currentMap.ObjectList, &sword)
+		// TODO rework this
+		// Map0 Village
+		knife, _ := model.CreateObject(model.HuntingKnife, model.Coord{X: 10, Y: 10, Map: 0})
+		sword, _ := model.CreateObject(model.BluntSword, model.Coord{X: 20, Y: 20, Map: 0})
+		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife, &sword)
+		farmer := model.CreateNPC(model.FemaleFarmer, model.Coord{X: 10, Y: 15, Map: 0})
+		wolf1 := model.CreateNPC(model.Wolf, model.Coord{X: 25, Y: 26, Map: 0})
+		wolf2 := model.CreateNPC(model.Wolf, model.Coord{X: 28, Y: 27, Map: 0})
+		ogre := model.CreateNPC(model.Ogre, model.Coord{X: 30, Y: 25, Map: 0})
+		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, wolf1, wolf2, ogre)
 
-		// set coordinates to "Village" map starting coordinates
-		X, Y = currentMap.PlayerStart.X, currentMap.PlayerStart.Y
-	} else {
-		// we are loading game, set position to current position
-		X, Y = player.Avatar.PosX, player.Avatar.PosY
+		player.Avatar.Coord = model.Coord{X: 15, Y: 15, Map: 0}
 	}
-	player.Avatar = model.CreateAvatar(player.Avatar, X, Y)
 
-	// create NPCs avatars
-	currentMap.AddNPCs()
+	currentMap = &maps.AllTheMaps[player.Avatar.Coord.Map]
+	player.Avatar = model.CreateAvatar(player.Avatar, player.Avatar.Coord)
 
 	ShowGameScreen(window)
 }

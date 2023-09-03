@@ -24,8 +24,7 @@ type Object struct {
 	Weight      int           // Object weight in grams
 	InInventory bool          // Is Object in inventory
 	Equipped    bool          // Is Object equipped
-	PosX        int           // Object position
-	PosY        int           // Object position
+	Coord       Coord         // Object position
 	Stats       []ObjectStat  // Object stats (e.g., strength, health, etc.).
 	CanvasImage *canvas.Image // Object image
 	CanvasPath  string        // Image path for Object
@@ -138,7 +137,7 @@ func CategoryExists(categoryName string) bool {
 
 // CreateObject creates a copy of the given object and returns it.
 // It also validates the category before creating the object.
-func CreateObject(obj Object, x, y int) (Object, error) {
+func CreateObject(obj Object, coord Coord) (Object, error) {
 	// Validate the category.
 	if !CategoryExists(obj.Category) {
 		return Object{}, fmt.Errorf("category '%s' does not exist", obj.Category)
@@ -151,8 +150,7 @@ func CreateObject(obj Object, x, y int) (Object, error) {
 		Weight:      obj.Weight,
 		CanvasPath:  obj.CanvasPath,
 		CanvasImage: canvas.NewImageFromImage(utils.GetImageFromEmbed(obj.CanvasPath)),
-		PosX:        x,
-		PosY:        y,
+		Coord:       coord,
 		Equipped:    false,
 		InInventory: false,
 	}
@@ -175,7 +173,7 @@ func (subject *Object) DrawObject(mapContainer *fyne.Container) {
 		subject.CanvasImage.FillMode = canvas.ImageFillOriginal
 		subject.CanvasImage.Resize(fyneTileSize)
 
-		subject.MoveObject(subject.PosX, subject.PosY)
+		subject.MoveObject(subject.Coord.X, subject.Coord.Y)
 
 		mapContainer.Add(subject.CanvasImage)
 	}
@@ -184,8 +182,13 @@ func (subject *Object) DrawObject(mapContainer *fyne.Container) {
 // MoveObject moves object's coordinates and updates image position on map.
 func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 	// assign new values for subject position
-	subject.PosX = futurePosX
-	subject.PosY = futurePosY
+	subject.Coord.X = futurePosX
+	subject.Coord.Y = futurePosY
 
 	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+}
+
+// RefreshObject allows to refresh Object Image in case it was removed (save/load).
+func (subject *Object) RefreshObject() {
+	subject.CanvasImage = canvas.NewImageFromImage(utils.GetImageFromEmbed(subject.CanvasPath))
 }

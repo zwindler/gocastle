@@ -41,6 +41,31 @@ var TilesTypes = []TileInfo{
 	{X: 96, Y: 128, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 20 upper right high grass
 	{X: 96, Y: 160, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 21 down right high grass
 	{X: 80, Y: 144, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 22 center high grass
+	{X: 224, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: true},    // 23 sand (one tile)
+	{X: 192, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 24 sand (with grass upper left)
+	{X: 224, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 25 sand (with grass upper right)
+	{X: 192, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 26 sand (with grass lower left)
+	{X: 224, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 27 sand (with grass lower right)
+	{X: 128, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 28 tree top left
+	{X: 128, Y: 96, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 29 tree middle left
+	{X: 128, Y: 128, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 30 tree bottom left
+	{X: 160, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 31 tree top right
+	{X: 160, Y: 96, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 32 tree middle right
+	{X: 160, Y: 128, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 33 tree bottom right
+	{X: 128, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 34 stone upper left
+	{X: 128, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 35 stone bottom left
+	{X: 160, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 36 stone upper right
+	{X: 160, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 37 stone bottom right
+	{X: 32, Y: 256, filePath: "static/tilee_MACK.png", IsWalkable: true},    // 38 upper cave entrance
+	{X: 32, Y: 288, filePath: "static/tilee_MACK.png", IsWalkable: true},    // 39 lower cave entrance
+	{X: 192, Y: 416, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 40 montain upper left
+	{X: 192, Y: 448, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 41 montain bottom left
+	{X: 224, Y: 416, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 42 montain upper right
+	{X: 224, Y: 448, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 43 montain bottom right
+	{X: 144, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 44 tree top center
+	{X: 144, Y: 96, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 45 tree middle center
+	{X: 144, Y: 128, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 46 tree bottom center
+
 }
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset.

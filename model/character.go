@@ -154,7 +154,7 @@ func (player *CharacterStats) DetermineLevel() bool {
 
 // CollideWithPlayer returns true if we are going to collide with player, false instead.
 func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
-	return (subject.PosX == futurePosX && subject.PosY == futurePosY)
+	return (subject.Coord.X == futurePosX && subject.Coord.Y == futurePosY)
 }
 
 // RefreshStats is used when characters stats are modified, which in turn
