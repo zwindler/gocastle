@@ -89,9 +89,28 @@ var (
 			{"MapTransition", model.Coord{X: 0, Y: 8, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
 			{"MapTransition", model.Coord{X: 0, Y: 9, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
 			{"MapTransition", model.Coord{X: 0, Y: 10, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", model.Coord{X: 79, Y: 0, Map: 1}, model.Coord{X: 1, Y: 1, Map: 2}},
+		},
+	}
+	TheOldMine = Map{
+		Name: "The Old Mine",
+		MapMatrix: [][]int{
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		},
+		MapTransitions: []SpecialTile{
+			{"MapTransition", model.Coord{X: 0, Y: 0, Map: 2}, model.Coord{X: 78, Y: 0, Map: 1}},
 		},
 	}
 
 	// Slice containing all the maps of the game.
-	AllTheMaps = []Map{Village, ToTheOldMine}
+	AllTheMaps = []Map{Village, ToTheOldMine, TheOldMine}
 )
