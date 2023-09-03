@@ -25,6 +25,7 @@ func initGame(window fyne.Window, start bool) {
 		player.ChangeGold(10)
 
 		// TODO rework this
+		// Map0 Village
 		knife, _ := model.CreateObject(model.HuntingKnife, model.Coord{X: 10, Y: 10, Map: 0})
 		sword, _ := model.CreateObject(model.BluntSword, model.Coord{X: 20, Y: 20, Map: 0})
 		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife, &sword)
@@ -33,6 +34,8 @@ func initGame(window fyne.Window, start bool) {
 		wolf2 := model.CreateNPC(model.Wolf, model.Coord{X: 28, Y: 27, Map: 0})
 		ogre := model.CreateNPC(model.Ogre, model.Coord{X: 30, Y: 25, Map: 0})
 		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, wolf1, wolf2, ogre)
+
+		player.Avatar.Coord = model.Coord{X: 15, Y: 15, Map: 0}
 	}
 
 	currentMap = &maps.AllTheMaps[player.Avatar.Coord.Map]

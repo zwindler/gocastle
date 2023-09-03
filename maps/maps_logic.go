@@ -6,7 +6,6 @@ import (
 
 type Map struct {
 	Name           string
-	PlayerStart    model.Coord
 	NPCList        []*model.NPCStats
 	ObjectList     []*model.Object
 	MapMatrix      [][]int
