@@ -52,6 +52,10 @@ var TilesTypes = []TileInfo{
 	{X: 160, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: false},   // 31 tree top right
 	{X: 160, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 32 tree middle right
 	{X: 160, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 33 tree bottom right
+	{X: 128, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 29 stone upper left
+	{X: 128, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 30 stone bottom left
+	{X: 160, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 32 stone
+	{X: 160, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 33 tree bottom right
 }
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset.
