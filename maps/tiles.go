@@ -46,12 +46,12 @@ var TilesTypes = []TileInfo{
 	{X: 224, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 25 sand (with grass upper right)
 	{X: 192, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 26 sand (with grass lower left)
 	{X: 224, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 27 sand (with grass lower right)
-	{X: 128, Y: 0, filePath: "static/tilea4_MACK.png", IsWalkable: false},   // 28 tree top left
-	{X: 128, Y: 32, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 29 tree middle left
-	{X: 128, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 30 tree bottom left
-	{X: 160, Y: 0, filePath: "static/tilea4_MACK.png", IsWalkable: false},   // 31 tree top right
-	{X: 160, Y: 32, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 32 tree middle right
-	{X: 160, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 33 tree bottom right
+	{X: 128, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 28 tree top left
+	{X: 128, Y: 96, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 29 tree middle left
+	{X: 128, Y: 128, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 30 tree bottom left
+	{X: 160, Y: 64, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 31 tree top right
+	{X: 160, Y: 96, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 32 tree middle right
+	{X: 160, Y: 128, filePath: "static/tilea4_MACK.png", IsWalkable: false}, // 33 tree bottom right
 	{X: 128, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 34 stone upper left
 	{X: 128, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 35 stone bottom left
 	{X: 160, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: false},  // 36 stone upper right
