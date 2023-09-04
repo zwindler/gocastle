@@ -4,6 +4,8 @@ package model
 
 import (
 	"fmt"
+
+	"github.com/zwindler/gocastle/pkg/hp"
 )
 
 type CharacterStats struct {
@@ -27,8 +29,7 @@ type CharacterStats struct {
 
 	// Secondary characteristics
 	// Those characteristics depend on main chars, level and gear
-	MaxHP          int
-	CurrentHP      int
+	HP             *hp.HP
 	MaxMP          int
 	CurrentMP      int
 	PhysicalDamage int
@@ -55,6 +56,7 @@ var (
 		IntelligenceValue: 10,
 		DexterityValue:    10,
 		Level:             1,
+		HP:                hp.New(baseHP),
 	}
 	xpTable = []int{
 		0, // Level 1
@@ -74,13 +76,6 @@ var (
 	baseMP             = 8
 	basePhysicalDamage = 2
 )
-
-// GetMaxHP changes player maxHP depending of player's level and constitution.
-func (player *CharacterStats) GetMaxHP() {
-	// 8 + 4 by level +
-	// bonus point for every 3 constitution point above 10 every level
-	player.MaxHP = baseHP + (4 * (player.Level - 1)) + (player.ConstitutionValue-10)/3*player.Level
-}
 
 // GetMaxMP changes player maxMP depending of player's level and intelligence.
 func (player *CharacterStats) GetMaxMP() {
@@ -161,14 +156,15 @@ func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
 // changes basic stats for player. If heal is true, reset HP/MP to 100%max.
 func (player *CharacterStats) RefreshStats(heal bool) {
 	// Max HP changes during level up
-	player.GetMaxHP()
+	player.HP.Compute(player.Level, baseHP, player.ConstitutionValue)
+	// player.GetMaxHP()
 	// Max MP changes during level up, also reset MP player
 	player.GetMaxMP()
 	// base damage may evolve when you can add char points
 	player.DeterminePhysicalDamage()
 
 	if heal {
-		player.CurrentHP = player.MaxHP
+		player.HP.SetCurrent(player.HP.GetMax())
 		player.CurrentMP = player.MaxMP
 	}
 }
