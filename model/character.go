@@ -151,7 +151,6 @@ func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
 func (player *CharacterStats) RefreshStats(heal bool) {
 	// Max HP changes during level up
 	player.HP.Compute(player.Level, baseHP, player.ConstitutionValue)
-	// player.GetMaxHP()
 	// Max MP changes during level up, also reset MP player
 	player.MP.Compute(player.Level, baseMP, player.IntelligenceValue)
 	// base damage may evolve when you can add char points

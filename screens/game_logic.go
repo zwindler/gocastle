@@ -26,7 +26,6 @@ func actOnDirectionKey(newX, newY int) {
 				// TODO add some randomization
 				npc.HP.Damage(player.PhysicalDamage)
 				addLogEntry(npc.HandleNPCDamage())
-				// npc.CurrentHP -= player.PhysicalDamage
 				if npc.IsNPCDead() {
 					if player.ChangeXP(npc.LootXP) {
 						levelUpEntry := fmt.Sprintf("Level up! You are now level %d", player.Level)
