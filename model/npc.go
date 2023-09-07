@@ -6,19 +6,19 @@ import (
 	"time"
 
 	"github.com/zwindler/gocastle/pkg/hp"
+	"github.com/zwindler/gocastle/pkg/mp"
 )
 
 type NPCStats struct {
-	Name      string
-	Pronoun   string
-	Dialog    string
-	Hostile   bool
-	Avatar    Avatar
-	HP        *hp.HP
-	MaxMP     int
-	CurrentMP int
-	LootXP    int
-	LootGold  int
+	Name     string
+	Pronoun  string
+	Dialog   string
+	Hostile  bool
+	Avatar   Avatar
+	HP       hp.HP
+	MP       *mp.MP
+	LootXP   int
+	LootGold int
 }
 
 var (
@@ -43,7 +43,7 @@ var (
 		Pronoun: "she",
 		Hostile: false,
 		HP:      hp.New(15),
-		MaxMP:   20,
+		MP:      mp.New(20),
 	}
 
 	KoboldAvatar = Avatar{
@@ -174,12 +174,11 @@ func CreateNPC(npc NPCStats, coord Coord) *NPCStats {
 		Dialog:  npc.Dialog,
 		Hostile: npc.Hostile,
 		HP:      npc.HP,
-		MaxMP:   npc.MaxMP,
-		CurrentMP: func() int {
-			if npc.CurrentMP == 0 {
-				return npc.MaxMP
+		MP: func() *mp.MP {
+			if npc.MP == nil {
+				return npc.MP
 			}
-			return npc.CurrentMP
+			return mp.New(0)
 		}(),
 		LootXP:   npc.LootXP,
 		LootGold: randomizeGoldLoot(npc.LootGold),
