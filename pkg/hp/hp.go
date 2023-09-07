@@ -1,43 +1,47 @@
 // hp is a package that provides a health point system with a maximum and current value.
 package hp
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/zwindler/gocastle/pkg/pts"
+)
 
 // HP represents a health point system with a maximum and current value.
 type HP struct {
-	Max     int
-	Current int
+	Max     *pts.Point
+	Current *pts.Point
 }
 
 // IsAlive returns true if the current HP is greater than 0.
 func (hp *HP) IsAlive() bool {
-	return hp.Current > 0
+	return hp.Current.IsPositive()
 }
 
 // IsDead returns true if the current HP is less than or equal to 0.
 func (hp *HP) IsDead() bool {
-	return !hp.IsAlive()
+	return !hp.Current.IsPositive()
 }
 
 // Heal adds the given amount to the current HP and caps it at the maximum HP.
 func (hp *HP) Heal(amount int) {
-	hp.Current += amount
-	if hp.Current > hp.Max {
-		hp.Current = hp.Max
+	hp.Current.Add(amount)
+	if hp.Current.Get() > hp.Max.Get() {
+		hp.Current.Set(hp.Max.Get())
 	}
 }
 
 // Damage subtracts the given amount from the current HP and caps it at 0.
 func (hp *HP) Damage(amount int) {
-	hp.Current -= amount
-	if hp.Current < 0 {
-		hp.Current = 0
+	hp.Current.Sub(amount)
+	if !hp.Current.IsPositive() {
+		hp.Current.Reset()
 	}
 }
 
 // Percent returns the current HP as a percentage of the maximum HP.
 func (hp *HP) Percent() float64 {
-	return float64(hp.Current) / float64(hp.Max)
+	return float64(hp.Current.Get()) / float64(hp.Max.Get())
 }
 
 // PercentString returns the current HP as a percentage string.
@@ -47,56 +51,26 @@ func (hp *HP) PercentString() string {
 
 // String returns the current and maximum HP as a string.
 func (hp *HP) String() string {
-	return fmt.Sprintf("%d/%d", hp.Current, hp.Max)
+	return fmt.Sprintf("%d/%d", hp.Current.Get(), hp.Max.Get())
 }
 
 // Reset sets the current HP to the maximum HP.
 func (hp *HP) Reset() {
-	hp.Current = hp.Max
-}
-
-// AddMax adds the given amount to the maximum HP.
-func (hp *HP) AddMax(amount int) {
-	hp.Max += amount
-}
-
-// AddCurrent adds the given amount to the current HP.
-func (hp *HP) AddCurrent(amount int) {
-	hp.Current += amount
-}
-
-// SetMax sets the maximum HP to the given amount.
-func (hp *HP) SetMax(amount int) {
-	hp.Max = amount
-}
-
-// SetCurrent sets the current HP to the given amount.
-func (hp *HP) SetCurrent(amount int) {
-	hp.Current = amount
+	hp.Current.Set(hp.Max.Get())
 }
 
 // Set sets the maximum and current HP to the given amount.
 func (hp *HP) Set(amount int) {
-	hp.Max = amount
-	hp.Current = amount
+	hp.Max.Set(amount)
+	hp.Current.Set(amount)
 }
 
 // New returns a new HP struct with the given max and current values.
-func New(max int) *HP {
-	return &HP{
-		Max:     max,
-		Current: max,
+func New(max int) HP {
+	return HP{
+		Max:     pts.New(max),
+		Current: pts.New(max),
 	}
-}
-
-// GetCurrent returns the current HP value.
-func (hp *HP) GetCurrent() int {
-	return hp.Current
-}
-
-// GetMax returns the max HP value.
-func (hp *HP) GetMax() int {
-	return hp.Max
 }
 
 // Compute returns the computed Max value based on the given level and base value.
@@ -108,5 +82,5 @@ func Compute(level, base, constitution int) int {
 
 // Compute returns the computed Max value based on the given level and base value.
 func (hp *HP) Compute(level, base, constitution int) {
-	hp.Max = Compute(level, base, constitution)
+	hp.Max.Set(Compute(level, base, constitution))
 }
