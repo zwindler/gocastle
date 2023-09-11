@@ -2,6 +2,8 @@ package screens
 
 import (
 	"fmt"
+	"image"
+	"image/draw"
 	"log"
 
 	"fyne.io/fyne/v2"
@@ -11,7 +13,6 @@ import (
 
 	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
-	"github.com/zwindler/gocastle/utils"
 )
 
 const (
@@ -19,9 +20,6 @@ const (
 )
 
 var (
-	mapColumns int
-	mapRows    int
-
 	fyneTileSize = fyne.NewSize(tileSize, tileSize)
 
 	mainContent   *fyne.Container
@@ -48,7 +46,10 @@ func ShowGameScreen(window fyne.Window) {
 	mapContainer = container.NewWithoutLayout()
 
 	// generate a scrollable container which contains the map container
-	scrollableMapContainer = container.NewScroll(createMapArea(mapContainer))
+	mapImage := createMapImage(currentMap.GetMapSize())
+	mapContainer.Add(mapImage)
+	scrollableMapContainer = container.NewScroll(mapContainer)
+
 	// bottom right corner is the stats box area
 	statsTextArea = createStatsArea()
 	// merge log area and stats area
@@ -65,32 +66,6 @@ func ShowGameScreen(window fyne.Window) {
 	centerMapOnPlayer()
 	drawNPCList(mapContainer)
 	drawObjectList(mapContainer)
-}
-
-// createMapArea generates a fyne container containing the map tiles.
-func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
-	mapRows, mapColumns = currentMap.GetMapSize()
-	imageMatrix := createMapMatrix(mapRows, mapColumns)
-
-	for row := 0; row < mapRows; row++ {
-		currentLine := float32(row) * tileSize
-		for column := 0; column < mapColumns; column++ {
-			tile := imageMatrix[row][column]
-			tile.Resize(fyneTileSize)
-			currentPos := fyne.NewPos(float32(column)*tileSize, currentLine)
-			tile.Move(currentPos)
-			mapContainer.Add(tile)
-		}
-	}
-
-	// create a transparent filler to trick scrollable containers
-	limits := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/transparent_tile.png"))
-	limits.FillMode = canvas.ImageFillStretch
-	limits.SetMinSize(fyne.NewSize(float32(mapColumns)*16, float32(mapRows)*16))
-
-	return container.NewGridWithColumns(2,
-		mapContainer, layout.NewSpacer(),
-		layout.NewSpacer(), limits)
 }
 
 // drawNPCList draws the NPC's Avatars images on the mapContainer.
@@ -156,12 +131,15 @@ func updateStatsArea() {
 	timeSpentValueLabel.Refresh()
 }
 
-// createMapMatrix creates the tiles matrix ([][]*canvas.Image).
-func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
-	matrix := make([][]*canvas.Image, numRows)
+// createMapImage creates an image based on the tiles stored in currentMap.
+func createMapImage(numRows, numColumns int) *canvas.Image {
+	// TODO move this whole logic in the map package
+
+	xSize := numColumns * tileSize
+	ySize := numRows * tileSize
 
 	// extract the needed tiles from the Tileset
-	// create a table of subimages (image.Image type)
+	// create a table of images (image.Image type)
 	loadedTiles, err := maps.LoadTilesFromTileset(maps.TilesTypes)
 	if err != nil {
 		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
@@ -169,21 +147,40 @@ func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
 		// TODO error handling
 	}
 
-	// create the full matrix first to avoid out of bounds exception
+	// now, reconstruct the whole map image with tiles images
+	fullImage := image.NewRGBA(image.Rect(0, 0, xSize, ySize))
 	for row := 0; row < numRows; row++ {
-		matrix[row] = make([]*canvas.Image, numColumns)
-	}
-	for row := 0; row < numRows; row++ {
+		currentRowImage := image.NewRGBA(image.Rect(0, 0, xSize, tileSize))
 		for column := 0; column < numColumns; column++ {
-			image := loadedTiles[currentMap.MapMatrix[row][column]]
-			imageCanvas := canvas.NewImageFromImage(image)
-			imageCanvas.FillMode = canvas.ImageFillOriginal
-			imageCanvas.Resize(fyneTileSize)
-			matrix[row][column] = imageCanvas
+			currentImage := loadedTiles[currentMap.MapMatrix[row][column]]
+			startingPosition := image.Point{column * tileSize, 0}
+			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tileSize, tileSize})}
+			draw.Draw(currentRowImage, currentTileRectangle.Bounds(), currentImage, image.Point{0, 0}, draw.Src)
 		}
+		// we have reconstructed the whole row with all the tiles
+		// now, we can add the row to the full image
+		startingRowPosition := image.Point{0, row * tileSize}
+		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tileSize * numColumns, tileSize})}
+		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
 	}
 
-	return matrix
+	/*
+		out, err := os.Create("./output.jpg")
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var opt jpeg.Options
+		opt.Quality = 80
+
+		jpeg.Encode(out, fullImage, &opt)
+	*/
+
+	fullCanvasImage := canvas.NewImageFromImage(fullImage)
+	fullCanvasImage.FillMode = canvas.ImageFillOriginal
+	fullCanvasImage.Resize(fyne.NewSize(float32(xSize), float32(ySize)))
+
+	return fullCanvasImage
 }
 
 // mapKeyListener is the main loop function in this screen.
