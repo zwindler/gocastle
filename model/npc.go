@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/zwindler/gocastle/pkg/hp"
+	"github.com/zwindler/gocastle/pkg/mp"
 )
 
 type NPCStats struct {
-	Name      string
-	Pronoun   string
-	Dialog    string
-	Hostile   bool
-	Avatar    Avatar
-	MaxHP     int
-	CurrentHP int
-	MaxMP     int
-	CurrentMP int
-	LootXP    int
-	LootGold  int
+	Name     string
+	Pronoun  string
+	Dialog   string
+	Hostile  bool
+	Avatar   Avatar
+	HP       hp.HP
+	MP       *mp.MP
+	LootXP   int
+	LootGold int
 }
 
 var (
@@ -30,7 +31,7 @@ var (
 		Dialog:  "Hello, my name is Mylène :-)",
 		Pronoun: "she",
 		Hostile: false,
-		MaxHP:   10,
+		HP:      hp.New(10),
 	}
 
 	FemaleMageAvatar = Avatar{
@@ -41,8 +42,8 @@ var (
 		Avatar:  FemaleMageAvatar,
 		Pronoun: "she",
 		Hostile: false,
-		MaxHP:   15,
-		MaxMP:   20,
+		HP:      hp.New(15),
+		MP:      mp.New(20),
 	}
 
 	KoboldAvatar = Avatar{
@@ -53,7 +54,7 @@ var (
 		Avatar:   KoboldAvatar,
 		Pronoun:  "it",
 		Hostile:  true,
-		MaxHP:    4,
+		HP:       hp.New(4),
 		LootXP:   30,
 		LootGold: 2,
 	}
@@ -66,7 +67,7 @@ var (
 		Avatar:   GoblinAvatar,
 		Pronoun:  "he",
 		Hostile:  true,
-		MaxHP:    6,
+		HP:       hp.New(6),
 		LootXP:   50,
 		LootGold: 4,
 	}
@@ -79,7 +80,7 @@ var (
 		Avatar:   GiantAntAvatar,
 		Pronoun:  "it",
 		Hostile:  true,
-		MaxHP:    10,
+		HP:       hp.New(10),
 		LootXP:   60,
 		LootGold: 0,
 	}
@@ -92,7 +93,7 @@ var (
 		Avatar:   OrkAvatar,
 		Pronoun:  "he",
 		Hostile:  true,
-		MaxHP:    14,
+		HP:       hp.New(14),
 		LootXP:   80,
 		LootGold: 10,
 	}
@@ -105,7 +106,7 @@ var (
 		Avatar:   WolfAvatar,
 		Pronoun:  "it",
 		Hostile:  true,
-		MaxHP:    10,
+		HP:       hp.New(10),
 		LootXP:   100,
 		LootGold: 0,
 	}
@@ -118,7 +119,7 @@ var (
 		Avatar:   GiantRedAntAvatar,
 		Pronoun:  "it",
 		Hostile:  true,
-		MaxHP:    20,
+		HP:       hp.New(20),
 		LootXP:   150,
 		LootGold: 0,
 	}
@@ -131,7 +132,7 @@ var (
 		Avatar:   MimicAvatar,
 		Pronoun:  "it",
 		Hostile:  true,
-		MaxHP:    25,
+		HP:       hp.New(25),
 		LootXP:   300,
 		LootGold: 500,
 	}
@@ -144,7 +145,7 @@ var (
 		Avatar:   OgreAvatar,
 		Pronoun:  "he",
 		Hostile:  true,
-		MaxHP:    35,
+		HP:       hp.New(35),
 		LootXP:   500,
 		LootGold: 100,
 	}
@@ -157,7 +158,7 @@ var (
 		Avatar:   MinotaurAvatar,
 		Pronoun:  "he",
 		Hostile:  true,
-		MaxHP:    50,
+		HP:       hp.New(50),
 		LootXP:   1000,
 		LootGold: 300,
 	}
@@ -172,19 +173,12 @@ func CreateNPC(npc NPCStats, coord Coord) *NPCStats {
 		Avatar:  avatar,
 		Dialog:  npc.Dialog,
 		Hostile: npc.Hostile,
-		MaxHP:   npc.MaxHP,
-		CurrentHP: func() int {
-			if npc.CurrentHP == 0 {
-				return npc.MaxHP
+		HP:      npc.HP,
+		MP: func() *mp.MP {
+			if npc.MP == nil {
+				return npc.MP
 			}
-			return npc.CurrentHP
-		}(),
-		MaxMP: npc.MaxMP,
-		CurrentMP: func() int {
-			if npc.CurrentMP == 0 {
-				return npc.MaxMP
-			}
-			return npc.CurrentMP
+			return mp.New(0)
 		}(),
 		LootXP:   npc.LootXP,
 		LootGold: randomizeGoldLoot(npc.LootGold),
@@ -192,30 +186,34 @@ func CreateNPC(npc NPCStats, coord Coord) *NPCStats {
 }
 
 // HandleNPCDamage returns strings for having nice logs during combat with NPCs.
-func (npc *NPCStats) HandleNPCDamage(damageDealt int) string {
-	newHP := npc.CurrentHP - damageDealt
+func (npc *NPCStats) HandleNPCDamage() string {
+	var additionalInfo string
 
 	// Here there are levels of injury
 	// I want to give player additional information, but not every time!
 	// only when NPC are going from above 80% live to under 80%, for example
-	var additionalInfo string
-	if newHP <= 0 { //nolint:gocritic // TODO Improve this
-		additionalInfo = fmt.Sprintf("%s is dead.", npc.Name)
-	} else if newHP > 0 && newHP <= int(0.2*float64(npc.MaxHP)) && npc.CurrentHP > int(0.2*float64(npc.MaxHP)) {
-		additionalInfo = fmt.Sprintf("%s looks barely alive.", npc.Name)
-	} else if newHP > int(0.2*float64(npc.MaxHP)) && newHP <= int(0.5*float64(npc.MaxHP)) && npc.CurrentHP > int(0.5*float64(npc.MaxHP)) {
-		additionalInfo = fmt.Sprintf("%s looks seriously injured.", npc.Name)
-	} else if newHP > int(0.5*float64(npc.MaxHP)) && newHP <= int(0.8*float64(npc.MaxHP)) && npc.CurrentHP > int(0.8*float64(npc.MaxHP)) {
-		additionalInfo = fmt.Sprintf("%s looks injured.", npc.Name)
-	} else if newHP > int(0.8*float64(npc.MaxHP)) && newHP < npc.MaxHP && npc.CurrentHP == npc.MaxHP {
-		additionalInfo = fmt.Sprintf("%s looks barely injured.", npc.Name)
+	switch {
+	case npc.HP.IsDead():
+		additionalInfo += fmt.Sprintf("%s is dead.", npc.Name)
+	// remaininghp between 80% and 100%
+	case npc.HP.IsAlive() && npc.HP.Percent() > 0.8:
+		additionalInfo += fmt.Sprintf("%s looks barely injured.", npc.Name)
+	// remaininghp between 50% and 80%
+	case npc.HP.IsAlive() && npc.HP.Percent() > 0.5:
+		additionalInfo += fmt.Sprintf("%s looks injured.", npc.Name)
+	// remaininghp between 20% and 50%
+	case npc.HP.IsAlive() && npc.HP.Percent() > 0.2:
+		additionalInfo += fmt.Sprintf("%s looks seriously injured.", npc.Name)
+	// remaininghp between 0% and 20%
+	case npc.HP.IsAlive() && npc.HP.Percent() > 0:
+		additionalInfo += fmt.Sprintf("%s looks barely alive.", npc.Name)
 	}
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
 }
 
 // IsNPCDead checks if NPC's HP <= 0.
 func (npc *NPCStats) IsNPCDead() bool {
-	return (npc.CurrentHP <= 0)
+	return npc.HP.IsDead()
 }
 
 // randomizeGoldLoot generates a random amount of gold within a specified range.

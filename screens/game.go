@@ -146,10 +146,10 @@ func createStatsArea() fyne.CanvasObject {
 
 // updateStatsArea refreshes the values in StatsArea.
 func updateStatsArea() {
-	healthPointsValueLabel.Text = fmt.Sprintf("%d/%d", player.CurrentHP, player.MaxHP)
+	healthPointsValueLabel.Text = player.HP.String()
 	healthPointsValueLabel.Refresh()
 
-	manaPointsValueLabel.Text = fmt.Sprintf("%d/%d", player.CurrentMP, player.MaxMP)
+	manaPointsValueLabel.Text = player.MP.String()
 	manaPointsValueLabel.Refresh()
 
 	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
