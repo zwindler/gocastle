@@ -1,6 +1,11 @@
 package maps
 
 import (
+	"fmt"
+	"image"
+	"image/draw"
+	"log"
+
 	"github.com/zwindler/gocastle/model"
 )
 
@@ -38,6 +43,21 @@ func (currentMap *Map) getColumns() int {
 		return 0
 	}
 	return len(currentMap.MapMatrix[0])
+}
+
+// GetMapImageSize returns the image x and y size
+func (currentMap *Map) GetMapImageSize() (float32, float32) {
+	return currentMap.getMapImageSizeX(), currentMap.getMapImageSizeY()
+}
+
+// getMapImageSizeX return x as Map Image size
+func (currentMap *Map) getMapImageSizeX() float32 {
+	return float32(tileSize * currentMap.getColumns())
+}
+
+// getMapImageSizeY return y as Map Image size
+func (currentMap *Map) getMapImageSizeY() float32 {
+	return float32(tileSize * currentMap.getRows())
 }
 
 // CheckOutOfBounds checks if x, y coordinates are out of map bounds.
@@ -112,4 +132,50 @@ func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
 		}
 	}
 	return nil
+}
+
+func (currentMap *Map) GenerateMapImage() image.Image {
+	numRows, numColumns := currentMap.GetMapSize()
+	xSize, ySize := currentMap.GetMapImageSize()
+
+	// extract the needed tiles from the Tileset
+	// create a table of images (image.Image type)
+	loadedTiles, err := LoadTilesFromTileset(TilesTypes)
+	if err != nil {
+		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
+		log.Fatalf("MapMatrix error: %s", err)
+		// TODO error handling
+	}
+
+	// now, reconstruct the whole map image with tiles images
+	fullImage := image.NewRGBA(image.Rect(0, 0, int(xSize), int(ySize)))
+	for row := 0; row < numRows; row++ {
+		currentRowImage := image.NewRGBA(image.Rect(0, 0, int(xSize), tileSize))
+		for column := 0; column < numColumns; column++ {
+			currentImage := loadedTiles[currentMap.MapMatrix[row][column]]
+			startingPosition := image.Point{column * tileSize, 0}
+			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tileSize, tileSize})}
+			draw.Draw(currentRowImage, currentTileRectangle.Bounds(), currentImage, image.Point{0, 0}, draw.Src)
+		}
+		// we have reconstructed the whole row with all the tiles
+		// now, we can add the row to the full image
+		startingRowPosition := image.Point{0, row * tileSize}
+		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tileSize * numColumns, tileSize})}
+		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
+	}
+
+	// useful to debug
+	/*
+		out, err := os.Create("./output.jpg")
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var opt jpeg.Options
+		opt.Quality = 80
+
+		jpeg.Encode(out, fullImage, &opt)
+	*/
+
+	return fullImage
 }

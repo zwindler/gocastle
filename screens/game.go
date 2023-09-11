@@ -1,17 +1,11 @@
 package screens
 
 import (
-	"fmt"
-	"image"
-	"image/draw"
-	"log"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 
-	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
 )
 
@@ -46,7 +40,7 @@ func ShowGameScreen(window fyne.Window) {
 	mapContainer = container.NewWithoutLayout()
 
 	// generate a scrollable container which contains the map container
-	mapImage := createMapImage(currentMap.GetMapSize())
+	mapImage := createMapCanvasImage()
 	mapContainer.Add(mapImage)
 	scrollableMapContainer = container.NewScroll(mapContainer)
 
@@ -132,53 +126,10 @@ func updateStatsArea() {
 }
 
 // createMapImage creates an image based on the tiles stored in currentMap.
-func createMapImage(numRows, numColumns int) *canvas.Image {
-	// TODO move this whole logic in the map package
-
-	xSize := numColumns * tileSize
-	ySize := numRows * tileSize
-
-	// extract the needed tiles from the Tileset
-	// create a table of images (image.Image type)
-	loadedTiles, err := maps.LoadTilesFromTileset(maps.TilesTypes)
-	if err != nil {
-		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
-		log.Fatalf("MapMatrix error: %s", err)
-		// TODO error handling
-	}
-
-	// now, reconstruct the whole map image with tiles images
-	fullImage := image.NewRGBA(image.Rect(0, 0, xSize, ySize))
-	for row := 0; row < numRows; row++ {
-		currentRowImage := image.NewRGBA(image.Rect(0, 0, xSize, tileSize))
-		for column := 0; column < numColumns; column++ {
-			currentImage := loadedTiles[currentMap.MapMatrix[row][column]]
-			startingPosition := image.Point{column * tileSize, 0}
-			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tileSize, tileSize})}
-			draw.Draw(currentRowImage, currentTileRectangle.Bounds(), currentImage, image.Point{0, 0}, draw.Src)
-		}
-		// we have reconstructed the whole row with all the tiles
-		// now, we can add the row to the full image
-		startingRowPosition := image.Point{0, row * tileSize}
-		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tileSize * numColumns, tileSize})}
-		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
-	}
-
-	/*
-		out, err := os.Create("./output.jpg")
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		var opt jpeg.Options
-		opt.Quality = 80
-
-		jpeg.Encode(out, fullImage, &opt)
-	*/
-
-	fullCanvasImage := canvas.NewImageFromImage(fullImage)
+func createMapCanvasImage() *canvas.Image {
+	fullCanvasImage := canvas.NewImageFromImage(currentMap.GenerateMapImage())
 	fullCanvasImage.FillMode = canvas.ImageFillOriginal
-	fullCanvasImage.Resize(fyne.NewSize(float32(xSize), float32(ySize)))
+	fullCanvasImage.Resize(fyne.NewSize(currentMap.GetMapImageSize()))
 
 	return fullCanvasImage
 }
