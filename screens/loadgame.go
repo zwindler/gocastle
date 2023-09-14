@@ -11,7 +11,7 @@ import (
 	"fyne.io/fyne/v2/storage"
 
 	"github.com/zwindler/gocastle/maps"
-	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/timespent"
 	"github.com/zwindler/gocastle/utils"
 )
 
@@ -84,7 +84,7 @@ func updateLoadedGameData(data map[string]interface{}) error {
 		}
 	}
 
-	model.TimeSinceBegin = loadedData.TimeSinceBegin
+	timespent.Set(loadedData.TimeSinceBegin)
 
 	return nil
 }
