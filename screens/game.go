@@ -11,6 +11,7 @@ import (
 
 	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/timespent"
 	"github.com/zwindler/gocastle/utils"
 )
 
@@ -152,7 +153,7 @@ func updateStatsArea() {
 	manaPointsValueLabel.Text = player.MP.String()
 	manaPointsValueLabel.Refresh()
 
-	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
+	timeSpentValueLabel.Text = timespent.FormatDuration(timespent.ShortFormat)
 	timeSpentValueLabel.Refresh()
 }
 
@@ -264,7 +265,7 @@ func centerMapOnPlayer() {
 
 // addLogEntry adds entries in the Log scrollable screen.
 func addLogEntry(logString string) {
-	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
+	fullLogString := timespent.FormatDuration(timespent.LongFormat) + ": " + logString
 	logsEntry := canvas.NewText(fullLogString, model.TextColor)
 	logsEntry.TextSize = 12
 	logsArea.Add(logsEntry)
