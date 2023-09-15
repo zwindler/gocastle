@@ -196,16 +196,16 @@ func (npc *NPCStats) HandleNPCDamage() string {
 	case npc.HP.IsDead():
 		additionalInfo += fmt.Sprintf("%s is dead.", npc.Name)
 	// remaininghp between 80% and 100%
-	case npc.HP.IsAlive() && npc.HP.Percent() > 0.8:
+	case npc.HP.IsAlive() && npc.HP.BeetwenPercent(0.8):
 		additionalInfo += fmt.Sprintf("%s looks barely injured.", npc.Name)
 	// remaininghp between 50% and 80%
-	case npc.HP.IsAlive() && npc.HP.Percent() > 0.5:
+	case npc.HP.IsAlive() && npc.HP.BeetwenPercent(0.5):
 		additionalInfo += fmt.Sprintf("%s looks injured.", npc.Name)
 	// remaininghp between 20% and 50%
-	case npc.HP.IsAlive() && npc.HP.Percent() > 0.2:
+	case npc.HP.IsAlive() && npc.HP.BeetwenPercent(0.2):
 		additionalInfo += fmt.Sprintf("%s looks seriously injured.", npc.Name)
 	// remaininghp between 0% and 20%
-	case npc.HP.IsAlive() && npc.HP.Percent() > 0:
+	case npc.HP.IsAlive() && npc.HP.Percent() > 0 && npc.HP.Current.Get() < npc.HP.Max.Get() && npc.HP.Current.Get() == npc.HP.Max.Get():
 		additionalInfo += fmt.Sprintf("%s looks barely alive.", npc.Name)
 	}
 	return fmt.Sprintf("you strike at the %s, %s's hit! %s", npc.Name, npc.Pronoun, additionalInfo)
