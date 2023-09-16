@@ -15,6 +15,7 @@ type Map struct {
 	ObjectList     []*model.Object
 	MapMatrix      [][]int
 	MapTransitions []SpecialTile
+	MapImage       image.Image
 }
 
 // This structure is used to specify tiles that have special meaning, like
@@ -45,17 +46,17 @@ func (currentMap *Map) getColumns() int {
 	return len(currentMap.MapMatrix[0])
 }
 
-// GetMapImageSize returns the image x and y size
+// GetMapImageSize returns the image x and y size.
 func (currentMap *Map) GetMapImageSize() (float32, float32) {
 	return currentMap.getMapImageSizeX(), currentMap.getMapImageSizeY()
 }
 
-// getMapImageSizeX return x as Map Image size
+// getMapImageSizeX return x as Map Image size.
 func (currentMap *Map) getMapImageSizeX() float32 {
 	return float32(tileSize * currentMap.getColumns())
 }
 
-// getMapImageSizeY return y as Map Image size
+// getMapImageSizeY return y as Map Image size.
 func (currentMap *Map) getMapImageSizeY() float32 {
 	return float32(tileSize * currentMap.getRows())
 }
@@ -134,7 +135,8 @@ func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
 	return nil
 }
 
-func (currentMap *Map) GenerateMapImage() image.Image {
+// GenerateMapImage generates or regenerates the whole image from map tiles.
+func (currentMap *Map) GenerateMapImage() {
 	numRows, numColumns := currentMap.GetMapSize()
 	xSize, ySize := currentMap.GetMapImageSize()
 
@@ -164,6 +166,8 @@ func (currentMap *Map) GenerateMapImage() image.Image {
 		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
 	}
 
+	currentMap.MapImage = fullImage
+
 	// useful to debug
 	/*
 		out, err := os.Create("./output.jpg")
@@ -176,6 +180,4 @@ func (currentMap *Map) GenerateMapImage() image.Image {
 
 		jpeg.Encode(out, fullImage, &opt)
 	*/
-
-	return fullImage
 }

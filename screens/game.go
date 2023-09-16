@@ -127,7 +127,10 @@ func updateStatsArea() {
 
 // createMapImage creates an image based on the tiles stored in currentMap.
 func createMapCanvasImage() *canvas.Image {
-	fullCanvasImage := canvas.NewImageFromImage(currentMap.GenerateMapImage())
+	if currentMap.MapImage == nil {
+		currentMap.GenerateMapImage()
+	}
+	fullCanvasImage := canvas.NewImageFromImage(currentMap.MapImage)
 	fullCanvasImage.FillMode = canvas.ImageFillOriginal
 	fullCanvasImage.Resize(fyne.NewSize(currentMap.GetMapImageSize()))
 
