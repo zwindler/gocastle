@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 
 	"github.com/zwindler/gocastle/maps"
-	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/timespent"
 )
 
 // actOnDirectionKey take player's new coordinates and act on it.
@@ -16,7 +16,7 @@ func actOnDirectionKey(newX, newY int) {
 	if currentMap.CheckOutOfBounds(newX, newY) {
 		// Player tries to escape map, prevent this, lose 2 seconds
 		addLogEntry("you are blocked!")
-		model.IncrementTimeSinceBegin(2)
+		timespent.Increment(2)
 	} else {
 		// let's check if we find a NPC on our path
 		if npc := currentMap.GetNPCAtPosition(newX, newY); npc != nil {
@@ -40,7 +40,7 @@ func actOnDirectionKey(newX, newY int) {
 					currentMap.RemoveNPC(npc)
 				}
 				// attacking costs 5 seconds
-				model.IncrementTimeSinceBegin(5)
+				timespent.Increment(5)
 			} else {
 				// NPC is not hostile, we don't want to hurt them, but lost 2s
 				if npc.Dialog != "" {
@@ -51,14 +51,14 @@ func actOnDirectionKey(newX, newY int) {
 					addLogEntry(blockEntry)
 				}
 
-				model.IncrementTimeSinceBegin(2)
+				timespent.Increment(2)
 			}
 		} else {
 			// no NPC found on our path, let's check if we can move
 			if currentMap.CheckTileIsWalkable(newX, newY) {
 				// path is free, let's move (3sec cost)
 				player.Avatar.MoveAvatar(mapContainer, newX, newY)
-				model.IncrementTimeSinceBegin(3)
+				timespent.Increment(3)
 
 				// this tile could be special, check if it is
 				tile := currentMap.CheckTileIsSpecial(newX, newY)
@@ -74,7 +74,7 @@ func actOnDirectionKey(newX, newY int) {
 			} else {
 				// you "hit" a wall, but lost 2s
 				addLogEntry("you are blocked!")
-				model.IncrementTimeSinceBegin(2)
+				timespent.Increment(2)
 			}
 		}
 	}

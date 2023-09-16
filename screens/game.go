@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/timespent"
 )
 
 const (
@@ -122,7 +123,7 @@ func updateStatsArea() {
 	manaPointsValueLabel.Text = player.MP.String()
 	manaPointsValueLabel.Refresh()
 
-	timeSpentValueLabel.Text = model.FormatDuration(model.TimeSinceBegin, "short")
+	timeSpentValueLabel.Text = timespent.FormatDuration(timespent.ShortFormat)
 	timeSpentValueLabel.Refresh()
 }
 
@@ -216,7 +217,7 @@ func centerMapOnPlayer() {
 
 // addLogEntry adds entries in the Log scrollable screen.
 func addLogEntry(logString string) {
-	fullLogString := model.FormatDuration(model.TimeSinceBegin, "long") + ": " + logString
+	fullLogString := timespent.FormatDuration(timespent.LongFormat) + ": " + logString
 	logsEntry := canvas.NewText(fullLogString, model.TextColor)
 	logsEntry.TextSize = 12
 	logsArea.Add(logsEntry)

@@ -9,8 +9,9 @@ import (
 
 // HP represents a health point system with a maximum and current value.
 type HP struct {
-	Max     *pts.Point
-	Current *pts.Point
+	Max      *pts.Point
+	Current  *pts.Point
+	Previous *pts.Point
 }
 
 // IsAlive returns true if the current HP is greater than 0.
@@ -33,6 +34,7 @@ func (hp *HP) Heal(amount int) {
 
 // Damage subtracts the given amount from the current HP and caps it at 0.
 func (hp *HP) Damage(amount int) {
+	hp.Previous.Set(hp.Current.Get())
 	hp.Current.Sub(amount)
 	if !hp.Current.IsPositive() {
 		hp.Current.Reset()
@@ -42,6 +44,11 @@ func (hp *HP) Damage(amount int) {
 // Percent returns the current HP as a percentage of the maximum HP.
 func (hp *HP) Percent() float64 {
 	return float64(hp.Current.Get()) / float64(hp.Max.Get())
+}
+
+// BeetwenPercent returns true if the current HP and previous HP are between the given percentages.
+func (hp *HP) BeetwenPercent(percent float64) bool {
+	return (float64(hp.Current.Get())/float64(hp.Max.Get())) <= percent && (float64(hp.Previous.Get())/float64(hp.Max.Get())) > percent
 }
 
 // PercentString returns the current HP as a percentage string.
@@ -63,13 +70,15 @@ func (hp *HP) Reset() {
 func (hp *HP) Set(amount int) {
 	hp.Max.Set(amount)
 	hp.Current.Set(amount)
+	hp.Previous.Set(amount)
 }
 
 // New returns a new HP struct with the given max and current values.
 func New(max int) HP {
 	return HP{
-		Max:     pts.New(max),
-		Current: pts.New(max),
+		Max:      pts.New(max),
+		Current:  pts.New(max),
+		Previous: pts.New(max),
 	}
 }
 

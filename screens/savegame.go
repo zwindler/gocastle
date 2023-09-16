@@ -11,6 +11,7 @@ import (
 
 	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/timespent"
 	"github.com/zwindler/gocastle/utils"
 )
 
@@ -49,7 +50,7 @@ func ShowSaveGameScreen(window fyne.Window) {
 	gameData := savedGameData{
 		Player:         playerSaveData,
 		AllTheMaps:     mapSaveData,
-		TimeSinceBegin: model.TimeSinceBegin,
+		TimeSinceBegin: timespent.Get(),
 	}
 
 	// Show file save dialog
