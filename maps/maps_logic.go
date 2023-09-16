@@ -146,7 +146,6 @@ func (currentMap *Map) GenerateMapImage() {
 	if err != nil {
 		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
 		log.Fatalf("MapMatrix error: %s", err)
-		// TODO error handling
 	}
 
 	// now, reconstruct the whole map image with tiles images
@@ -167,17 +166,4 @@ func (currentMap *Map) GenerateMapImage() {
 	}
 
 	currentMap.MapImage = fullImage
-
-	// useful to debug
-	/*
-		out, err := os.Create("./output.jpg")
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		var opt jpeg.Options
-		opt.Quality = 80
-
-		jpeg.Encode(out, fullImage, &opt)
-	*/
 }
