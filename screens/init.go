@@ -14,6 +14,9 @@ var (
 
 // initGame will initialise all needed variables before start game (start=true) or load game (start=false).
 func initGame(window fyne.Window, start bool) {
+	// pregenerate the map image to save time in game screen
+	currentMap.GenerateMapImage()
+
 	// refresh player stats (heal or not depending on "start")
 	player.RefreshStats(start)
 
