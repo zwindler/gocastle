@@ -44,6 +44,12 @@ func ShowGameScreen(window fyne.Window) {
 	mapContainer.Add(mapImage)
 	scrollableMapContainer = container.NewScroll(mapContainer)
 
+	// TODO create a separate function for this
+	// set player on map and draw it
+	player.Avatar.DrawAvatar(mapContainer)
+	drawNPCList(mapContainer)
+	drawObjectList(mapContainer)
+
 	// bottom right corner is the stats box area
 	statsTextArea = createStatsArea()
 	// merge log area and stats area
@@ -51,14 +57,8 @@ func ShowGameScreen(window fyne.Window) {
 	// merge map and bottom
 	mainContent = container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
 
-	window.Canvas().SetOnTypedKey(mapKeyListener)
 	window.SetContent(mainContent)
-
-	// TODO create a separate function for this
-	// set player on map and draw it
-	player.Avatar.DrawAvatar(mapContainer)
-	drawNPCList(mapContainer)
-	drawObjectList(mapContainer)
+	window.Canvas().SetOnTypedKey(mapKeyListener)
 
 	centerMapOnPlayer()
 }
