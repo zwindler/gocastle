@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 
-	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/newtheme"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
 
@@ -83,20 +83,20 @@ func drawObjectList(mapContainer *fyne.Container) {
 // createStatsArea creates the stats area containing health points, mana points,
 // time spent, and location info.
 func createStatsArea() fyne.CanvasObject {
-	healthPointsValueLabel = canvas.NewText("", model.TextColor)
-	manaPointsValueLabel = canvas.NewText("", model.TextColor)
-	timeSpentValueLabel = canvas.NewText("", model.TextColor)
+	healthPointsValueLabel = canvas.NewText("", newtheme.TextColor)
+	manaPointsValueLabel = canvas.NewText("", newtheme.TextColor)
+	timeSpentValueLabel = canvas.NewText("", newtheme.TextColor)
 
 	// Create an array to store all the canvas.NewText objects
 	statsTextObjects := []*canvas.Text{
-		canvas.NewText("Health Points:", model.TextColor),
+		canvas.NewText("Health Points:", newtheme.TextColor),
 		healthPointsValueLabel,
-		canvas.NewText("Mana Points:", model.TextColor),
+		canvas.NewText("Mana Points:", newtheme.TextColor),
 		manaPointsValueLabel,
-		canvas.NewText("Time spent:", model.TextColor),
+		canvas.NewText("Time spent:", newtheme.TextColor),
 		timeSpentValueLabel,
-		canvas.NewText("Location:", model.TextColor),
-		canvas.NewText(currentMap.Name, model.TextColor),
+		canvas.NewText("Location:", newtheme.TextColor),
+		canvas.NewText(currentMap.Name, newtheme.TextColor),
 	}
 
 	// update HP, MP, time
@@ -218,7 +218,7 @@ func centerMapOnPlayer() {
 // addLogEntry adds entries in the Log scrollable screen.
 func addLogEntry(logString string) {
 	fullLogString := timespent.FormatDuration(timespent.LongFormat) + ": " + logString
-	logsEntry := canvas.NewText(fullLogString, model.TextColor)
+	logsEntry := canvas.NewText(fullLogString, newtheme.TextColor)
 	logsEntry.TextSize = 12
 	logsArea.Add(logsEntry)
 	logsScrollableTextArea.ScrollToBottom()

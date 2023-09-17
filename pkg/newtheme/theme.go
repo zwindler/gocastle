@@ -1,4 +1,4 @@
-package model
+package newtheme
 
 import (
 	"image/color"
