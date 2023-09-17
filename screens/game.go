@@ -1,18 +1,13 @@
 package screens
 
 import (
-	"fmt"
-	"log"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 
-	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/pkg/newtheme"
 	"github.com/zwindler/gocastle/pkg/timespent"
-	"github.com/zwindler/gocastle/utils"
 )
 
 const (
@@ -20,9 +15,6 @@ const (
 )
 
 var (
-	mapColumns int
-	mapRows    int
-
 	fyneTileSize = fyne.NewSize(tileSize, tileSize)
 
 	mainContent   *fyne.Container
@@ -49,7 +41,16 @@ func ShowGameScreen(window fyne.Window) {
 	mapContainer = container.NewWithoutLayout()
 
 	// generate a scrollable container which contains the map container
-	scrollableMapContainer = container.NewScroll(createMapArea(mapContainer))
+	mapImage := createMapCanvasImage()
+	mapContainer.Add(mapImage)
+	scrollableMapContainer = container.NewScroll(mapContainer)
+
+	// TODO create a separate function for this
+	// set player on map and draw it
+	player.Avatar.DrawAvatar(mapContainer)
+	drawNPCList(mapContainer)
+	drawObjectList(mapContainer)
+
 	// bottom right corner is the stats box area
 	statsTextArea = createStatsArea()
 	// merge log area and stats area
@@ -57,41 +58,10 @@ func ShowGameScreen(window fyne.Window) {
 	// merge map and bottom
 	mainContent = container.NewBorder(nil, bottom, nil, nil, scrollableMapContainer)
 
-	window.Canvas().SetOnTypedKey(mapKeyListener)
 	window.SetContent(mainContent)
+	window.Canvas().SetOnTypedKey(mapKeyListener)
 
-	// TODO create a separate function for this
-	// set player on map and draw it
-	player.Avatar.DrawAvatar(mapContainer)
 	centerMapOnPlayer()
-	drawNPCList(mapContainer)
-	drawObjectList(mapContainer)
-}
-
-// createMapArea generates a fyne container containing the map tiles.
-func createMapArea(mapContainer *fyne.Container) fyne.CanvasObject {
-	mapRows, mapColumns = currentMap.GetMapSize()
-	imageMatrix := createMapMatrix(mapRows, mapColumns)
-
-	for row := 0; row < mapRows; row++ {
-		currentLine := float32(row) * tileSize
-		for column := 0; column < mapColumns; column++ {
-			tile := imageMatrix[row][column]
-			tile.Resize(fyneTileSize)
-			currentPos := fyne.NewPos(float32(column)*tileSize, currentLine)
-			tile.Move(currentPos)
-			mapContainer.Add(tile)
-		}
-	}
-
-	// create a transparent filler to trick scrollable containers
-	limits := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/transparent_tile.png"))
-	limits.FillMode = canvas.ImageFillStretch
-	limits.SetMinSize(fyne.NewSize(float32(mapColumns)*16, float32(mapRows)*16))
-
-	return container.NewGridWithColumns(2,
-		mapContainer, layout.NewSpacer(),
-		layout.NewSpacer(), limits)
 }
 
 // drawNPCList draws the NPC's Avatars images on the mapContainer.
@@ -157,34 +127,16 @@ func updateStatsArea() {
 	timeSpentValueLabel.Refresh()
 }
 
-// createMapMatrix creates the tiles matrix ([][]*canvas.Image).
-func createMapMatrix(numRows, numColumns int) [][]*canvas.Image {
-	matrix := make([][]*canvas.Image, numRows)
-
-	// extract the needed tiles from the Tileset
-	// create a table of subimages (image.Image type)
-	loadedTiles, err := maps.LoadTilesFromTileset(maps.TilesTypes)
-	if err != nil {
-		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
-		log.Fatalf("MapMatrix error: %s", err)
-		// TODO error handling
+// createMapImage creates an image based on the tiles stored in currentMap.
+func createMapCanvasImage() *canvas.Image {
+	if currentMap.MapImage == nil {
+		currentMap.GenerateMapImage()
 	}
+	fullCanvasImage := canvas.NewImageFromImage(currentMap.MapImage)
+	fullCanvasImage.FillMode = canvas.ImageFillOriginal
+	fullCanvasImage.Resize(fyne.NewSize(currentMap.GetMapImageSize()))
 
-	// create the full matrix first to avoid out of bounds exception
-	for row := 0; row < numRows; row++ {
-		matrix[row] = make([]*canvas.Image, numColumns)
-	}
-	for row := 0; row < numRows; row++ {
-		for column := 0; column < numColumns; column++ {
-			image := loadedTiles[currentMap.MapMatrix[row][column]]
-			imageCanvas := canvas.NewImageFromImage(image)
-			imageCanvas.FillMode = canvas.ImageFillOriginal
-			imageCanvas.Resize(fyneTileSize)
-			matrix[row][column] = imageCanvas
-		}
-	}
-
-	return matrix
+	return fullCanvasImage
 }
 
 // mapKeyListener is the main loop function in this screen.

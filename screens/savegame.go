@@ -32,9 +32,11 @@ func ShowSaveGameScreen(window fyne.Window) {
 		playerSaveData.Inventory[index].CanvasImage = nil
 	}
 
-	// Remove Images from NPCs & Objects before saving + ObjectInMapContainer variable
+	// Remove Images from Maps, NPCs & Objects before saving
+	// Also remove ObjectInMapContainer variable which seem to come from fyne?
 	mapSaveData := maps.AllTheMaps
 	for indexMap := range mapSaveData {
+		mapSaveData[indexMap].MapImage = nil
 		for index := range mapSaveData[indexMap].NPCList {
 			mapSaveData[indexMap].NPCList[index].Avatar.CanvasImage.Image = nil
 			mapSaveData[indexMap].NPCList[index].Avatar.ObjectInMapContainer = nil
