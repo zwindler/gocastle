@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/newtheme"
 	"github.com/zwindler/gocastle/utils"
 )
 
@@ -111,14 +112,14 @@ func ShowInventoryScreen(window fyne.Window) {
 
 // createInventoryStatsArea creates the stats area containing inventory weight and gold amount.
 func createInventoryStatsArea() fyne.CanvasObject {
-	totalWeightValueLabel = canvas.NewText("", model.TextColor)
-	equippedWeightValueLabel = canvas.NewText("", model.TextColor)
-	goldAmountValueLabel = canvas.NewText("", model.TextColor)
+	totalWeightValueLabel = canvas.NewText("", newtheme.TextColor)
+	equippedWeightValueLabel = canvas.NewText("", newtheme.TextColor)
+	goldAmountValueLabel = canvas.NewText("", newtheme.TextColor)
 
 	labels := container.NewVBox(
-		canvas.NewText("Inventory Weight:", model.TextColor),
-		canvas.NewText("Equipped Items Weight:", model.TextColor),
-		canvas.NewText("Gold amount:", model.TextColor))
+		canvas.NewText("Inventory Weight:", newtheme.TextColor),
+		canvas.NewText("Equipped Items Weight:", newtheme.TextColor),
+		canvas.NewText("Gold amount:", newtheme.TextColor))
 	values := container.NewVBox(
 		totalWeightValueLabel,
 		equippedWeightValueLabel,
