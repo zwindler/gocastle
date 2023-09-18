@@ -12,7 +12,6 @@ import (
 
 	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
-	"github.com/zwindler/gocastle/utils"
 )
 
 // ShowLoadGameScreen displays a file dialog to select the file to load.
@@ -44,7 +43,7 @@ func ShowLoadGameScreen(window fyne.Window) {
 	}, window)
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
-	location, err := utils.GetBaseDirectory()
+	location, err := getBaseDirectory()
 	// TODO: don't change path for iOS, Android, Flatpak
 	if err != nil {
 		dialog.ShowError(err, window)

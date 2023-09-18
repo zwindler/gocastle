@@ -12,7 +12,6 @@ import (
 	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/timespent"
-	"github.com/zwindler/gocastle/utils"
 )
 
 type savedGameData struct {
@@ -73,7 +72,7 @@ func ShowSaveGameScreen(window fyne.Window) {
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
 	fd.SetFileName("backup.sav")
 	// TODO: don't change path for iOS, Android, Flatpak
-	location, err := utils.GetBaseDirectory()
+	location, err := getBaseDirectory()
 	if err != nil {
 		dialog.ShowError(err, window)
 	}
