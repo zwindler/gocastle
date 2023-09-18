@@ -11,8 +11,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/embed"
 	"github.com/zwindler/gocastle/pkg/newtheme"
-	"github.com/zwindler/gocastle/utils"
 )
 
 var (
@@ -32,7 +32,8 @@ type dropdown struct {
 // ShowInventoryScreen is the main function of the inventory screen.
 func ShowInventoryScreen(window fyne.Window) {
 	// Load the background image
-	backgroundImage := canvas.NewImageFromImage(utils.GetImageFromEmbed("static/inventory.png"))
+	img, _ := embed.GetImageFromEmbed("static/inventory.png")
+	backgroundImage := canvas.NewImageFromImage(img)
 	backgroundImage.FillMode = canvas.ImageFillContain
 
 	// Create a container to hold the dropdown lists for each category
