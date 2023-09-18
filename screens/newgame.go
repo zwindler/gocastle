@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/zwindler/gocastle/model"
-	"github.com/zwindler/gocastle/utils"
+	"github.com/zwindler/gocastle/pkg/embed"
 )
 
 const (
@@ -142,7 +142,7 @@ func ShowNewGameScreen(window fyne.Window) {
 	for column := 0; column < 3; column++ {
 		characterAspectTable = append(characterAspectTable, container.NewWithoutLayout())
 		for row := 0; row < 6; row++ {
-			image := canvas.NewImageFromImage(utils.GetImageFromEmbed(aspectIconPath[column][row]))
+			image := canvas.NewImageFromImage(embed.GetImageFromEmbed(aspectIconPath[column][row]))
 			image.FillMode = canvas.ImageFillOriginal
 			image.Resize(fyneTileSize)
 			currentPos := fyne.NewPos(0, float32(row)*38)

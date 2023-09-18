@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 
-	"github.com/zwindler/gocastle/utils"
+	"github.com/zwindler/gocastle/pkg/embed"
 )
 
 const (
@@ -31,14 +31,14 @@ type Avatar struct {
 func CreateAvatar(avatar Avatar, coord Coord) Avatar {
 	return Avatar{
 		CanvasPath:  avatar.CanvasPath,
-		CanvasImage: canvas.NewImageFromImage(utils.GetImageFromEmbed(avatar.CanvasPath)),
+		CanvasImage: canvas.NewImageFromImage(embed.GetImageFromEmbed(avatar.CanvasPath)),
 		Coord:       coord,
 	}
 }
 
 // RefreshAvatar allows to refresh Avatar Image in case it was removed (save/load).
 func (subject *Avatar) RefreshAvatar() {
-	subject.CanvasImage = canvas.NewImageFromImage(utils.GetImageFromEmbed(subject.CanvasPath))
+	subject.CanvasImage = canvas.NewImageFromImage(embed.GetImageFromEmbed(subject.CanvasPath))
 }
 
 // MoveAvatar moves avatar's coordinates and updates image position on map.
