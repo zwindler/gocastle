@@ -29,16 +29,20 @@ type Avatar struct {
 
 // CreateAvatar create a copy of an Avatar on given x,y coordinates.
 func CreateAvatar(avatar Avatar, coord Coord) Avatar {
+	img, _ := embed.GetImageFromEmbed(avatar.CanvasPath)
+
 	return Avatar{
 		CanvasPath:  avatar.CanvasPath,
-		CanvasImage: canvas.NewImageFromImage(embed.GetImageFromEmbed(avatar.CanvasPath)),
+		CanvasImage: canvas.NewImageFromImage(img),
 		Coord:       coord,
 	}
 }
 
 // RefreshAvatar allows to refresh Avatar Image in case it was removed (save/load).
 func (subject *Avatar) RefreshAvatar() {
-	subject.CanvasImage = canvas.NewImageFromImage(embed.GetImageFromEmbed(subject.CanvasPath))
+	img, _ := embed.GetImageFromEmbed(subject.CanvasPath)
+
+	subject.CanvasImage = canvas.NewImageFromImage(img)
 }
 
 // MoveAvatar moves avatar's coordinates and updates image position on map.

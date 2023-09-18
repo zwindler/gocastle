@@ -14,8 +14,8 @@ import (
 // ShowMenuScreen is the main function of the main screen.
 func ShowMenuScreen(window fyne.Window) {
 	// Load the background image
-
-	backgroundImage := canvas.NewImageFromImage(embed.GetImageFromEmbed("static/castle_back.png"))
+	img, _ := embed.GetImageFromEmbed("static/castle_back.png")
+	backgroundImage := canvas.NewImageFromImage(img)
 
 	backgroundImage.FillMode = canvas.ImageFillStretch
 	backgroundImage.SetMinSize(fyne.NewSize(800, 600))

@@ -143,13 +143,18 @@ func CreateObject(obj Object, coord Coord) (Object, error) {
 		return Object{}, fmt.Errorf("category '%s' does not exist", obj.Category)
 	}
 
+	img, err := embed.GetImageFromEmbed(obj.CanvasPath)
+	if err != nil {
+		return Object{}, err
+	}
+
 	// Create a new Object with the same properties.
 	newObject := Object{
 		Name:        obj.Name,
 		Category:    obj.Category,
 		Weight:      obj.Weight,
 		CanvasPath:  obj.CanvasPath,
-		CanvasImage: canvas.NewImageFromImage(embed.GetImageFromEmbed(obj.CanvasPath)),
+		CanvasImage: canvas.NewImageFromImage(img),
 		Coord:       coord,
 		Equipped:    false,
 		InInventory: false,
@@ -190,5 +195,6 @@ func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 
 // RefreshObject allows to refresh Object Image in case it was removed (save/load).
 func (subject *Object) RefreshObject() {
-	subject.CanvasImage = canvas.NewImageFromImage(embed.GetImageFromEmbed(subject.CanvasPath))
+	img, _ := embed.GetImageFromEmbed(subject.CanvasPath)
+	subject.CanvasImage = canvas.NewImageFromImage(img)
 }
