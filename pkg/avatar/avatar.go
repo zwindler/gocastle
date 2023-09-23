@@ -1,4 +1,4 @@
-package model
+package avatar
 
 import (
 	"math"
@@ -6,29 +6,25 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 
+	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/embed"
 )
-
-const (
-	tileSize = 32
-)
-
-var fyneTileSize = fyne.NewSize(tileSize, tileSize)
-
-type Coord struct {
-	X, Y int
-	Map  int
-}
 
 type Avatar struct {
 	CanvasImage          *canvas.Image
 	CanvasPath           string
-	Coord                Coord
+	Coord                coord.Coord
 	ObjectInMapContainer *fyne.CanvasObject
 }
 
-// CreateAvatar create a copy of an Avatar on given x,y coordinates.
-func CreateAvatar(avatar Avatar, coord Coord) Avatar {
+// New create a new Avatar.
+func New(avatar Avatar) Avatar {
+	// Now this function is useless, but it will be useful in the future
+	return avatar
+}
+
+// Spawn create a copy of an Avatar on given x,y coordinates.
+func Spawn(avatar Avatar, coord coord.Coord) Avatar {
 	img, _ := embed.GetImageFromEmbed(avatar.CanvasPath)
 
 	return Avatar{
@@ -38,29 +34,29 @@ func CreateAvatar(avatar Avatar, coord Coord) Avatar {
 	}
 }
 
-// RefreshAvatar allows to refresh Avatar Image in case it was removed (save/load).
-func (subject *Avatar) RefreshAvatar() {
+// Refresh allows to refresh Avatar Image in case it was removed (save/load).
+func (subject *Avatar) Refresh() {
 	img, _ := embed.GetImageFromEmbed(subject.CanvasPath)
 
 	subject.CanvasImage = canvas.NewImageFromImage(img)
 }
 
-// MoveAvatar moves avatar's coordinates and updates image position on map.
-func (subject *Avatar) MoveAvatar(mapContainer *fyne.Container, futurePosX, futurePosY int) {
+// Move moves avatar's coordinates and updates image position on map.
+func (subject *Avatar) Move(mapContainer *fyne.Container, futurePosX, futurePosY int) {
 	// assign new values for subject position
 	subject.Coord.X, subject.Coord.Y = futurePosX, futurePosY
 
-	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*coord.TileSize), float32(futurePosY*coord.TileSize)))
 
 	// remove/re-add Avatar from mapContainer to redraw it on top
 	mapContainer.Remove(*subject.ObjectInMapContainer)
 	mapContainer.Add(*subject.ObjectInMapContainer)
 }
 
-// DrawAvatar displays an avatar's image on the mapContainer.
-func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
+// Draw displays an avatar's image on the mapContainer.
+func (subject *Avatar) Draw(mapContainer *fyne.Container) {
 	subject.CanvasImage.FillMode = canvas.ImageFillOriginal
-	subject.CanvasImage.Resize(fyneTileSize)
+	subject.CanvasImage.Resize(coord.FyneTileSize)
 
 	mapContainer.Add(subject.CanvasImage)
 
@@ -68,7 +64,7 @@ func (subject *Avatar) DrawAvatar(mapContainer *fyne.Container) {
 	avatarInMapContainer := &mapContainer.Objects[len(mapContainer.Objects)-1]
 	subject.ObjectInMapContainer = avatarInMapContainer
 
-	subject.MoveAvatar(mapContainer, subject.Coord.X, subject.Coord.Y)
+	subject.Move(mapContainer, subject.Coord.X, subject.Coord.Y)
 }
 
 // DistanceFromAvatar computes the distance between 2 Avatars.
@@ -78,8 +74,8 @@ func (subject *Avatar) DistanceFromAvatar(subject2 *Avatar) float64 {
 	return math.Sqrt(dx*dx + dy*dy)
 }
 
-// MoveAvatarTowardsAvatar is a trivial pathfinding algorithm for NPCs.
-func (subject *Avatar) MoveAvatarTowardsAvatar(subject2 *Avatar) (int, int) {
+// MoveTowardsAvatar is a trivial pathfinding algorithm for NPCs.
+func (subject *Avatar) MoveTowardsAvatar(subject2 *Avatar) (int, int) {
 	// Calculate the distance between the Avatar and the other Avatar in the x and y directions
 	deltaX := subject2.Coord.X - subject.Coord.X
 	deltaY := subject2.Coord.Y - subject.Coord.Y
@@ -101,4 +97,9 @@ func (subject *Avatar) MoveAvatarTowardsAvatar(subject2 *Avatar) (int, int) {
 
 	// Update new Avatar's position to move one step closer to the other Avatar
 	return subject.Coord.X + moveX, subject.Coord.Y + moveY
+}
+
+// CollideWithPlayer returns true if we are going to collide with player, false instead.
+func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
+	return (subject.Coord.X == futurePosX && subject.Coord.Y == futurePosY)
 }

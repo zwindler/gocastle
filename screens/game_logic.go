@@ -57,7 +57,7 @@ func actOnDirectionKey(newX, newY int) {
 			// no NPC found on our path, let's check if we can move
 			if currentMap.CheckTileIsWalkable(newX, newY) {
 				// path is free, let's move (3sec cost)
-				player.Avatar.MoveAvatar(mapContainer, newX, newY)
+				player.Avatar.Move(mapContainer, newX, newY)
 				timespent.Increment(3)
 
 				// this tile could be special, check if it is
@@ -86,7 +86,7 @@ func newTurnForNPCs() {
 		var newX, newY int
 		if npc.Hostile && npc.Avatar.DistanceFromAvatar(&player.Avatar) <= 10 {
 			// player is near, move toward him/her
-			newX, newY = npc.Avatar.MoveAvatarTowardsAvatar(&player.Avatar)
+			newX, newY = npc.Avatar.MoveTowardsAvatar(&player.Avatar)
 		} else {
 			// move randomly
 			newX = npc.Avatar.Coord.X + rand.Intn(3) - 1 //nolint:gosec
@@ -113,7 +113,7 @@ func newTurnForNPCs() {
 					}
 					// no ones in our NPC's way
 				} else if currentMap.CheckTileIsWalkable(newX, newY) {
-					npc.Avatar.MoveAvatar(mapContainer, newX, newY)
+					npc.Avatar.Move(mapContainer, newX, newY)
 				}
 			}
 		}

@@ -4,7 +4,10 @@ import (
 	"fyne.io/fyne/v2"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/avatar"
+	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/maps"
+	"github.com/zwindler/gocastle/pkg/npc"
 )
 
 var (
@@ -29,20 +32,20 @@ func initGame(window fyne.Window, start bool) {
 
 		// TODO rework this
 		// Map0 Village
-		knife, _ := model.CreateObject(model.HuntingKnife, model.Coord{X: 10, Y: 10, Map: 0})
-		sword, _ := model.CreateObject(model.BluntSword, model.Coord{X: 20, Y: 20, Map: 0})
+		knife, _ := model.CreateObject(model.HuntingKnife, coord.Coord{X: 10, Y: 10, Map: 0})
+		sword, _ := model.CreateObject(model.BluntSword, coord.Coord{X: 20, Y: 20, Map: 0})
 		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife, &sword)
-		farmer := model.CreateNPC(model.FemaleFarmer, model.Coord{X: 10, Y: 15, Map: 0})
-		wolf1 := model.CreateNPC(model.Wolf, model.Coord{X: 25, Y: 26, Map: 0})
-		wolf2 := model.CreateNPC(model.Wolf, model.Coord{X: 28, Y: 27, Map: 0})
-		ogre := model.CreateNPC(model.Ogre, model.Coord{X: 30, Y: 25, Map: 0})
+		farmer := npc.Spawn(model.FemaleFarmer, coord.Coord{X: 10, Y: 15, Map: 0})
+		wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 25, Y: 26, Map: 0})
+		wolf2 := npc.Spawn(model.Wolf, coord.Coord{X: 28, Y: 27, Map: 0})
+		ogre := npc.Spawn(model.Ogre, coord.Coord{X: 30, Y: 25, Map: 0})
 		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, wolf1, wolf2, ogre)
 
-		player.Avatar.Coord = model.Coord{X: 15, Y: 15, Map: 0}
+		player.Avatar.Coord = coord.Coord{X: 15, Y: 15, Map: 0}
 	}
 
 	currentMap = &maps.AllTheMaps[player.Avatar.Coord.Map]
-	player.Avatar = model.CreateAvatar(player.Avatar, player.Avatar.Coord)
+	player.Avatar = avatar.Spawn(player.Avatar, player.Avatar.Coord)
 
 	ShowGameScreen(window)
 }

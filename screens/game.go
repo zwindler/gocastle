@@ -47,7 +47,7 @@ func ShowGameScreen(window fyne.Window) {
 
 	// TODO create a separate function for this
 	// set player on map and draw it
-	player.Avatar.DrawAvatar(mapContainer)
+	player.Avatar.Draw(mapContainer)
 	drawNPCList(mapContainer)
 	drawObjectList(mapContainer)
 
@@ -68,7 +68,7 @@ func ShowGameScreen(window fyne.Window) {
 func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
 	for _, npc := range currentMap.NPCList {
-		npc.Avatar.DrawAvatar(mapContainer)
+		npc.Avatar.Draw(mapContainer)
 	}
 }
 
