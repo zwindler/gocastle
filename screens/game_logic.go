@@ -6,7 +6,7 @@ import (
 
 	"fyne.io/fyne/v2/dialog"
 
-	"github.com/zwindler/gocastle/maps"
+	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
 

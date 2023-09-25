@@ -9,8 +9,8 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 
-	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
 
