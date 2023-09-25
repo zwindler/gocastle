@@ -65,8 +65,7 @@ func actOnDirectionKey(newX, newY int) {
 				if tile != maps.NotSpecialTile {
 					if tile.Type == "MapTransition" {
 						currentMap = &maps.AllTheMaps[tile.Destination.Map]
-						player.Avatar.Coord.X = tile.Destination.X
-						player.Avatar.Coord.Y = tile.Destination.Y
+						player.Avatar.Coord = tile.Destination
 						ShowGameScreen(currentWindow)
 					}
 					// TODO handle error
