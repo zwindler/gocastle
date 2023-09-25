@@ -61,7 +61,7 @@ func ShowGameScreen(window fyne.Window) {
 	window.SetContent(mainContent)
 	window.Canvas().SetOnTypedKey(mapKeyListener)
 
-	centerMapOnPlayer()
+	centerMapOnPlayer(false)
 }
 
 // drawNPCList draws the NPC's Avatars images on the mapContainer.
@@ -173,13 +173,13 @@ func mapKeyListener(event *fyne.KeyEvent) {
 
 	actOnDirectionKey(newX, newY)
 
-	centerMapOnPlayer()
+	centerMapOnPlayer(true)
 	updateStatsArea()
 	newTurnForNPCs()
 }
 
 // centerMapOnPlayer will center scrollable map focus on player as best it can.
-func centerMapOnPlayer() {
+func centerMapOnPlayer(refresh bool) {
 	// the idea is to focus on the player position
 	// but we need various informations to compute this
 
@@ -212,7 +212,9 @@ func centerMapOnPlayer() {
 		y = containerY / 2
 	}
 	scrollableMapContainer.Offset = fyne.NewPos(x-containerX/2, y-containerY/2)
-	scrollableMapContainer.Refresh()
+	if refresh {
+		scrollableMapContainer.Refresh()
+	}
 }
 
 // addLogEntry adds entries in the Log scrollable screen.
