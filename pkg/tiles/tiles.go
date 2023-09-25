@@ -1,4 +1,4 @@
-package maps
+package tiles
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ type TileInfo struct {
 }
 
 var (
-	tileSize   = 32
+	TileSize   = 32
 	TilesTypes = []TileInfo{
 		{X: 0, Y: 0, filePath: "static/tilea2_MACK.png", IsWalkable: true},      // 0, grass
 		{X: 192, Y: 0, filePath: "static/tilea3_MACK.png", IsWalkable: false},   // 1, upper left straw roof
