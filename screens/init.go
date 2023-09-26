@@ -3,8 +3,8 @@ package screens
 import (
 	"fyne.io/fyne/v2"
 
-	"github.com/zwindler/gocastle/maps"
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/maps"
 )
 
 var (

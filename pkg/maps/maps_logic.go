@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/tiles"
 )
 
 type Map struct {
@@ -53,12 +54,12 @@ func (currentMap *Map) GetMapImageSize() (float32, float32) {
 
 // getMapImageSizeX return x as Map Image size.
 func (currentMap *Map) getMapImageSizeX() float32 {
-	return float32(tileSize * currentMap.getColumns())
+	return float32(tiles.TileSize * currentMap.getColumns())
 }
 
 // getMapImageSizeY return y as Map Image size.
 func (currentMap *Map) getMapImageSizeY() float32 {
-	return float32(tileSize * currentMap.getRows())
+	return float32(tiles.TileSize * currentMap.getRows())
 }
 
 // CheckOutOfBounds checks if x, y coordinates are out of map bounds.
@@ -73,7 +74,7 @@ func (currentMap *Map) CheckOutOfBounds(futurePosX, futurePosY int) bool {
 
 // CheckTileIsWalkable checks if, for a given map, x,y coordinates are considered walkable.
 func (currentMap *Map) CheckTileIsWalkable(futurePosX, futurePosY int) bool {
-	return TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
+	return tiles.TilesTypes[currentMap.MapMatrix[futurePosY][futurePosX]].IsWalkable
 }
 
 // CheckTileIsSpecial checks if, for a given map, x,y coordinates are special
@@ -142,7 +143,7 @@ func (currentMap *Map) GenerateMapImage() {
 
 	// extract the needed tiles from the Tileset
 	// create a table of images (image.Image type)
-	loadedTiles, err := LoadTilesFromTileset(TilesTypes)
+	loadedTiles, err := tiles.LoadTilesFromTileset(tiles.TilesTypes)
 	if err != nil {
 		err = fmt.Errorf("unable to load tile from Tileset: %w", err)
 		log.Fatalf("MapMatrix error: %s", err)
@@ -151,17 +152,17 @@ func (currentMap *Map) GenerateMapImage() {
 	// now, reconstruct the whole map image with tiles images
 	fullImage := image.NewRGBA(image.Rect(0, 0, int(xSize), int(ySize)))
 	for row := 0; row < numRows; row++ {
-		currentRowImage := image.NewRGBA(image.Rect(0, 0, int(xSize), tileSize))
+		currentRowImage := image.NewRGBA(image.Rect(0, 0, int(xSize), tiles.TileSize))
 		for column := 0; column < numColumns; column++ {
 			currentImage := loadedTiles[currentMap.MapMatrix[row][column]]
-			startingPosition := image.Point{column * tileSize, 0}
-			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tileSize, tileSize})}
+			startingPosition := image.Point{column * tiles.TileSize, 0}
+			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tiles.TileSize, tiles.TileSize})}
 			draw.Draw(currentRowImage, currentTileRectangle.Bounds(), currentImage, image.Point{0, 0}, draw.Src)
 		}
 		// we have reconstructed the whole row with all the tiles
 		// now, we can add the row to the full image
-		startingRowPosition := image.Point{0, row * tileSize}
-		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tileSize * numColumns, tileSize})}
+		startingRowPosition := image.Point{0, row * tiles.TileSize}
+		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tiles.TileSize * numColumns, tiles.TileSize})}
 		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
 	}
 
