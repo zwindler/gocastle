@@ -90,7 +90,7 @@ func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 }
 
 // FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.
-func (currentMap *Map) FindObjectToRemove(object *model.Object) {
+func (currentMap *Map) FindObjectToRemove(object *model.Object) error {
 	indexToRemove := -1
 	for i, obj := range currentMap.ObjectList {
 		if obj == object {
@@ -102,11 +102,14 @@ func (currentMap *Map) FindObjectToRemove(object *model.Object) {
 	// If the object was found, remove it from the slice
 	if indexToRemove >= 0 {
 		currentMap.ObjectList = append(currentMap.ObjectList[:indexToRemove], currentMap.ObjectList[indexToRemove+1:]...)
+		return nil
 	}
+
+	return fmt.Errorf("unable to find object to remove")
 }
 
 // For a given map, remove NPC by list id and hide CanvasImage.
-func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
+func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) error {
 	var indexToRemove int = -1
 	for i, npc := range currentMap.NPCList {
 		if npc == npcToRemove {
@@ -121,7 +124,10 @@ func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
 		currentMap.NPCList[indexToRemove].Avatar.CanvasImage.Hidden = true
 		// remove NPC from NPCList slice
 		currentMap.NPCList = append(currentMap.NPCList[:indexToRemove], currentMap.NPCList[indexToRemove+1:]...)
+		return nil
 	}
+
+	return fmt.Errorf("unable to find NPC to remove")
 }
 
 // For a given NPCsOnCurrentMap, check if NPCs are located on x,y
