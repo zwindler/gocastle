@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 
+	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/embed"
 )
 
@@ -24,7 +25,7 @@ type Object struct {
 	Weight      int           // Object weight in grams
 	InInventory bool          // Is Object in inventory
 	Equipped    bool          // Is Object equipped
-	Coord       Coord         // Object position
+	Coord       coord.Coord   // Object position
 	Stats       []ObjectStat  // Object stats (e.g., strength, health, etc.).
 	CanvasImage *canvas.Image // Object image
 	CanvasPath  string        // Image path for Object
@@ -137,7 +138,7 @@ func CategoryExists(categoryName string) bool {
 
 // CreateObject creates a copy of the given object and returns it.
 // It also validates the category before creating the object.
-func CreateObject(obj Object, coord Coord) (Object, error) {
+func CreateObject(obj Object, coord coord.Coord) (Object, error) {
 	// Validate the category.
 	if !CategoryExists(obj.Category) {
 		return Object{}, fmt.Errorf("category '%s' does not exist", obj.Category)
@@ -176,7 +177,7 @@ func (subject *Object) DrawObject(mapContainer *fyne.Container) {
 	// don't put object in container if object is in inventory
 	if !subject.InInventory {
 		subject.CanvasImage.FillMode = canvas.ImageFillOriginal
-		subject.CanvasImage.Resize(fyneTileSize)
+		subject.CanvasImage.Resize(coord.FyneTileSize)
 
 		subject.MoveObject(subject.Coord.X, subject.Coord.Y)
 
@@ -190,7 +191,7 @@ func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 	subject.Coord.X = futurePosX
 	subject.Coord.Y = futurePosY
 
-	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*tileSize), float32(futurePosY*tileSize)))
+	subject.CanvasImage.Move(fyne.NewPos(float32(futurePosX*coord.TileSize), float32(futurePosY*coord.TileSize)))
 }
 
 // RefreshObject allows to refresh Object Image in case it was removed (save/load).

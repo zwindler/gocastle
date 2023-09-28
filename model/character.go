@@ -5,6 +5,7 @@ package model
 import (
 	"fmt"
 
+	"github.com/zwindler/gocastle/pkg/avatar"
 	"github.com/zwindler/gocastle/pkg/hp"
 	"github.com/zwindler/gocastle/pkg/mp"
 )
@@ -15,7 +16,7 @@ type CharacterStats struct {
 	GenderValue   string
 
 	// Avatar
-	Avatar Avatar
+	Avatar avatar.Avatar
 
 	// Main characteristics
 	PointsToSpend     int
@@ -43,7 +44,7 @@ type CharacterStats struct {
 }
 
 var (
-	PlayerAvatar = Avatar{}
+	PlayerAvatar = avatar.Avatar{}
 	Player       = CharacterStats{
 		// temporary, for dev
 		CharacterName: "zwindler",
@@ -139,11 +140,6 @@ func (player *CharacterStats) DetermineLevel() bool {
 		}
 	}
 	return false
-}
-
-// CollideWithPlayer returns true if we are going to collide with player, false instead.
-func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
-	return (subject.Coord.X == futurePosX && subject.Coord.Y == futurePosY)
 }
 
 // RefreshStats is used when characters stats are modified, which in turn

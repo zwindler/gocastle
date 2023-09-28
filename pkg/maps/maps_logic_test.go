@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/coord"
+	"github.com/zwindler/gocastle/pkg/npc"
 	"github.com/zwindler/gocastle/pkg/tiles"
 )
 
@@ -13,7 +15,7 @@ var testMap = Map{
 		{0, 13, 0}, // 13 is not walkable
 	},
 	MapTransitions: []SpecialTile{
-		{"MapTransition", model.Coord{X: 0, Y: 0, Map: 2}, model.Coord{X: 73, Y: 2, Map: 1}},
+		{"MapTransition", coord.Coord{X: 0, Y: 0, Map: 2}, coord.Coord{X: 73, Y: 2, Map: 1}},
 	},
 }
 
@@ -88,8 +90,8 @@ func TestCheckTileIsSpecial(t *testing.T) {
 }
 
 func TestFindObjectToRemove(t *testing.T) {
-	knife, _ := model.CreateObject(model.HuntingKnife, model.Coord{X: 0, Y: 0, Map: 0})
-	sword, _ := model.CreateObject(model.BluntSword, model.Coord{X: 1, Y: 1, Map: 0})
+	knife, _ := model.CreateObject(model.HuntingKnife, coord.Coord{X: 0, Y: 0, Map: 0})
+	sword, _ := model.CreateObject(model.BluntSword, coord.Coord{X: 1, Y: 1, Map: 0})
 
 	// add a sword and a knife on the map
 	testMap.ObjectList = append(testMap.ObjectList, &knife, &sword)
@@ -108,7 +110,7 @@ func TestFindObjectToRemove(t *testing.T) {
 }
 
 func TestRemoveNPC(t *testing.T) {
-	wolf1 := model.CreateNPC(model.Wolf, model.Coord{X: 0, Y: 1, Map: 0})
+	wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
 
 	// add a wolf on the map
 	testMap.NPCList = append(testMap.NPCList, wolf1)
@@ -127,7 +129,7 @@ func TestRemoveNPC(t *testing.T) {
 }
 
 func TestGetNPCAtPosition(t *testing.T) {
-	wolf1 := model.CreateNPC(model.Wolf, model.Coord{X: 0, Y: 1, Map: 0})
+	wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
 
 	// add a wolf on the map
 	testMap.NPCList = append(testMap.NPCList, wolf1)

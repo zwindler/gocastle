@@ -76,7 +76,7 @@ func updateLoadedGameData(data map[string]interface{}) error {
 	// NPCs and Objects were saved without their Image, refresh it
 	for indexMap := range maps.AllTheMaps {
 		for _, npc := range maps.AllTheMaps[indexMap].NPCList {
-			npc.Avatar.RefreshAvatar()
+			npc.Avatar.Refresh()
 		}
 		for _, object := range maps.AllTheMaps[indexMap].ObjectList {
 			object.RefreshObject()
