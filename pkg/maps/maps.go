@@ -1,6 +1,6 @@
 package maps
 
-import "github.com/zwindler/gocastle/model"
+import "github.com/zwindler/gocastle/pkg/coord"
 
 var (
 	Village = Map{
@@ -44,10 +44,10 @@ var (
 			{14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 16},
 		},
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 49, Y: 16, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 17, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 18, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 19, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 16, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 17, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 18, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 19, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
 		},
 	}
 	ToTheOldMine = Map{
@@ -85,12 +85,12 @@ var (
 			{13, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 10, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		},
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 0, Y: 7, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 8, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 9, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 10, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 73, Y: 0, Map: 1}, model.Coord{X: 1, Y: 1, Map: 2}},
-			{"MapTransition", model.Coord{X: 73, Y: 1, Map: 1}, model.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 0, Y: 7, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 8, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 9, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 10, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 73, Y: 0, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 73, Y: 1, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
 		},
 	}
 	TheOldMine = Map{
@@ -108,7 +108,7 @@ var (
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		},
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 0, Y: 0, Map: 2}, model.Coord{X: 73, Y: 2, Map: 1}},
+			{"MapTransition", coord.Coord{X: 0, Y: 0, Map: 2}, coord.Coord{X: 73, Y: 2, Map: 1}},
 		},
 	}
 
