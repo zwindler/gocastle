@@ -7,12 +7,14 @@ import (
 	"log"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/coord"
+	"github.com/zwindler/gocastle/pkg/npc"
 	"github.com/zwindler/gocastle/pkg/tiles"
 )
 
 type Map struct {
 	Name           string
-	NPCList        []*model.NPCStats
+	NPCList        []*npc.Stats
 	ObjectList     []*model.Object
 	MapMatrix      [][]int
 	MapTransitions []SpecialTile
@@ -23,36 +25,36 @@ type Map struct {
 // map transitions or traps.
 type SpecialTile struct {
 	Type        string
-	Pos         model.Coord
-	Destination model.Coord
+	Pos         coord.Coord
+	Destination coord.Coord
 }
 
 var (
-	NotSpecialTile = SpecialTile{"NA", model.Coord{}, model.Coord{}}
+	NotSpecialTile = SpecialTile{"NA", coord.Coord{}, coord.Coord{}}
 	Village        = Map{
 		Name: "Village",
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 49, Y: 16, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 17, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 18, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
-			{"MapTransition", model.Coord{X: 49, Y: 19, Map: 0}, model.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 16, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 17, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 18, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
+			{"MapTransition", coord.Coord{X: 49, Y: 19, Map: 0}, coord.Coord{X: 5, Y: 6, Map: 1}},
 		},
 	}
 	ToTheOldMine = Map{
 		Name: "To the Old Mine",
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 0, Y: 7, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 8, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 9, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 0, Y: 10, Map: 1}, model.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", model.Coord{X: 73, Y: 0, Map: 1}, model.Coord{X: 1, Y: 1, Map: 2}},
-			{"MapTransition", model.Coord{X: 73, Y: 1, Map: 1}, model.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 0, Y: 7, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 8, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 9, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 0, Y: 10, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
+			{"MapTransition", coord.Coord{X: 73, Y: 0, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 73, Y: 1, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
 		},
 	}
 	TheOldMine = Map{
 		Name: "The Old Mine",
 		MapTransitions: []SpecialTile{
-			{"MapTransition", model.Coord{X: 0, Y: 0, Map: 2}, model.Coord{X: 73, Y: 2, Map: 1}},
+			{"MapTransition", coord.Coord{X: 0, Y: 0, Map: 2}, coord.Coord{X: 73, Y: 2, Map: 1}},
 		},
 	}
 
@@ -121,7 +123,7 @@ func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 }
 
 // FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.
-func (currentMap *Map) FindObjectToRemove(object *model.Object) {
+func (currentMap *Map) FindObjectToRemove(object *model.Object) error {
 	indexToRemove := -1
 	for i, obj := range currentMap.ObjectList {
 		if obj == object {
@@ -133,11 +135,14 @@ func (currentMap *Map) FindObjectToRemove(object *model.Object) {
 	// If the object was found, remove it from the slice
 	if indexToRemove >= 0 {
 		currentMap.ObjectList = append(currentMap.ObjectList[:indexToRemove], currentMap.ObjectList[indexToRemove+1:]...)
+		return nil
 	}
+
+	return fmt.Errorf("unable to find object to remove")
 }
 
 // For a given map, remove NPC by list id and hide CanvasImage.
-func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
+func (currentMap *Map) RemoveNPC(npcToRemove *npc.Stats) error {
 	var indexToRemove int = -1
 	for i, npc := range currentMap.NPCList {
 		if npc == npcToRemove {
@@ -152,12 +157,15 @@ func (currentMap *Map) RemoveNPC(npcToRemove *model.NPCStats) {
 		currentMap.NPCList[indexToRemove].Avatar.CanvasImage.Hidden = true
 		// remove NPC from NPCList slice
 		currentMap.NPCList = append(currentMap.NPCList[:indexToRemove], currentMap.NPCList[indexToRemove+1:]...)
+		return nil
 	}
+
+	return fmt.Errorf("unable to find NPC to remove")
 }
 
 // For a given NPCsOnCurrentMap, check if NPCs are located on x,y
 // return nil if none or pointer to npc.
-func (currentMap *Map) GetNPCAtPosition(x, y int) *model.NPCStats {
+func (currentMap *Map) GetNPCAtPosition(x, y int) *npc.Stats {
 	// find if a NPC matches our destination
 	for _, npc := range currentMap.NPCList {
 		if npc.Avatar.Coord.X == x && npc.Avatar.Coord.Y == y {
@@ -183,17 +191,17 @@ func (currentMap *Map) GenerateMapImage() {
 	// now, reconstruct the whole map image with tiles images
 	fullImage := image.NewRGBA(image.Rect(0, 0, int(xSize), int(ySize)))
 	for row := 0; row < numRows; row++ {
-		currentRowImage := image.NewRGBA(image.Rect(0, 0, int(xSize), tiles.TileSize))
+		currentRowImage := image.NewRGBA(image.Rect(0, 0, int(xSize), coord.TileSize))
 		for column := 0; column < numColumns; column++ {
 			currentImage := loadedTiles[currentMap.MapMatrix[row][column]]
-			startingPosition := image.Point{column * tiles.TileSize, 0}
-			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{tiles.TileSize, tiles.TileSize})}
+			startingPosition := image.Point{column * coord.TileSize, 0}
+			currentTileRectangle := image.Rectangle{startingPosition, startingPosition.Add(image.Point{coord.TileSize, coord.TileSize})}
 			draw.Draw(currentRowImage, currentTileRectangle.Bounds(), currentImage, image.Point{0, 0}, draw.Src)
 		}
 		// we have reconstructed the whole row with all the tiles
 		// now, we can add the row to the full image
-		startingRowPosition := image.Point{0, row * tiles.TileSize}
-		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{tiles.TileSize * numColumns, tiles.TileSize})}
+		startingRowPosition := image.Point{0, row * coord.TileSize}
+		currentRowRectangle := image.Rectangle{startingRowPosition, startingRowPosition.Add(image.Point{coord.TileSize * numColumns, coord.TileSize})}
 		draw.Draw(fullImage, currentRowRectangle.Bounds(), currentRowImage, image.Point{0, 0}, draw.Src)
 	}
 
