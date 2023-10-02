@@ -1,9 +1,13 @@
 package screens
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/dialog"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/embed"
 	"github.com/zwindler/gocastle/pkg/avatar"
 	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/maps"
@@ -17,9 +21,6 @@ var (
 
 // initGame will initialise all needed variables before start game (start=true) or load game (start=false).
 func initGame(window fyne.Window, start bool) {
-	// pregenerate the map image to save time in game screen
-	currentMap.GenerateMapImage()
-
 	// refresh player stats (heal or not depending on "start")
 	player.RefreshStats(start)
 
@@ -28,6 +29,15 @@ func initGame(window fyne.Window, start bool) {
 
 	// create player Avatar
 	if start {
+		// load all pregenerated maps from json
+		for i := 0; i < len(maps.AllTheMaps); i++ {
+			thisMapMatrix, err := embed.GetMapMatrixFromEmbed(fmt.Sprintf("maps/%d.json", i))
+			if err != nil {
+				dialog.ShowError(err, window)
+			}
+			maps.AllTheMaps[i].MapMatrix = thisMapMatrix
+		}
+
 		player.ChangeGold(10)
 
 		// TODO rework this
@@ -43,6 +53,9 @@ func initGame(window fyne.Window, start bool) {
 
 		player.Avatar.Coord = coord.Coord{X: 15, Y: 15, Map: 0}
 	}
+
+	// pregenerate the map image to save time in game screen
+	currentMap.GenerateMapImage()
 
 	currentMap = &maps.AllTheMaps[player.Avatar.Coord.Map]
 	player.Avatar = avatar.Spawn(player.Avatar, player.Avatar.Coord)
