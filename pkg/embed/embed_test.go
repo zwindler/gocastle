@@ -40,12 +40,12 @@ func TestGetMapMatrixFromEmbed(t *testing.T) {
 	tcs := []struct {
 		path              string
 		expectErr         bool
-		expectOutput      [][]int
+		expectOutput      [][]uint16
 		expectWrongOutput bool
 	}{
-		{"maps/99.json", false, [][]int{{1, 2, 3}, {4, 5, 6}}, false},
-		{"maps/99.json", false, [][]int{{0, 0, 0}, {4, 5, 6}}, true},
-		{"dontexist", true, [][]int{}, false},
+		{"maps/99.json", false, [][]uint16{{1, 2, 3}, {4, 5, 6}}, false},
+		{"maps/99.json", false, [][]uint16{{0, 0, 0}, {4, 5, 6}}, true},
+		{"dontexist", true, [][]uint16{}, false},
 	}
 
 	for _, tc := range tcs {
@@ -68,7 +68,7 @@ func TestGetMapMatrixFromEmbed(t *testing.T) {
 }
 
 // compareMapMatrix is a function that checks that 2 MapMatrix are identical.
-func compareMapMatrix(a, b [][]int) bool {
+func compareMapMatrix(a, b [][]uint16) bool {
 	if len(a) != len(b) {
 		return false
 	}
