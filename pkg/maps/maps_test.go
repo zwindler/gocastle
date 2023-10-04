@@ -6,6 +6,7 @@ import (
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/npc"
+	"github.com/zwindler/gocastle/pkg/object"
 	"github.com/zwindler/gocastle/pkg/tiles"
 )
 
@@ -90,8 +91,8 @@ func TestCheckTileIsSpecial(t *testing.T) {
 }
 
 func TestFindObjectToRemove(t *testing.T) {
-	knife, _ := model.CreateObject(model.HuntingKnife, coord.Coord{X: 0, Y: 0, Map: 0})
-	sword, _ := model.CreateObject(model.BluntSword, coord.Coord{X: 1, Y: 1, Map: 0})
+	knife, _ := object.CreateObject(object.HuntingKnife, coord.Coord{X: 0, Y: 0, Map: 0})
+	sword, _ := object.CreateObject(object.BluntSword, coord.Coord{X: 1, Y: 1, Map: 0})
 
 	// add a sword and a knife on the map
 	testMap.ObjectList = append(testMap.ObjectList, &knife, &sword)

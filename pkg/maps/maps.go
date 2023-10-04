@@ -6,16 +6,16 @@ import (
 	"image/draw"
 	"log"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/npc"
+	"github.com/zwindler/gocastle/pkg/object"
 	"github.com/zwindler/gocastle/pkg/tiles"
 )
 
 type Map struct {
 	Name           string
 	NPCList        []*npc.Stats
-	ObjectList     []*model.Object
+	ObjectList     []*object.Object
 	MapMatrix      [][]uint16
 	MapTransitions []SpecialTile
 	MapImage       image.Image
@@ -123,7 +123,7 @@ func (currentMap *Map) CheckTileIsSpecial(posX, posY int) SpecialTile {
 }
 
 // FindObjectToRemove loops through the currentMap ObjectList and removes object *model.Object.
-func (currentMap *Map) FindObjectToRemove(object *model.Object) error {
+func (currentMap *Map) FindObjectToRemove(object *object.Object) error {
 	indexToRemove := -1
 	for i, obj := range currentMap.ObjectList {
 		if obj == object {
