@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/storage"
 
 	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
@@ -23,7 +24,7 @@ type savedGameData struct {
 // ShowSaveGameScreen is the main function of the save game screen.
 func ShowSaveGameScreen(window fyne.Window) {
 	// Remove Images from character & inventory before saving
-	playerSaveData := *player
+	playerSaveData := *game.Player
 	playerSaveData.Avatar.CanvasImage.Image = nil
 	playerSaveData.Avatar.ObjectInMapContainer = nil
 

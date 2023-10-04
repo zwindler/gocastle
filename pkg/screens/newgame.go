@@ -13,6 +13,7 @@ import (
 
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/embedimages"
+	"github.com/zwindler/gocastle/pkg/game"
 )
 
 const (
@@ -78,8 +79,8 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspectIconPath[0][index-1]
-			player.DeduceGenderFromAspect(index)
+			game.Player.Avatar.CanvasPath = aspectIconPath[0][index-1]
+			game.Player.DeduceGenderFromAspect(index)
 		}
 	})
 
@@ -88,8 +89,8 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspectIconPath[1][index-7]
-			player.DeduceGenderFromAspect(index)
+			game.Player.Avatar.CanvasPath = aspectIconPath[1][index-7]
+			game.Player.DeduceGenderFromAspect(index)
 		}
 	})
 
@@ -98,8 +99,8 @@ func ShowNewGameScreen(window fyne.Window) {
 		if selected != "" {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
-			player.Avatar.CanvasPath = aspectIconPath[2][index-13]
-			player.DeduceGenderFromAspect(index)
+			game.Player.Avatar.CanvasPath = aspectIconPath[2][index-13]
+			game.Player.DeduceGenderFromAspect(index)
 		}
 	})
 	characterAspect3.Resize(fyne.NewSize(10, 10))
@@ -112,18 +113,19 @@ func ShowNewGameScreen(window fyne.Window) {
 			content := widget.NewLabel("You still have to choose a name for you character!")
 			dialog.ShowCustom("Character has no name", "Close", content, window)
 		} else {
-			player.CharacterName = characterNameEntry.Text
-			if player.PointsToSpend > 0 {
+			game.Player.CharacterName = characterNameEntry.Text
+			if game.Player.PointsToSpend > 0 {
 				content := widget.NewLabel("You still have available characteristics point to allocate!")
 				dialog.ShowCustom("Points still available", "Close", content, window)
 			} else {
-				if player.Avatar.CanvasPath == "" {
+				if game.Player.Avatar.CanvasPath == "" {
 					content := widget.NewLabel("Character has no aspect, please choose one")
 					dialog.ShowCustom("Aspect not selected", "Close", content, window)
 				} else {
 					// we are good to go!
 					// initialise game objects for the first time
-					initGame(window, true)
+					game.InitGame(window, true)
+					ShowGameScreen(window)
 				}
 			}
 		}
