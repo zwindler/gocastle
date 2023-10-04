@@ -8,13 +8,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/zwindler/gocastle/model"
-	"github.com/zwindler/gocastle/pkg/embed"
+	"github.com/zwindler/gocastle/pkg/embedimages"
 )
 
 // ShowMenuScreen is the main function of the main screen.
 func ShowMenuScreen(window fyne.Window) {
 	// Load the background image
-	img, _ := embed.GetImageFromEmbed("static/castle_back.png")
+	img, _ := embedimages.GetImageFromEmbed("static/castle_back.png")
 	backgroundImage := canvas.NewImageFromImage(img)
 
 	backgroundImage.FillMode = canvas.ImageFillStretch

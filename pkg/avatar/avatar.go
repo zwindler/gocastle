@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 
 	"github.com/zwindler/gocastle/pkg/coord"
-	"github.com/zwindler/gocastle/pkg/embed"
+	"github.com/zwindler/gocastle/pkg/embedimages"
 )
 
 type Avatar struct {
@@ -25,7 +25,7 @@ func New(avatar Avatar) Avatar {
 
 // Spawn create a copy of an Avatar on given x,y coordinates.
 func Spawn(avatar Avatar, coord coord.Coord) Avatar {
-	img, _ := embed.GetImageFromEmbed(avatar.CanvasPath)
+	img, _ := embedimages.GetImageFromEmbed(avatar.CanvasPath)
 
 	return Avatar{
 		CanvasPath:  avatar.CanvasPath,
@@ -36,7 +36,7 @@ func Spawn(avatar Avatar, coord coord.Coord) Avatar {
 
 // Refresh allows to refresh Avatar Image in case it was removed (save/load).
 func (subject *Avatar) Refresh() {
-	img, _ := embed.GetImageFromEmbed(subject.CanvasPath)
+	img, _ := embedimages.GetImageFromEmbed(subject.CanvasPath)
 
 	subject.CanvasImage = canvas.NewImageFromImage(img)
 }

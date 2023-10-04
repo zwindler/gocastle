@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 
 	"github.com/zwindler/gocastle/pkg/coord"
-	"github.com/zwindler/gocastle/pkg/embed"
+	"github.com/zwindler/gocastle/pkg/embedimages"
 )
 
 // ObjectStat represents a specific stat of an object.
@@ -144,7 +144,7 @@ func CreateObject(obj Object, coord coord.Coord) (Object, error) {
 		return Object{}, fmt.Errorf("category '%s' does not exist", obj.Category)
 	}
 
-	img, err := embed.GetImageFromEmbed(obj.CanvasPath)
+	img, err := embedimages.GetImageFromEmbed(obj.CanvasPath)
 	if err != nil {
 		return Object{}, err
 	}
@@ -196,6 +196,6 @@ func (subject *Object) MoveObject(futurePosX, futurePosY int) {
 
 // RefreshObject allows to refresh Object Image in case it was removed (save/load).
 func (subject *Object) RefreshObject() {
-	img, _ := embed.GetImageFromEmbed(subject.CanvasPath)
+	img, _ := embedimages.GetImageFromEmbed(subject.CanvasPath)
 	subject.CanvasImage = canvas.NewImageFromImage(img)
 }
