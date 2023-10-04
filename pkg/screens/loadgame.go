@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 
+	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
@@ -39,7 +40,8 @@ func ShowLoadGameScreen(window fyne.Window) {
 		}
 
 		// initialise game objects but don't reset to start
-		initGame(window, false)
+		game.InitGame(window, false)
+		ShowGameScreen(window)
 	}, window)
 	// only show .sav files
 	fd.SetFilter(storage.NewExtensionFileFilter([]string{".sav"}))
@@ -69,7 +71,7 @@ func updateLoadedGameData(data map[string]interface{}) error {
 		return err
 	}
 
-	player = &loadedData.Player
+	game.Player = &loadedData.Player
 
 	// Assign the unmarshaled maps to the maps.AllTheMaps variable
 	maps.AllTheMaps = loadedData.AllTheMaps

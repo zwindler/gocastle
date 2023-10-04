@@ -7,7 +7,7 @@ import (
 	"fyne.io/fyne/v2/app"
 
 	"github.com/zwindler/gocastle/pkg/newtheme"
-	"github.com/zwindler/gocastle/screens"
+	"github.com/zwindler/gocastle/pkg/screens"
 )
 
 func main() {

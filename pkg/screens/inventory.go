@@ -12,6 +12,7 @@ import (
 
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/embedimages"
+	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/newtheme"
 )
 
@@ -48,7 +49,7 @@ func ShowInventoryScreen(window fyne.Window) {
 
 		// Find the items in the player's inventory that belong to the current category
 		itemsInCategory := make([]string, 0)
-		for _, item := range player.Inventory {
+		for _, item := range game.Player.Inventory {
 			if item.Category == category.Name {
 				itemsInCategory = append(itemsInCategory, item.Name)
 			}
@@ -58,9 +59,9 @@ func ShowInventoryScreen(window fyne.Window) {
 		itemDropdown := dropdown{
 			category: category,
 			widget: widget.NewSelect(itemsInCategory, func(selected string) {
-				for _, item := range player.Inventory {
+				for _, item := range game.Player.Inventory {
 					if item.Name == selected {
-						if err := player.EquipItem(item); err != nil {
+						if err := game.Player.EquipItem(item); err != nil {
 							fmt.Printf("Error equipping item: %s\n", err)
 						}
 					}
@@ -72,7 +73,7 @@ func ShowInventoryScreen(window fyne.Window) {
 		// add the pointer of this widget in the list of items
 		itemDropdowns = append(itemDropdowns, itemDropdown)
 
-		for _, item := range player.Inventory {
+		for _, item := range game.Player.Inventory {
 			if item.Equipped {
 				itemDropdown.widget.SetSelected(item.Name)
 				break
@@ -96,7 +97,7 @@ func ShowInventoryScreen(window fyne.Window) {
 	// Create a "Back" button to return to the main menu
 	backButton := widget.NewButton("Back", func() {
 		// gear may have changed, reset all secondary stats
-		player.RefreshStats(false)
+		game.Player.RefreshStats(false)
 		ShowGameScreen(window)
 	})
 
@@ -133,20 +134,20 @@ func createInventoryStatsArea() fyne.CanvasObject {
 
 // updateInventoryStatsArea refreshes the values in InventoryStatsArea.
 func updateInventoryStatsArea() {
-	totalWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.InventoryWeight)/1000)
+	totalWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(game.Player.InventoryWeight)/1000)
 	totalWeightValueLabel.Refresh()
 
-	equippedWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(player.EquippedWeight)/1000)
+	equippedWeightValueLabel.Text = fmt.Sprintf("%.3f kg", float32(game.Player.EquippedWeight)/1000)
 	equippedWeightValueLabel.Refresh()
 
-	goldAmountValueLabel.Text = fmt.Sprintf("%d gold pieces", player.CurrentGold)
+	goldAmountValueLabel.Text = fmt.Sprintf("%d gold pieces", game.Player.CurrentGold)
 	goldAmountValueLabel.Refresh()
 }
 
 func displayFloorItems() (floorVBox *fyne.Container) {
 	floorVBox = container.NewVBox()
-	for _, item := range currentMap.ObjectList {
-		if item.Coord.X == player.Avatar.Coord.X && item.Coord.Y == player.Avatar.Coord.Y {
+	for _, item := range game.CurrentMap.ObjectList {
+		if item.Coord.X == game.Player.Avatar.Coord.X && item.Coord.Y == game.Player.Avatar.Coord.Y {
 			currentItemContainer := container.NewVBox()
 			nameLabel := widget.NewLabel(item.Name)
 
@@ -181,10 +182,10 @@ func RefreshDropdownContent(categoryName, newItem string) {
 }
 
 func takeItemFromFloor(item *model.Object, floorVBox, currentItemContainer *fyne.Container) {
-	player.AddObjectToInventory(item, false)
+	game.Player.AddObjectToInventory(item, false)
 
 	// Remove object from currentMap ObjectList
-	currentMap.FindObjectToRemove(item)
+	game.CurrentMap.FindObjectToRemove(item)
 
 	// Remove current container as well from floor container
 	floorVBox.Remove(currentItemContainer)

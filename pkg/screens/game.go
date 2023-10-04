@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 
+	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/newtheme"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
@@ -46,8 +47,8 @@ func ShowGameScreen(window fyne.Window) {
 	scrollableMapContainer = container.NewScroll(mapContainer)
 
 	// TODO create a separate function for this
-	// set player on map and draw it
-	player.Avatar.Draw(mapContainer)
+	// set game.Player. on map and draw it
+	game.Player.Avatar.Draw(mapContainer)
 	drawNPCList(mapContainer)
 	drawObjectList(mapContainer)
 
@@ -61,13 +62,13 @@ func ShowGameScreen(window fyne.Window) {
 	window.SetContent(mainContent)
 	window.Canvas().SetOnTypedKey(mapKeyListener)
 
-	centerMapOnPlayer()
+	centerMapOngamePlayer()
 }
 
 // drawNPCList draws the NPC's Avatars images on the mapContainer.
 func drawNPCList(mapContainer *fyne.Container) {
 	// Loop through the NPC data slice and create/draw each NPC
-	for _, npc := range currentMap.NPCList {
+	for _, npc := range game.CurrentMap.NPCList {
 		npc.Avatar.Draw(mapContainer)
 	}
 }
@@ -75,7 +76,7 @@ func drawNPCList(mapContainer *fyne.Container) {
 // drawObjectList draws the "Objects on map" images on the mapContainer.
 func drawObjectList(mapContainer *fyne.Container) {
 	// Loop through the ObjectList slice and create/draw each Object
-	for _, object := range currentMap.ObjectList {
+	for _, object := range game.CurrentMap.ObjectList {
 		object.DrawObject(mapContainer)
 	}
 }
@@ -96,7 +97,7 @@ func createStatsArea() fyne.CanvasObject {
 		canvas.NewText("Time spent:", newtheme.TextColor),
 		timeSpentValueLabel,
 		canvas.NewText("Location:", newtheme.TextColor),
-		canvas.NewText(currentMap.Name, newtheme.TextColor),
+		canvas.NewText(game.CurrentMap.Name, newtheme.TextColor),
 	}
 
 	// update HP, MP, time
@@ -117,24 +118,25 @@ func createStatsArea() fyne.CanvasObject {
 
 // updateStatsArea refreshes the values in StatsArea.
 func updateStatsArea() {
-	healthPointsValueLabel.Text = player.HP.String()
+	healthPointsValueLabel.Text = game.Player.HP.String()
 	healthPointsValueLabel.Refresh()
 
-	manaPointsValueLabel.Text = player.MP.String()
+	manaPointsValueLabel.Text = game.Player.MP.String()
 	manaPointsValueLabel.Refresh()
 
 	timeSpentValueLabel.Text = timespent.FormatDuration(timespent.ShortFormat)
 	timeSpentValueLabel.Refresh()
 }
 
-// createMapImage creates an image based on the tiles stored in currentMap.
+// createMapImage creates an image based on the tiles stored in game.CurrentMap.
 func createMapCanvasImage() *canvas.Image {
-	if currentMap.MapImage == nil {
-		currentMap.GenerateMapImage()
+	if game.CurrentMap.MapImage == nil {
+		game.CurrentMap.GenerateMapImage()
 	}
-	fullCanvasImage := canvas.NewImageFromImage(currentMap.MapImage)
+	fullCanvasImage := canvas.NewImageFromImage(game.CurrentMap.MapImage)
 	fullCanvasImage.FillMode = canvas.ImageFillOriginal
-	fullCanvasImage.Resize(fyne.NewSize(currentMap.GetMapImageSize()))
+	x, y := game.CurrentMap.GetMapImageSize()
+	fullCanvasImage.Resize(fyne.NewSize(x, y))
 
 	return fullCanvasImage
 }
@@ -168,24 +170,24 @@ func mapKeyListener(event *fyne.KeyEvent) {
 		}
 		return // Ignore keys that are not part of the directions map
 	}
-	newX := player.Avatar.Coord.X + direction.dx
-	newY := player.Avatar.Coord.Y + direction.dy
+	newX := game.Player.Avatar.Coord.X + direction.dx
+	newY := game.Player.Avatar.Coord.Y + direction.dy
 
 	actOnDirectionKey(newX, newY)
 
-	centerMapOnPlayer()
+	centerMapOngamePlayer()
 	updateStatsArea()
 	newTurnForNPCs()
 }
 
-// centerMapOnPlayer will center scrollable map focus on player as best it can.
-func centerMapOnPlayer() {
-	// the idea is to focus on the player position
+// centerMapOngame.Player. will center scrollable map focus on game.Player. as best it can.
+func centerMapOngamePlayer() {
+	// the idea is to focus on the game.Player. position
 	// but we need various informations to compute this
 
-	// Let's start by getting the player real coordinates in pixels
-	x := float32(tileSize * player.Avatar.Coord.X)
-	y := float32(tileSize * player.Avatar.Coord.Y)
+	// Let's start by getting the game.Player. real coordinates in pixels
+	x := float32(tileSize * game.Player.Avatar.Coord.X)
+	y := float32(tileSize * game.Player.Avatar.Coord.Y)
 
 	// we also need window size (because by default it's 800x600
 	// but it can be resized!)
@@ -199,7 +201,7 @@ func centerMapOnPlayer() {
 
 	// now, I can focus the scrollable map by adding an offset
 	// but the tricky part is that you don't want to move the offset until
-	// player is already in the middle of the screen, or else when the player
+	// game.Player. is already in the middle of the screen, or else when the game.Player.
 	// is close to the border, it'll look weird
 	// Castle of the Wind had the exact same behavior
 	// The easiest way to do this is to remove half of the screen width/height
