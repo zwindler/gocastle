@@ -71,6 +71,10 @@ var (
 		{X: 160, Y: 32, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 48, tree toptop right
 		{X: 144, Y: 32, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 49, tree toptop center
 		{X: 144, Y: 48, filePath: "static/tilea4_MACK.png", IsWalkable: false},  // 50, black tile
+		{X: 208, Y: 32, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 51, sand (grass up)
+		{X: 192, Y: 48, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 52, sand (grass left)
+		{X: 224, Y: 48, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 53, sand (grass right)
+		{X: 208, Y: 64, filePath: "static/tilea2_MACK.png", IsWalkable: true},   // 54, sand (grass down)
 	}
 )
 
