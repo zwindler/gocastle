@@ -47,14 +47,14 @@ var (
 			{"MapTransition", coord.Coord{X: 0, Y: 8, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
 			{"MapTransition", coord.Coord{X: 0, Y: 9, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
 			{"MapTransition", coord.Coord{X: 0, Y: 10, Map: 1}, coord.Coord{X: 47, Y: 17, Map: 0}},
-			{"MapTransition", coord.Coord{X: 73, Y: 0, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
-			{"MapTransition", coord.Coord{X: 73, Y: 1, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 63, Y: 0, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
+			{"MapTransition", coord.Coord{X: 63, Y: 1, Map: 1}, coord.Coord{X: 1, Y: 1, Map: 2}},
 		},
 	}
 	TheOldMine = Map{
 		Name: "The Old Mine",
 		MapTransitions: []SpecialTile{
-			{"MapTransition", coord.Coord{X: 0, Y: 0, Map: 2}, coord.Coord{X: 73, Y: 2, Map: 1}},
+			{"MapTransition", coord.Coord{X: 0, Y: 0, Map: 2}, coord.Coord{X: 63, Y: 2, Map: 1}},
 		},
 	}
 
