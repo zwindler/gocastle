@@ -38,7 +38,8 @@ func actOnDirectionKey(newX, newY int) {
 						}, currentWindow)
 					}
 					game.Player.ChangeGold(npc.LootGold)
-					game.CurrentMap.RemoveNPC(npc)
+					// TODO check error
+					_ = game.CurrentMap.RemoveNPC(npc)
 				}
 				// attacking costs 5 seconds
 				timespent.Increment(5)

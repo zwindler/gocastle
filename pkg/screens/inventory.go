@@ -185,7 +185,8 @@ func takeItemFromFloor(item *model.Object, floorVBox, currentItemContainer *fyne
 	game.Player.AddObjectToInventory(item, false)
 
 	// Remove object from currentMap ObjectList
-	game.CurrentMap.FindObjectToRemove(item)
+	// TODO check error
+	_ = game.CurrentMap.FindObjectToRemove(item)
 
 	// Remove current container as well from floor container
 	floorVBox.Remove(currentItemContainer)
