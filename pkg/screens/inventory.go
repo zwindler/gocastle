@@ -1,5 +1,3 @@
-// screens/inventory.go
-
 package screens
 
 import (
@@ -10,10 +8,10 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/embedimages"
 	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/newtheme"
+	"github.com/zwindler/gocastle/pkg/object"
 )
 
 var (
@@ -26,7 +24,7 @@ var (
 )
 
 type dropdown struct {
-	category model.Category
+	category object.Category
 	widget   *widget.Select
 }
 
@@ -43,7 +41,7 @@ func ShowInventoryScreen(window fyne.Window) {
 	inventoryStatsArea := createInventoryStatsArea()
 
 	// Iterate over each object category and display the dropdown list for the items in that category
-	for index, category := range model.CategoryList {
+	for index, category := range object.CategoryList {
 		// Create a header label for the category
 		categoryLabel := widget.NewLabel(category.Name)
 
@@ -87,7 +85,7 @@ func ShowInventoryScreen(window fyne.Window) {
 		)
 
 		// Add the category container to the left of right inventory container
-		if index < len(model.CategoryList)/2 {
+		if index < len(object.CategoryList)/2 {
 			inventoryContainerLeft.Add(categoryContainer)
 		} else {
 			inventoryContainerRight.Add(categoryContainer)
@@ -181,7 +179,7 @@ func RefreshDropdownContent(categoryName, newItem string) {
 	}
 }
 
-func takeItemFromFloor(item *model.Object, floorVBox, currentItemContainer *fyne.Container) {
+func takeItemFromFloor(item *object.Object, floorVBox, currentItemContainer *fyne.Container) {
 	game.Player.AddObjectToInventory(item, false)
 
 	// Remove object from currentMap ObjectList

@@ -12,6 +12,7 @@ import (
 	"github.com/zwindler/gocastle/pkg/embedmaps"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/npc"
+	"github.com/zwindler/gocastle/pkg/object"
 )
 
 var (
@@ -25,7 +26,7 @@ func InitGame(window fyne.Window, start bool) {
 	Player.RefreshStats(start)
 
 	// init categories
-	model.InitializeCategories()
+	object.InitializeCategories()
 
 	// create player Avatar
 	if start {
@@ -42,7 +43,7 @@ func InitGame(window fyne.Window, start bool) {
 
 		// TODO rework this
 		// Map0 Village
-		knife, _ := model.CreateObject(model.HuntingKnife, coord.Coord{X: 10, Y: 10, Map: 0})
+		knife, _ := object.CreateObject(object.HuntingKnife, coord.Coord{X: 10, Y: 10, Map: 0})
 		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife)
 		farmer := npc.Spawn(model.FemaleFarmer, coord.Coord{X: 10, Y: 15, Map: 0})
 		ant1 := npc.Spawn(model.GiantAnt, coord.Coord{X: 5, Y: 34, Map: 0})
@@ -51,7 +52,7 @@ func InitGame(window fyne.Window, start bool) {
 		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, ant1, ant2, ant3)
 
 		// Map1 To The Old Mine
-		sword, _ := model.CreateObject(model.BluntSword, coord.Coord{X: 9, Y: 4, Map: 1})
+		sword, _ := object.CreateObject(object.BluntSword, coord.Coord{X: 9, Y: 4, Map: 1})
 		maps.AllTheMaps[1].ObjectList = append(maps.AllTheMaps[1].ObjectList, &sword)
 		wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 70, Y: 24, Map: 1})
 		wolf2 := npc.Spawn(model.Wolf, coord.Coord{X: 69, Y: 23, Map: 1})

@@ -1,6 +1,4 @@
-// models/objects.go
-
-package model
+package object
 
 import (
 	"fmt"

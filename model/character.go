@@ -8,6 +8,7 @@ import (
 	"github.com/zwindler/gocastle/pkg/avatar"
 	"github.com/zwindler/gocastle/pkg/hp"
 	"github.com/zwindler/gocastle/pkg/mp"
+	"github.com/zwindler/gocastle/pkg/object"
 )
 
 type CharacterStats struct {
@@ -37,7 +38,7 @@ type CharacterStats struct {
 	Armor          int
 
 	// Inventory
-	Inventory       []*Object
+	Inventory       []*object.Object
 	CurrentGold     int
 	InventoryWeight int // weight of all player's inventory in grams
 	EquippedWeight  int // same thing for equipped items only
@@ -159,7 +160,7 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 }
 
 // AddObjectToInventory adds an object to the player's inventory.
-func (player *CharacterStats) AddObjectToInventory(obj *Object, equip bool) {
+func (player *CharacterStats) AddObjectToInventory(obj *object.Object, equip bool) {
 	player.Inventory = append(player.Inventory, obj)
 	obj.InInventory = true
 	obj.Equipped = equip
@@ -178,8 +179,8 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 // EquipItem equips an item in the player's inventory.
 // If the item is already equipped or the category doesn't exist, it returns an error.
 // If another item of the same category is equipped, un-equip it.
-func (player *CharacterStats) EquipItem(item *Object) error {
-	if !CategoryExists(item.Category) {
+func (player *CharacterStats) EquipItem(item *object.Object) error {
+	if !object.CategoryExists(item.Category) {
 		return fmt.Errorf("category '%s' does not exist", item.Category)
 	}
 	if item.Equipped {
@@ -203,7 +204,7 @@ func (player *CharacterStats) EquipItem(item *Object) error {
 }
 
 // UnequipItem un-equips an item in the player's inventory.
-func (player *CharacterStats) UnequipItem(item *Object) {
+func (player *CharacterStats) UnequipItem(item *object.Object) {
 	item.Equipped = false
 	player.ComputeWeight()
 }

@@ -7,8 +7,8 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/embedimages"
+	"github.com/zwindler/gocastle/pkg/object"
 )
 
 // ShowMenuScreen is the main function of the main screen.
@@ -21,7 +21,7 @@ func ShowMenuScreen(window fyne.Window) {
 	backgroundImage.SetMinSize(fyne.NewSize(800, 600))
 
 	// Initialize a few things here
-	model.InitializeCategories()
+	object.InitializeCategories()
 
 	// Create buttons
 	newGameButton := widget.NewButton("New Game", func() {
@@ -42,7 +42,7 @@ func ShowMenuScreen(window fyne.Window) {
 	)
 	menu := container.New(layout.NewCenterLayout(), buttons)
 
-	window.SetContent(container.New(layout.NewMaxLayout(),
+	window.SetContent(container.New(layout.NewStackLayout(),
 		backgroundImage,
 		menu))
 }
