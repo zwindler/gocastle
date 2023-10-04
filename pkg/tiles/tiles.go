@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/draw"
 
-	"github.com/zwindler/gocastle/pkg/embed"
+	"github.com/zwindler/gocastle/pkg/embedimages"
 
 	_ "image/jpeg" // Import image/jpeg to support JPEG images
 	_ "image/png"  // Import image/png to support PNG images
@@ -80,7 +80,7 @@ var (
 
 // extractTileFromTileset extracts a subimage from coordinates on a tileset.
 func extractTileFromTileset(x, y int, filePath string) (image.Image, error) {
-	file, err := embed.EmbeddedImages.Open(filePath)
+	file, err := embedimages.EmbeddedImages.Open(filePath)
 	if err != nil {
 		fmt.Println("Error opening image:", err)
 		return nil, err

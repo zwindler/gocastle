@@ -9,7 +9,7 @@ import (
 	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/avatar"
 	"github.com/zwindler/gocastle/pkg/coord"
-	"github.com/zwindler/gocastle/pkg/embed"
+	"github.com/zwindler/gocastle/pkg/embedmaps"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/npc"
 )
@@ -31,7 +31,7 @@ func initGame(window fyne.Window, start bool) {
 	if start {
 		// load all pregenerated maps from json
 		for i := 0; i < len(maps.AllTheMaps); i++ {
-			thisMapMatrix, err := embed.GetMapMatrixFromEmbed(fmt.Sprintf("maps/%d.json", i))
+			thisMapMatrix, err := embedmaps.GetMapMatrixFromEmbed(fmt.Sprintf("maps/%d.json", i))
 			if err != nil {
 				dialog.ShowError(err, window)
 			}
