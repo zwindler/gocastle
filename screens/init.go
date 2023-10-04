@@ -7,9 +7,9 @@ import (
 	"fyne.io/fyne/v2/dialog"
 
 	"github.com/zwindler/gocastle/model"
-	"github.com/zwindler/gocastle/pkg/embed"
 	"github.com/zwindler/gocastle/pkg/avatar"
 	"github.com/zwindler/gocastle/pkg/coord"
+	"github.com/zwindler/gocastle/pkg/embed"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/npc"
 )
