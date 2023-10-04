@@ -16,7 +16,7 @@ type Map struct {
 	Name           string
 	NPCList        []*npc.Stats
 	ObjectList     []*model.Object
-	MapMatrix      [][]int
+	MapMatrix      [][]uint16
 	MapTransitions []SpecialTile
 	MapImage       image.Image
 }

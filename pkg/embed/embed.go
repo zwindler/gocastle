@@ -38,7 +38,7 @@ func GetImageFromEmbed(path string) (img image.Image, err error) {
 }
 
 // GetMapMatrixFromEmbed returns a MapMatrix for a Map, from an embedded json file.
-func GetMapMatrixFromEmbed(path string) (matrix [][]int, err error) {
+func GetMapMatrixFromEmbed(path string) (matrix [][]uint16, err error) {
 	// Read the embedded json file
 	file, err := EmbeddedMaps.Open(path)
 	if err != nil {

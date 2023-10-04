@@ -10,7 +10,7 @@ import (
 )
 
 var testMap = Map{
-	MapMatrix: [][]int{
+	MapMatrix: [][]uint16{
 		{0, 0, 0},
 		{0, 13, 0}, // 13 is not walkable
 	},
