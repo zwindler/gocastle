@@ -197,3 +197,30 @@ func (subject *Object) RefreshObject() {
 	img, _ := embedimages.GetImageFromEmbed(subject.CanvasPath)
 	subject.CanvasImage = canvas.NewImageFromImage(img)
 }
+
+func (subject *Object) Copy() *Object {
+	// Create a new Object with the same properties
+	copyObject := &Object{
+		Name:        subject.Name,
+		Category:    subject.Category,
+		Weight:      subject.Weight,
+		InInventory: subject.InInventory,
+		Equipped:    subject.Equipped,
+		Coord:       coord.Coord{X: subject.Coord.X, Y: subject.Coord.Y, Map: subject.Coord.Map},
+		CanvasPath:  subject.CanvasPath,
+	}
+
+	copyObject.Stats = make([]ObjectStat, len(subject.Stats))
+	for i, stat := range subject.Stats {
+		copyObject.Stats[i] = stat.Copy()
+	}
+
+	return copyObject
+}
+
+func (os *ObjectStat) Copy() ObjectStat {
+	return ObjectStat{
+		Name:     os.Name,
+		Modifier: os.Modifier,
+	}
+}

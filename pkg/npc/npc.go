@@ -17,11 +17,154 @@ type Stats struct {
 	Dialog   string
 	Hostile  bool
 	Avatar   avatar.Avatar
-	HP       hp.HP
+	HP       *hp.HP
 	MP       *mp.MP
 	LootXP   int
 	LootGold int
 }
+
+var (
+	FemaleFarmerAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/female-farmer.png",
+	})
+	FemaleFarmer = New(Stats{
+		Name:    "Farmer",
+		Avatar:  FemaleFarmerAvatar,
+		Dialog:  "Hello, my name is Mylène :-)",
+		Pronoun: "she",
+		Hostile: false,
+		HP:      hp.New(10),
+	})
+
+	FemaleMageAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/woman-mage.png",
+	})
+	FemaleMage = New(Stats{
+		Name:    "Mage",
+		Avatar:  FemaleMageAvatar,
+		Pronoun: "she",
+		Hostile: false,
+		HP:      hp.New(15),
+		MP:      mp.New(20),
+	})
+
+	KoboldAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/kobold-short.png",
+	})
+	Kobold = New(Stats{
+		Name:     "Kobold",
+		Avatar:   KoboldAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		HP:       hp.New(4),
+		LootXP:   30,
+		LootGold: 2,
+	})
+
+	GoblinAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/goblin-short.png",
+	})
+	Goblin = New(Stats{
+		Name:     "Goblin",
+		Avatar:   GoblinAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		HP:       hp.New(6),
+		LootXP:   50,
+		LootGold: 4,
+	})
+
+	GiantAntAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/giant-ant.png",
+	})
+	GiantAnt = New(Stats{
+		Name:     "Giant Ant",
+		Avatar:   GiantAntAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		HP:       hp.New(10),
+		LootXP:   60,
+		LootGold: 0,
+	})
+
+	OrkAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/ork-short.png",
+	})
+	Ork = New(Stats{
+		Name:     "Ork",
+		Avatar:   OrkAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		HP:       hp.New(14),
+		LootXP:   80,
+		LootGold: 10,
+	})
+
+	WolfAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/wolf.png",
+	})
+	Wolf = New(Stats{
+		Name:     "Wolf",
+		Avatar:   WolfAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		HP:       hp.New(10),
+		LootXP:   100,
+		LootGold: 0,
+	})
+
+	GiantRedAntAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/giant-red-ant.png",
+	})
+	GiantRedAnt = New(Stats{
+		Name:     "Giant Red Ant",
+		Avatar:   GiantRedAntAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		HP:       hp.New(20),
+		LootXP:   150,
+		LootGold: 0,
+	})
+
+	MimicAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/mimic.png",
+	})
+	Mimic = New(Stats{
+		Name:     "Mimic",
+		Avatar:   MimicAvatar,
+		Pronoun:  "it",
+		Hostile:  true,
+		HP:       hp.New(25),
+		LootXP:   300,
+		LootGold: 500,
+	})
+
+	OgreAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/ogre.png",
+	})
+	Ogre = New(Stats{
+		Name:     "Ogre",
+		Avatar:   OgreAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		HP:       hp.New(35),
+		LootXP:   500,
+		LootGold: 100,
+	})
+
+	MinotaurAvatar = avatar.New(avatar.Avatar{
+		CanvasPath: "static/minotaur-short.png",
+	})
+	Minotaur = New(Stats{
+		Name:     "Minotaur",
+		Avatar:   MinotaurAvatar,
+		Pronoun:  "he",
+		Hostile:  true,
+		HP:       hp.New(50),
+		LootXP:   1000,
+		LootGold: 300,
+	})
+)
 
 // New create new NPC.
 func New(npc Stats) Stats {
@@ -97,4 +240,30 @@ func randomizeGoldLoot(goldAmount int) int {
 	randomizedGold := int(float64(goldAmount) * multiplier)
 
 	return randomizedGold
+}
+
+func (s *Stats) Copy() *Stats {
+	copyStats := &Stats{
+		Name:     s.Name,
+		Pronoun:  s.Pronoun,
+		Dialog:   s.Dialog,
+		Hostile:  s.Hostile,
+		Avatar:   s.Avatar.Copy(),
+		LootXP:   s.LootXP,
+		LootGold: s.LootGold,
+	}
+
+	// Copy HP if not nil
+	if s.HP != nil {
+		hp := s.HP.Copy()
+		copyStats.HP = &hp
+	}
+
+	// Copy MP if not nil
+	if s.MP != nil {
+		mp := s.MP.Copy()
+		copyStats.MP = &mp
+	}
+
+	return copyStats
 }

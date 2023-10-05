@@ -1,6 +1,4 @@
-// models/character.go
-
-package model
+package character
 
 import (
 	"fmt"
@@ -11,7 +9,7 @@ import (
 	"github.com/zwindler/gocastle/pkg/object"
 )
 
-type CharacterStats struct {
+type Stats struct {
 	// Character personalization
 	CharacterName string
 	GenderValue   string
@@ -32,7 +30,7 @@ type CharacterStats struct {
 
 	// Secondary characteristics
 	// Those characteristics depend on main chars, level and gear
-	HP             hp.HP
+	HP             *hp.HP
 	MP             *mp.MP
 	PhysicalDamage int
 	Armor          int
@@ -45,22 +43,6 @@ type CharacterStats struct {
 }
 
 var (
-	PlayerAvatar = avatar.Avatar{}
-	Player       = CharacterStats{
-		// temporary, for dev
-		CharacterName: "zwindler",
-		PointsToSpend: 0,
-		// end temporary for dev
-		Avatar: PlayerAvatar,
-		// PointsToSpend:     10,
-		StrengthValue:     10,
-		ConstitutionValue: 10,
-		IntelligenceValue: 10,
-		DexterityValue:    10,
-		Level:             1,
-		HP:                hp.New(baseHP),
-		MP:                mp.New(baseMP),
-	}
 	xpTable = []int{
 		0, // Level 1
 		100,
@@ -75,14 +57,14 @@ var (
 	}
 
 	// basic base secondary characteristics.
-	baseHP             = 8
-	baseMP             = 8
-	basePhysicalDamage = 2
+	BaseHP             = 8
+	BaseMP             = 8
+	BasePhysicalDamage = 2
 )
 
 // DeterminePhysicalDamage changes physicalDamage stat depending on str, dex and gear.
-func (player *CharacterStats) DeterminePhysicalDamage() {
-	damage := basePhysicalDamage + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
+func (player *Stats) DeterminePhysicalDamage() {
+	damage := BasePhysicalDamage + (player.StrengthValue-10)/5*2 + (player.DexterityValue-10)/5*2
 
 	// search in inventory items modifying the physicalDamage
 	for _, item := range player.Inventory {
@@ -99,14 +81,14 @@ func (player *CharacterStats) DeterminePhysicalDamage() {
 }
 
 // ChangeXP changes XP player from XPAmount, could be negative, return true if leveled up.
-func (player *CharacterStats) ChangeXP(xpAmount int) bool {
+func (player *Stats) ChangeXP(xpAmount int) bool {
 	player.CurrentXP += xpAmount
 	// Since we change XP, check if level changes
 	return player.DetermineLevel()
 }
 
 // ChangeGold changes amount of gold of player from GoldAmount, could be negative.
-func (player *CharacterStats) ChangeGold(goldAmount int) {
+func (player *Stats) ChangeGold(goldAmount int) {
 	// TODO: add some random elements
 	player.CurrentGold += goldAmount
 	player.ComputeWeight()
@@ -115,7 +97,7 @@ func (player *CharacterStats) ChangeGold(goldAmount int) {
 // DetermineLevel check player currentXP and increase level if necessary
 // You can't loose levels even if you lost XP (by design). Returns true if
 // player leveled up.
-func (player *CharacterStats) DetermineLevel() bool {
+func (player *Stats) DetermineLevel() bool {
 	for i, requiredXP := range xpTable {
 		if player.CurrentXP >= requiredXP {
 			// we are still above threshold, continue
@@ -145,11 +127,11 @@ func (player *CharacterStats) DetermineLevel() bool {
 
 // RefreshStats is used when characters stats are modified, which in turn
 // changes basic stats for player. If heal is true, reset HP/MP to 100%max.
-func (player *CharacterStats) RefreshStats(heal bool) {
+func (player *Stats) RefreshStats(heal bool) {
 	// Max HP changes during level up
-	player.HP.Compute(player.Level, baseHP, player.ConstitutionValue)
+	player.HP.Compute(player.Level, BaseHP, player.ConstitutionValue)
 	// Max MP changes during level up, also reset MP player
-	player.MP.Compute(player.Level, baseMP, player.IntelligenceValue)
+	player.MP.Compute(player.Level, BaseMP, player.IntelligenceValue)
 	// base damage may evolve when you can add char points
 	player.DeterminePhysicalDamage()
 
@@ -160,7 +142,7 @@ func (player *CharacterStats) RefreshStats(heal bool) {
 }
 
 // AddObjectToInventory adds an object to the player's inventory.
-func (player *CharacterStats) AddObjectToInventory(obj *object.Object, equip bool) {
+func (player *Stats) AddObjectToInventory(obj *object.Object, equip bool) {
 	player.Inventory = append(player.Inventory, obj)
 	obj.InInventory = true
 	obj.Equipped = equip
@@ -169,8 +151,9 @@ func (player *CharacterStats) AddObjectToInventory(obj *object.Object, equip boo
 }
 
 // RemoveObjectFromInventory removes an object from the player's inventory by its index.
-func (player *CharacterStats) RemoveObjectFromInventory(index int) {
+func (player *Stats) RemoveObjectFromInventory(index int) {
 	if index >= 0 && index < len(player.Inventory) {
+		player.Inventory[index].InInventory = false
 		player.Inventory = append(player.Inventory[:index], player.Inventory[index+1:]...)
 	}
 	player.ComputeWeight()
@@ -179,7 +162,7 @@ func (player *CharacterStats) RemoveObjectFromInventory(index int) {
 // EquipItem equips an item in the player's inventory.
 // If the item is already equipped or the category doesn't exist, it returns an error.
 // If another item of the same category is equipped, un-equip it.
-func (player *CharacterStats) EquipItem(item *object.Object) error {
+func (player *Stats) EquipItem(item *object.Object) error {
 	if !object.CategoryExists(item.Category) {
 		return fmt.Errorf("category '%s' does not exist", item.Category)
 	}
@@ -204,13 +187,13 @@ func (player *CharacterStats) EquipItem(item *object.Object) error {
 }
 
 // UnequipItem un-equips an item in the player's inventory.
-func (player *CharacterStats) UnequipItem(item *object.Object) {
+func (player *Stats) UnequipItem(item *object.Object) {
 	item.Equipped = false
 	player.ComputeWeight()
 }
 
 // ComputeWeight computes the total weight of the player's inventory and equipped items weight.
-func (player *CharacterStats) ComputeWeight() {
+func (player *Stats) ComputeWeight() {
 	totalWeight := 0
 	equippedWeight := 0
 	for _, item := range player.Inventory {
@@ -225,13 +208,60 @@ func (player *CharacterStats) ComputeWeight() {
 	player.EquippedWeight = equippedWeight
 }
 
-func (player *CharacterStats) DeduceGenderFromAspect(index int) {
+func (player *Stats) GetGender(index int) {
 	switch index % 3 {
-	case 0:
-		player.GenderValue = "Female"
 	case 1:
+		player.GenderValue = "Female"
+	case 2:
 		player.GenderValue = "Non Binary"
 	default:
 		player.GenderValue = "Male"
+	}
+}
+
+func (player *Stats) Copy() Stats {
+	// Create a copy of the Avatar struct
+	avatarCopy := player.Avatar.Copy()
+
+	// Create a copy of the HP struct
+	var hpCopy *hp.HP
+	if player.HP != nil {
+		hp := player.HP.Copy()
+		hpCopy = &hp
+	}
+
+	// Create a copy of the MP struct
+	var mpCopy *mp.MP
+	if player.MP != nil {
+		mp := player.MP.Copy()
+		mpCopy = &mp
+	}
+
+	// Create a copy of the Object slice
+	var inventoryCopy []*object.Object
+	for _, obj := range player.Inventory {
+		inventoryCopy = append(inventoryCopy, obj.Copy())
+	}
+
+	// Return a new Stats struct with copied values
+	return Stats{
+		CharacterName:     player.CharacterName,
+		GenderValue:       player.GenderValue,
+		Avatar:            avatarCopy,
+		PointsToSpend:     player.PointsToSpend,
+		StrengthValue:     player.StrengthValue,
+		ConstitutionValue: player.ConstitutionValue,
+		IntelligenceValue: player.IntelligenceValue,
+		DexterityValue:    player.DexterityValue,
+		CurrentXP:         player.CurrentXP,
+		Level:             player.Level,
+		HP:                hpCopy,
+		MP:                mpCopy,
+		PhysicalDamage:    player.PhysicalDamage,
+		Armor:             player.Armor,
+		Inventory:         inventoryCopy,
+		CurrentGold:       player.CurrentGold,
+		InventoryWeight:   player.InventoryWeight,
+		EquippedWeight:    player.EquippedWeight,
 	}
 }

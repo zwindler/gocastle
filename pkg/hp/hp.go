@@ -74,8 +74,8 @@ func (hp *HP) Set(amount int) {
 }
 
 // New returns a new HP struct with the given max and current values.
-func New(max int) HP {
-	return HP{
+func New(max int) *HP {
+	return &HP{
 		Max:      pts.New(max),
 		Current:  pts.New(max),
 		Previous: pts.New(max),
@@ -92,4 +92,16 @@ func Compute(level, base, constitution int) int {
 // Compute returns the computed Max value based on the given level and base value.
 func (hp *HP) Compute(level, base, constitution int) {
 	hp.Max.Set(Compute(level, base, constitution))
+}
+
+// Copy creates a new HP with copies of Max, Current, and Previous points.
+func (hp *HP) Copy() HP {
+	max := hp.Max.Copy()
+	cur := hp.Current.Copy()
+	pre := hp.Previous.Copy()
+	return HP{
+		Max:      &max,
+		Current:  &cur,
+		Previous: &pre,
+	}
 }

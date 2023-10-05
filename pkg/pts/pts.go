@@ -44,3 +44,8 @@ func (p *Point) IsPositive() bool {
 func (p *Point) String() string {
 	return fmt.Sprintf("%d", p.Get())
 }
+
+// Copy creates a copy of a given pts.
+func (p Point) Copy() Point {
+	return p
+}

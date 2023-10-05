@@ -9,41 +9,40 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 
-	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/character"
 	"github.com/zwindler/gocastle/pkg/game"
 	"github.com/zwindler/gocastle/pkg/maps"
 	"github.com/zwindler/gocastle/pkg/timespent"
 )
 
 type savedGameData struct {
-	Player         model.CharacterStats
+	Player         character.Stats
 	AllTheMaps     []maps.Map
 	TimeSinceBegin int
 }
 
 // ShowSaveGameScreen is the main function of the save game screen.
 func ShowSaveGameScreen(window fyne.Window) {
-	// Remove Images from character & inventory before saving
-	playerSaveData := *game.Player
-	playerSaveData.Avatar.CanvasImage.Image = nil
-	playerSaveData.Avatar.ObjectInMapContainer = nil
+	// Create a copy of player data without images
+	playerSaveData := game.Player.Copy()
+
+	// Create copies of maps.AllTheMaps without images
+	mapSaveData := make([]maps.Map, len(maps.AllTheMaps))
+	for indexMap := range maps.AllTheMaps {
+		mapSaveData[indexMap] = *maps.AllTheMaps[indexMap].Copy()
+
+		for index := range mapSaveData[indexMap].NPCList {
+			npc := *maps.AllTheMaps[indexMap].NPCList[index]
+			mapSaveData[indexMap].NPCList[index].Avatar = npc.Avatar.Copy()
+		}
+
+		for index := range mapSaveData[indexMap].ObjectList {
+			mapSaveData[indexMap].ObjectList[index] = mapSaveData[indexMap].ObjectList[index].Copy()
+		}
+	}
 
 	for index := range playerSaveData.Inventory {
 		playerSaveData.Inventory[index].CanvasImage = nil
-	}
-
-	// Remove Images from Maps, NPCs & Objects before saving
-	// Also remove ObjectInMapContainer variable which seem to come from fyne?
-	mapSaveData := maps.AllTheMaps
-	for indexMap := range mapSaveData {
-		mapSaveData[indexMap].MapImage = nil
-		for index := range mapSaveData[indexMap].NPCList {
-			mapSaveData[indexMap].NPCList[index].Avatar.CanvasImage.Image = nil
-			mapSaveData[indexMap].NPCList[index].Avatar.ObjectInMapContainer = nil
-		}
-		for index := range mapSaveData[indexMap].ObjectList {
-			mapSaveData[indexMap].ObjectList[index].CanvasImage.Image = nil
-		}
 	}
 
 	// Get the data to save

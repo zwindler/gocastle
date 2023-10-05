@@ -3,7 +3,6 @@ package maps
 import (
 	"testing"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/npc"
 	"github.com/zwindler/gocastle/pkg/object"
@@ -111,7 +110,7 @@ func TestFindObjectToRemove(t *testing.T) {
 }
 
 func TestRemoveNPC(t *testing.T) {
-	wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
+	wolf1 := npc.Spawn(npc.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
 
 	// add a wolf on the map
 	testMap.NPCList = append(testMap.NPCList, wolf1)
@@ -130,7 +129,7 @@ func TestRemoveNPC(t *testing.T) {
 }
 
 func TestGetNPCAtPosition(t *testing.T) {
-	wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
+	wolf1 := npc.Spawn(npc.Wolf, coord.Coord{X: 0, Y: 1, Map: 0})
 
 	// add a wolf on the map
 	testMap.NPCList = append(testMap.NPCList, wolf1)

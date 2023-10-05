@@ -207,3 +207,26 @@ func (currentMap *Map) GenerateMapImage() {
 
 	currentMap.MapImage = fullImage
 }
+
+func (m *Map) Copy() *Map {
+	copyMap := &Map{
+		Name: m.Name,
+	}
+	copyMap.NPCList = make([]*npc.Stats, len(m.NPCList))
+	for i, npc := range m.NPCList {
+		copyMap.NPCList[i] = npc.Copy()
+	}
+	copyMap.ObjectList = make([]*object.Object, len(m.ObjectList))
+	for i, obj := range m.ObjectList {
+		copyMap.ObjectList[i] = obj.Copy()
+	}
+	copyMap.MapMatrix = make([][]uint16, len(m.MapMatrix))
+	for i, row := range m.MapMatrix {
+		copyMap.MapMatrix[i] = make([]uint16, len(row))
+		copy(copyMap.MapMatrix[i], row)
+	}
+	copyMap.MapTransitions = make([]SpecialTile, len(m.MapTransitions))
+	copy(copyMap.MapTransitions, m.MapTransitions)
+
+	return copyMap
+}

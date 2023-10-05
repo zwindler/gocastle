@@ -103,3 +103,11 @@ func (subject *Avatar) MoveTowardsAvatar(subject2 *Avatar) (int, int) {
 func (subject *Avatar) CollideWithPlayer(futurePosX, futurePosY int) bool {
 	return (subject.Coord.X == futurePosX && subject.Coord.Y == futurePosY)
 }
+
+// Copy creates a new Avatar with the same properties.
+func (subject *Avatar) Copy() Avatar {
+	return Avatar{
+		CanvasPath: subject.CanvasPath,
+		Coord:      coord.Coord{X: subject.Coord.X, Y: subject.Coord.Y, Map: subject.Coord.Map},
+	}
+}
