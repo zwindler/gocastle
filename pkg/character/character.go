@@ -218,3 +218,50 @@ func (player *Stats) GetGender(index int) {
 		player.GenderValue = "Male"
 	}
 }
+
+func (player *Stats) Copy() Stats {
+	// Create a copy of the Avatar struct
+	avatarCopy := player.Avatar.Copy()
+
+	// Create a copy of the HP struct
+	var hpCopy *hp.HP
+	if player.HP != nil {
+		hp := player.HP.Copy()
+		hpCopy = &hp
+	}
+
+	// Create a copy of the MP struct
+	var mpCopy *mp.MP
+	if player.MP != nil {
+		mp := player.MP.Copy()
+		mpCopy = &mp
+	}
+
+	// Create a copy of the Object slice
+	var inventoryCopy []*object.Object
+	for _, obj := range player.Inventory {
+		inventoryCopy = append(inventoryCopy, obj.Copy())
+	}
+
+	// Return a new Stats struct with copied values
+	return Stats{
+		CharacterName:     player.CharacterName,
+		GenderValue:       player.GenderValue,
+		Avatar:            avatarCopy,
+		PointsToSpend:     player.PointsToSpend,
+		StrengthValue:     player.StrengthValue,
+		ConstitutionValue: player.ConstitutionValue,
+		IntelligenceValue: player.IntelligenceValue,
+		DexterityValue:    player.DexterityValue,
+		CurrentXP:         player.CurrentXP,
+		Level:             player.Level,
+		HP:                hpCopy,
+		MP:                mpCopy,
+		PhysicalDamage:    player.PhysicalDamage,
+		Armor:             player.Armor,
+		Inventory:         inventoryCopy,
+		CurrentGold:       player.CurrentGold,
+		InventoryWeight:   player.InventoryWeight,
+		EquippedWeight:    player.EquippedWeight,
+	}
+}

@@ -23,7 +23,8 @@ type savedGameData struct {
 
 // ShowSaveGameScreen is the main function of the save game screen.
 func ShowSaveGameScreen(window fyne.Window) {
-	playerSaveData := game.Player
+	// Create a copy of player data without images
+	playerSaveData := game.Player.Copy()
 
 	// Create copies of maps.AllTheMaps without images
 	mapSaveData := make([]maps.Map, len(maps.AllTheMaps))
@@ -39,9 +40,6 @@ func ShowSaveGameScreen(window fyne.Window) {
 			mapSaveData[indexMap].ObjectList[index] = mapSaveData[indexMap].ObjectList[index].Copy()
 		}
 	}
-	// Remove Images from character & inventory before saving
-	playerSaveData.Avatar.CanvasImage.Image = nil
-	playerSaveData.Avatar.ObjectInMapContainer = nil
 
 	for index := range playerSaveData.Inventory {
 		playerSaveData.Inventory[index].CanvasImage = nil
