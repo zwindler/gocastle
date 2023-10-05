@@ -58,3 +58,13 @@ func Compute(level, base, intelligence int) int {
 func (mp *MP) Compute(level, base, intelligence int) {
 	mp.Max.Set(Compute(level, base, intelligence))
 }
+
+// Copy creates a new MP with copies of Max and Current points.
+func (mp *MP) Copy() MP {
+	max := mp.Max.Copy()
+	cur := mp.Current.Copy()
+	return MP{
+		Max:     &max,
+		Current: &cur,
+	}
+}

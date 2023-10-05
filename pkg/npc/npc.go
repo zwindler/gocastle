@@ -241,3 +241,29 @@ func randomizeGoldLoot(goldAmount int) int {
 
 	return randomizedGold
 }
+
+func (s *Stats) Copy() *Stats {
+	copyStats := &Stats{
+		Name:     s.Name,
+		Pronoun:  s.Pronoun,
+		Dialog:   s.Dialog,
+		Hostile:  s.Hostile,
+		Avatar:   s.Avatar.Copy(),
+		LootXP:   s.LootXP,
+		LootGold: s.LootGold,
+	}
+
+	// Copy HP if not nil
+	if s.HP != nil {
+		hp := s.HP.Copy()
+		copyStats.HP = &hp
+	}
+
+	// Copy MP if not nil
+	if s.MP != nil {
+		mp := s.MP.Copy()
+		copyStats.MP = &mp
+	}
+
+	return copyStats
+}
