@@ -11,7 +11,6 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/embedimages"
 	"github.com/zwindler/gocastle/pkg/game"
 )
@@ -36,26 +35,26 @@ func ShowNewGameScreen(window fyne.Window) {
 
 	CharacteristicsLabel := widget.NewLabelWithStyle("Characteristics", 0, fyne.TextStyle{Bold: true, Italic: true})
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
-	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
+	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", game.Player.PointsToSpend))
 
-	strengthLabel := widget.NewLabel(fmt.Sprintf("Strength: %d", model.Player.StrengthValue))
+	strengthLabel := widget.NewLabel(fmt.Sprintf("Strength: %d", game.Player.StrengthValue))
 	strengthRange := createSliderWithCallback("Strength", minStat, maxStat,
-		&model.Player.StrengthValue, &model.Player.PointsToSpend,
+		&game.Player.StrengthValue, &game.Player.PointsToSpend,
 		strengthLabel, pointsToSpendValue)
 
-	constitutionLabel := widget.NewLabel(fmt.Sprintf("Constitution: %d", model.Player.ConstitutionValue))
+	constitutionLabel := widget.NewLabel(fmt.Sprintf("Constitution: %d", game.Player.ConstitutionValue))
 	constitutionRange := createSliderWithCallback("Constitution", minStat, maxStat,
-		&model.Player.ConstitutionValue, &model.Player.PointsToSpend,
+		&game.Player.ConstitutionValue, &game.Player.PointsToSpend,
 		constitutionLabel, pointsToSpendValue)
 
-	intelligenceLabel := widget.NewLabel(fmt.Sprintf("Intelligence: %d", model.Player.IntelligenceValue))
+	intelligenceLabel := widget.NewLabel(fmt.Sprintf("Intelligence: %d", game.Player.IntelligenceValue))
 	intelligenceRange := createSliderWithCallback("Intelligence", minStat, maxStat,
-		&model.Player.IntelligenceValue, &model.Player.PointsToSpend,
+		&game.Player.IntelligenceValue, &game.Player.PointsToSpend,
 		intelligenceLabel, pointsToSpendValue)
 
-	dexterityLabel := widget.NewLabel(fmt.Sprintf("Dexterity: %d", model.Player.DexterityValue))
+	dexterityLabel := widget.NewLabel(fmt.Sprintf("Dexterity: %d", game.Player.DexterityValue))
 	dexterityRange := createSliderWithCallback("Dexterity", minStat, maxStat,
-		&model.Player.DexterityValue, &model.Player.PointsToSpend,
+		&game.Player.DexterityValue, &game.Player.PointsToSpend,
 		dexterityLabel, pointsToSpendValue)
 
 	aspectIconPath := [][]string{
@@ -80,7 +79,7 @@ func ShowNewGameScreen(window fyne.Window) {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
 			game.Player.Avatar.CanvasPath = aspectIconPath[0][index-1]
-			game.Player.DeduceGenderFromAspect(index)
+			game.Player.GetGender(index)
 		}
 	})
 
@@ -90,7 +89,7 @@ func ShowNewGameScreen(window fyne.Window) {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
 			game.Player.Avatar.CanvasPath = aspectIconPath[1][index-7]
-			game.Player.DeduceGenderFromAspect(index)
+			game.Player.GetGender(index)
 		}
 	})
 
@@ -100,7 +99,7 @@ func ShowNewGameScreen(window fyne.Window) {
 			index, _ := strconv.Atoi(selected)
 			// TODO deal with error
 			game.Player.Avatar.CanvasPath = aspectIconPath[2][index-13]
-			game.Player.DeduceGenderFromAspect(index)
+			game.Player.GetGender(index)
 		}
 	})
 	characterAspect3.Resize(fyne.NewSize(10, 10))
@@ -184,15 +183,15 @@ func createSliderWithCallback(characteristic string, min, max float64, //nolint:
 	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {
 		intV := int(v)
-		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
-			model.Player.PointsToSpend -= (intV - *value)
+		if (game.Player.PointsToSpend - (intV - *value)) >= 0 {
+			game.Player.PointsToSpend -= (intV - *value)
 			*value = intV
 		} else {
 			slider.Value = float64(*value)
 			slider.Refresh()
 		}
 		valueLabel.SetText(fmt.Sprintf("%s: %d", characteristic, *value))
-		pointsToSpendLabel.SetText(fmt.Sprintf("%d", model.Player.PointsToSpend))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%d", game.Player.PointsToSpend))
 		valueLabel.Refresh()
 	}
 	return slider

@@ -74,8 +74,8 @@ func (hp *HP) Set(amount int) {
 }
 
 // New returns a new HP struct with the given max and current values.
-func New(max int) HP {
-	return HP{
+func New(max int) *HP {
+	return &HP{
 		Max:      pts.New(max),
 		Current:  pts.New(max),
 		Previous: pts.New(max),

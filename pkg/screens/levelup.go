@@ -8,34 +8,34 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
-	"github.com/zwindler/gocastle/model"
+	"github.com/zwindler/gocastle/pkg/game"
 )
 
 // showLevelUpScreen is the main function for the level-up screen.
 func showLevelUpScreen() *fyne.Container {
 	pointsToSpendLabel := widget.NewLabel("Remaining points")
-	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", model.Player.PointsToSpend))
+	pointsToSpendValue := widget.NewLabel(fmt.Sprintf("%d", game.Player.PointsToSpend))
 
-	currentStrength := model.Player.StrengthValue
-	currentConstitution := model.Player.ConstitutionValue
-	currentIntelligence := model.Player.IntelligenceValue
-	currentDexterity := model.Player.DexterityValue
+	currentStrength := game.Player.StrengthValue
+	currentConstitution := game.Player.ConstitutionValue
+	currentIntelligence := game.Player.IntelligenceValue
+	currentDexterity := game.Player.DexterityValue
 
-	strengthLabel := widget.NewLabel(fmt.Sprintf("Strength: %d", model.Player.StrengthValue))
+	strengthLabel := widget.NewLabel(fmt.Sprintf("Strength: %d", game.Player.StrengthValue))
 	strengthRange := createSliderLevelUpWithCallback("Strength", minStat, maxStat,
-		&model.Player.StrengthValue, currentStrength, strengthLabel, pointsToSpendValue)
+		&game.Player.StrengthValue, currentStrength, strengthLabel, pointsToSpendValue)
 
-	constitutionLabel := widget.NewLabel(fmt.Sprintf("Constitution: %d", model.Player.ConstitutionValue))
+	constitutionLabel := widget.NewLabel(fmt.Sprintf("Constitution: %d", game.Player.ConstitutionValue))
 	constitutionRange := createSliderLevelUpWithCallback("Constitution", minStat, maxStat,
-		&model.Player.ConstitutionValue, currentConstitution, constitutionLabel, pointsToSpendValue)
+		&game.Player.ConstitutionValue, currentConstitution, constitutionLabel, pointsToSpendValue)
 
-	intelligenceLabel := widget.NewLabel(fmt.Sprintf("Intelligence: %d", model.Player.IntelligenceValue))
+	intelligenceLabel := widget.NewLabel(fmt.Sprintf("Intelligence: %d", game.Player.IntelligenceValue))
 	intelligenceRange := createSliderLevelUpWithCallback("Intelligence", minStat, maxStat,
-		&model.Player.IntelligenceValue, currentIntelligence, intelligenceLabel, pointsToSpendValue)
+		&game.Player.IntelligenceValue, currentIntelligence, intelligenceLabel, pointsToSpendValue)
 
-	dexterityLabel := widget.NewLabel(fmt.Sprintf("Dexterity: %d", model.Player.DexterityValue))
+	dexterityLabel := widget.NewLabel(fmt.Sprintf("Dexterity: %d", game.Player.DexterityValue))
 	dexterityRange := createSliderLevelUpWithCallback("Dexterity", minStat, maxStat,
-		&model.Player.DexterityValue, currentDexterity, dexterityLabel, pointsToSpendValue)
+		&game.Player.DexterityValue, currentDexterity, dexterityLabel, pointsToSpendValue)
 
 	return container.New(layout.NewGridLayout(5),
 		pointsToSpendLabel, strengthLabel, constitutionLabel, intelligenceLabel, dexterityLabel,
@@ -51,14 +51,14 @@ func createSliderLevelUpWithCallback(characteristic string, min, max float64, //
 	slider.Value = float64(*value)
 	slider.OnChanged = func(v float64) {
 		intV := int(v)
-		if (model.Player.PointsToSpend - (intV - *value)) >= 0 {
+		if (game.Player.PointsToSpend - (intV - *value)) >= 0 {
 			// player still has enough point to spend to make this modification
 			// however, this could mean that player wants to remove points allocated
 			// to characteristics from previous levels, which we don't want
 
 			// we only allow modification if new value is greater or equal than current value
 			if intV >= currentValue {
-				model.Player.PointsToSpend -= (intV - *value)
+				game.Player.PointsToSpend -= (intV - *value)
 				*value = intV
 			}
 		} else {
@@ -66,7 +66,7 @@ func createSliderLevelUpWithCallback(characteristic string, min, max float64, //
 			slider.Refresh()
 		}
 		valueLabel.SetText(fmt.Sprintf("%s: %d", characteristic, *value))
-		pointsToSpendLabel.SetText(fmt.Sprintf("%d", model.Player.PointsToSpend))
+		pointsToSpendLabel.SetText(fmt.Sprintf("%d", game.Player.PointsToSpend))
 		valueLabel.Refresh()
 	}
 	return slider

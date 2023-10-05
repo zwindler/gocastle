@@ -71,7 +71,7 @@ func updateLoadedGameData(data map[string]interface{}) error {
 		return err
 	}
 
-	game.Player = &loadedData.Player
+	game.Player = loadedData.Player
 
 	// Assign the unmarshaled maps to the maps.AllTheMaps variable
 	maps.AllTheMaps = loadedData.AllTheMaps

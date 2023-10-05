@@ -6,17 +6,34 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 
-	"github.com/zwindler/gocastle/model"
 	"github.com/zwindler/gocastle/pkg/avatar"
+	"github.com/zwindler/gocastle/pkg/character"
 	"github.com/zwindler/gocastle/pkg/coord"
 	"github.com/zwindler/gocastle/pkg/embedmaps"
+	"github.com/zwindler/gocastle/pkg/hp"
 	"github.com/zwindler/gocastle/pkg/maps"
+	"github.com/zwindler/gocastle/pkg/mp"
 	"github.com/zwindler/gocastle/pkg/npc"
 	"github.com/zwindler/gocastle/pkg/object"
 )
 
 var (
-	Player     = &model.Player
+	PlayerAvatar = avatar.Avatar{}
+	Player       = character.Stats{
+		// temporary, for dev
+		CharacterName: "zwindler",
+		PointsToSpend: 0,
+		// end temporary for dev
+		Avatar: PlayerAvatar,
+		// PointsToSpend:     10,
+		StrengthValue:     10,
+		ConstitutionValue: 10,
+		IntelligenceValue: 10,
+		DexterityValue:    10,
+		Level:             1,
+		HP:                hp.New(character.BaseHP),
+		MP:                mp.New(character.BaseMP),
+	}
 	CurrentMap = &maps.AllTheMaps[0]
 )
 
@@ -45,17 +62,17 @@ func InitGame(window fyne.Window, start bool) {
 		// Map0 Village
 		knife, _ := object.CreateObject(object.HuntingKnife, coord.Coord{X: 10, Y: 10, Map: 0})
 		maps.AllTheMaps[0].ObjectList = append(maps.AllTheMaps[0].ObjectList, &knife)
-		farmer := npc.Spawn(model.FemaleFarmer, coord.Coord{X: 10, Y: 15, Map: 0})
-		ant1 := npc.Spawn(model.GiantAnt, coord.Coord{X: 5, Y: 34, Map: 0})
-		ant2 := npc.Spawn(model.GiantAnt, coord.Coord{X: 6, Y: 32, Map: 0})
-		ant3 := npc.Spawn(model.GiantAnt, coord.Coord{X: 7, Y: 33, Map: 0})
+		farmer := npc.Spawn(npc.FemaleFarmer, coord.Coord{X: 10, Y: 15, Map: 0})
+		ant1 := npc.Spawn(npc.GiantAnt, coord.Coord{X: 5, Y: 34, Map: 0})
+		ant2 := npc.Spawn(npc.GiantAnt, coord.Coord{X: 6, Y: 32, Map: 0})
+		ant3 := npc.Spawn(npc.GiantAnt, coord.Coord{X: 7, Y: 33, Map: 0})
 		maps.AllTheMaps[0].NPCList = append(maps.AllTheMaps[0].NPCList, farmer, ant1, ant2, ant3)
 
 		// Map1 To The Old Mine
 		sword, _ := object.CreateObject(object.BluntSword, coord.Coord{X: 9, Y: 4, Map: 1})
 		maps.AllTheMaps[1].ObjectList = append(maps.AllTheMaps[1].ObjectList, &sword)
-		wolf1 := npc.Spawn(model.Wolf, coord.Coord{X: 70, Y: 24, Map: 1})
-		wolf2 := npc.Spawn(model.Wolf, coord.Coord{X: 69, Y: 23, Map: 1})
+		wolf1 := npc.Spawn(npc.Wolf, coord.Coord{X: 70, Y: 24, Map: 1})
+		wolf2 := npc.Spawn(npc.Wolf, coord.Coord{X: 69, Y: 23, Map: 1})
 		maps.AllTheMaps[1].NPCList = append(maps.AllTheMaps[1].NPCList, wolf1, wolf2)
 
 		Player.Avatar.Coord = coord.Coord{X: 15, Y: 15, Map: 0}
